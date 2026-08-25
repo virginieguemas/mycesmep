@@ -1,16 +1,10 @@
 /*/*/*.out
-/*/*/*/*.out
 /*/*/*.log
 *~
 *pyc
 *log
 *job.in
 *last.out
-/*/*/*_comparison_C-ESM-EP_*
-/*/*/copy_html_error_page.sh.e*
-slurm-*.out
-*_comparison_C-ESM-EP.o*
-/test_comparison
-/*/launched_jobs
-/*/mailjob
-libIGCM_post.out
+ /reference_comparison/AtlasExplorer/AtlasExplorer_reference_comparison_C-ESM-EP_*
+/reference_comparison/AtlasExplorer/AtlasExplorer_reference_comparison_C-ESM-EP.e921695
+/reference_comparison/AtlasExplorer/copy_html_error_page.sh.e921696

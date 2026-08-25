@@ -1,1 +1,0 @@
-../../share/cesmep_diagnostics/diagnostics_maps_and_ts.py

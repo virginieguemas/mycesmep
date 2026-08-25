@@ -34,8 +34,8 @@ from custom_obs_dict import custom_obs_dict
 # -- Preliminary settings: import module, set the verbosity and the 'safe mode'
 # ---------------------------------------------------------------------------- >
 from os import getcwd
-# -- Set the verbosity of CliMAF ('critical'< 'error' < 'warning' < 'info' < 'debug')
-verbose = 'error'
+# -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug', intermediate -> 'warning')
+verbose = 'debug'
 # -- Safe Mode (set to False and verbose='debug' if you want to debug)
 safe_mode = True
 # -- Set to True to clean the CliMAF cache
@@ -47,8 +47,6 @@ do_parallel = False
 # nprocs = 32
 # memory = 20 # in gb
 # queue = 'days3'
-# time = 480 # minutes
-# QOS = 'test'
 
 
 # -- Set the reference against which we plot the diagnostics
@@ -67,12 +65,6 @@ do_parallel = False
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
 atlas_head_title = "Atlas Explorer"
-# When driven by libIGCM, an additional title may be provided by config.card
-if AtlasTitle != "NONE":
-    atlas_head_title += " - " + AtlasTitle
-else:
-    print("No change to title")
-print("head_title=", atlas_head_title)
 
 
 # -- Set the overall season, region and geographical domain
@@ -114,7 +106,7 @@ atlas_explorer_variables = [dict(variable='tas',
                             ]
 
 # -- Choose the regridding (explicit ; can also be used in the variable dictionary)
-regridding = 'model_on_ref'  # 'ref_on_model', 'no_regridding'
+regridding = 'model_on_ref' # 'ref_on_model', 'no_regridding'
 
 # atlas_explorer_variables = ['tas','pr',
 #                            'tos','sos',
@@ -160,35 +152,7 @@ index_name = None
 #    for an example/
 
 
-# -- References
-# ---------------------------------------------------------------------------- >
-pattern_default = '/.../...nc'
-cproject('default_project', ...)
-dataloc(project='default_project', url=pattern_default)
-
-pattern_second = '/.../...nc'
-cproject('second_project', ...)
-dataloc(project='second_project', url=pattern_second)
-
-references = [
-        dict(project='default_project'),
-        dict(project='second_project')
-        ]
-
-#references_by_variable = dict(
-#        'var1' = [dict(project='default_project'), dict(project='second_project')],
-#        'var2' = [dict(project='default_project')],
-#        )
-
-
 # ---------------------------------------------------------------------------------------- #
 # -- END                                                                                -- #
 # ---------------------------------------------------------------------------------------- #
-# Fix errors of igcm_out.py re. 3D Variables
-calias("IGCM_OUT", 'ua', 'vitu', filenameVar='histmth')
-calias("IGCM_OUT", 'va', 'vitv', filenameVar='histmth')
-calias("IGCM_OUT", 'ta', 'temp', filenameVar='histmth')
-calias("IGCM_OUT", 'hur', 'rhum', filenameVar='histmth')
-calias("IGCM_OUT", 'zg', 'geoph', filenameVar='histmth')
-calias("IGCM_OUT", 'hus', 'ovap', filenameVar='histmth')
 

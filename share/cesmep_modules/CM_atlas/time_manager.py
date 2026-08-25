@@ -58,7 +58,7 @@ def period_for_diag_manager(DAT_DICT, diag=''):
         return WDAT_DICT
 
 
-def base_variable_of_derived_variable(tested_variable, project='*', ratio=None):
+def base_variable_of_derived_variable(tested_variable, project='*'):
     ''' Returns one of the variables used to compute a derived variable '''
     project_derived_variables = copy.deepcopy(derived_variables['*'])
     if project in derived_variables:
@@ -68,14 +68,6 @@ def base_variable_of_derived_variable(tested_variable, project='*', ratio=None):
             if isinstance(elt, list):
                 base_var = elt[0]
         tested_variable = base_var
-    # Special case : variables defined as ratio of (time averaged) variables
-    if ratio is not None:
-        if type(ratio) is str:
-            # e.g. "evap/precip"
-            tested_variable = ratio.split('/')[0]
-        elif type(ratio) is list:
-            # e.g. [ ("npp",{}), ("gpp_srf",{"DIR":"SRF"})] 
-            tested_variable = ratio[0][0]
     return tested_variable
 
 
@@ -112,8 +104,7 @@ def frequency_manager_for_diag(model, diag='TS'):
     return ''
 
 
-def get_period_manager(dat_dict, diag=None, ratio=None):
-    clogger.info("\nEntering get_period_manager")
+def get_period_manager(dat_dict, diag=None):
     #
     # Garde fou: if frequency is missing in dat_dict, we use the default value (monthly most of the time)
     if 'frequency' not in dat_dict:
@@ -169,24 +160,30 @@ def get_period_manager(dat_dict, diag=None, ratio=None):
                     period = 'No period nor ts_period provided'
                     print(period, 'in ', dat_dict)
     #
-    #print('dat_dict before .resolve ', dat_dict)
+    print('dat_dict before .resolve ', dat_dict)
     # -- request for all the files
     req_dict = dat_dict.copy()
     #
     # -> Check if the variable is a derived variable; if yes, returns one variable it is based on
     # -> Will be used only for the request
     tested_variable = req_dict['variable']
-    req_dict.update(dict(variable=base_variable_of_derived_variable(
-        tested_variable, req_dict['project'], ratio)))
+    req_dict.update(dict(variable=base_variable_of_derived_variable(tested_variable, req_dict['project'])))
     #
     # -- if period, we can use the .explore('resolve') method to get the available period
     if period:
         req_dict.update(dict(period=period))
         # - Get the period corresponding to the user request (among *, last_10Y,...)
-        if period.upper() in ['FULL', '*'] \
-           or 'LAST_' in period.upper() \
-           or 'FIRST_' in period.upper():
-            req=ds(**req_dict) # this resolve for period, automatically
+        if period.upper() in ['FULL', '*'] or 'LAST_' in period.upper() or 'FIRST_' in period.upper():
+            # -- Use ds.explore method to find the available period
+            #try:
+            #    req = ds(**req_dict).explore('resolve')
+            #    print('req.kvp = ', req.kvp)
+            #    dat_dict['period'] = str(req.kvp['period'])
+            #except:
+            #    print('Error in get_period_manager => No File found for ', req_dict)
+            #    if tested_variable != req_dict['variable']:
+            #        print('Initially you asked for variable ', tested_variable)
+            req = ds(**req_dict).explore('resolve')
             if req.baseFiles():
                 dat_dict['period'] = str(req.kvp['period'])
             else:
@@ -194,6 +191,7 @@ def get_period_manager(dat_dict, diag=None, ratio=None):
                 #print(cfile(req))
                 if tested_variable != req_dict['variable']:
                     print('Initially you asked for variable ', tested_variable)
+
         else:
             dat_dict.update(dict(period=period))
     if clim_period and dat_dict['frequency'] in ['annual_cycle', 'seasonal']:
@@ -212,7 +210,6 @@ def get_period_manager(dat_dict, diag=None, ratio=None):
             if clim_period.upper() in ['FIRST', 'FIRST_SE']:
                 dat_dict['clim_period'] = first_SE
     #
-    clogger.info("\nExiting get_period_manager")
     return dat_dict
 
 

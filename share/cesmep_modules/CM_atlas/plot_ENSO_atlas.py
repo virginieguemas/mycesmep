@@ -48,7 +48,6 @@ def ENSO_ts_ssta(dat_dict, do_cfile=True, safe_mode=True, custom_plot_params={})
     #
     # -- Get the period
     tmp_period = build_period_str(wdat_dict).replace('-', '').replace('-', '')
-    tmp_period = str(dat.period)
     print("tmp_period = ", tmp_period)
     #
     # -- Title
@@ -71,10 +70,9 @@ def ENSO_ts_ssta(dat_dict, do_cfile=True, safe_mode=True, custom_plot_params={})
     p = dict(options=curves_options + "|" +
                      "tiMainFontHeightF=0.023|tiMainFont=helvetica-bold|" +
                      "gsnStringFontHeightF=0.019|" +
-                     "gsnCenterString=SSTA Nino3|gsnLeftString=" + tmp_period.replace('-','to') + "|gsnRightString=degC"
+                     "gsnCenterString=SSTA Nino3|gsnLeftString=" + tmp_period + "|gsnRightString=degC"
              )
     #
-    print('p = ',p)
     # -- Update the custom plot params
     p.update(custom_plot_params)
     #

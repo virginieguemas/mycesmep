@@ -23,13 +23,12 @@
 # --------------------------------------------------------------------------------------------- /
 
 from custom_plot_params import dict_plot_params as custom_plot_params
-from climaf.utils import ranges_to_string
 
 # -- Preliminary settings: import module, set the verbosity and the 'safe mode'
 # ---------------------------------------------------------------------------- >
 from os import getcwd
 # -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug', intermediate -> 'warning')
-verbose = 'error'
+verbose = 'debug'
 # -- Safe Mode (set to False and verbose='debug' if you want to debug)
 safe_mode = True
 # -- Set to True to clean the CliMAF cache
@@ -40,9 +39,7 @@ routine_cache_cleaning = [dict(age='+20')]
 do_parallel = False
 nprocs = 32
 # memory = 20 # in gb
-# queue = 'zen4'
-# time = 480 # minutes
-# QOS = 'test'
+queue = 'zen4'
 
 
 # -- Set the reference against which we plot the diagnostics
@@ -59,9 +56,6 @@ nprocs = 32
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
 atlas_head_title = "Atmosphere Standard press. lev. - seasonal"
-# When driven by libIGCM, an additional title may be provided by config.card
-if AtlasTitle != "NONE":
-    atlas_head_title += " - " + AtlasTitle
 
 
 # -- Set the overall season, region and geographical domain
@@ -84,12 +78,12 @@ domain = {}
 # ---------------------------------------------------------------------------- >
 my_seasons = ['ANM', 'DJF', 'JJA']
 atlas_explorer_variables_list = [
-    'ua850', 'ua500', 'ua200',
-    'va850', 'va500', 'va200',
-    'ta850', 'ta500', 'ta200',
-    'hur850', 'hur500', 'hur200',
-    'hus850', 'hus500', 'hus200',
-    'zg500']
+                   'ua850', 'ua500', 'ua200',
+                   'va850', 'va500', 'va200',
+                   'ta850', 'ta500', 'ta200',
+                   'hur850', 'hur500', 'hur200',
+                   'hus850', 'hus500', 'hus200',
+                   'zg500']
 
 atlas_explorer_variables = []
 for var in atlas_explorer_variables_list:
@@ -100,7 +94,7 @@ for var in atlas_explorer_variables_list:
                                              ),
                                              ))
 # -- Choose the regridding (explicit ; can also be used in the variable dictionary)
-regridding = 'model_on_ref'  # 'ref_on_model', 'no_regridding'
+regridding = 'model_on_ref' # 'ref_on_model', 'no_regridding'
 
 
 # -- Activate the parallel execution of the plots
@@ -138,15 +132,8 @@ index_name = None
 # -> Check $CLIMAF/climaf/plot/atmos_plot_params.py or ocean_plot_params.py
 #    for an example/
 
-# Fix errors of igcm_out.py re. 3D Variables
-calias("IGCM_OUT", 'ua',  'vitu', filenameVar='histmth')
-calias("IGCM_OUT", 'va',  'vitv', filenameVar='histmth')
-calias("IGCM_OUT", 'ta',  'temp', filenameVar='histmth')
-calias("IGCM_OUT", 'hur', 'rhum', filenameVar='histmth')
-calias("IGCM_OUT", 'hus', 'ovap', filenameVar='histmth')
-calias("IGCM_OUT", 'zg', 'geoph', filenameVar='histmth')
-
 
 # ---------------------------------------------------------------------------------------- #
 # -- END                                                                                -- #
 # ---------------------------------------------------------------------------------------- #
+

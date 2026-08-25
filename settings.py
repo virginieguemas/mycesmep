@@ -5,21 +5,6 @@ email = None
 # Choose if you prefer one mail per C-ESM-EP run or one mail per C-ESM-EP component job
 one_mail_per_component = False
 
-# Which account / project will be charged for computing hours ?
-# When C-ESM-EP is called by libIGCM, the account is set automatically
-# Otherwise, if account is None,
-#   - at TGCC, CCCHOME path will be used to deduce default account
-#   - at IDRIS, default account is provided by command idrproj
+# Which account / project will be charged for computing hours ? If
+# None, on TGCC, CCCHOME path will be used to deduce default accout
 account = None
-# account = "psl@cpu"   # Example for IDRIS
-
-# Should we publish the atlas to an http capable location such as
-# thredds-su.ipsl.fr/thredds.   
-publish = True
-
-# Where should we create the atlas, and with which title. The values
-# here are not used when running through libIGCM. Value "NONE" will lead
-# to use a default value.
-# Path is relative to $WORKDIR/C-ESM-EP/. Default is <comparison>_<user>
-#AtlasPath = "plotmap_valid/plotmap/plotmap.html"
-#AtlasTitle = "Plotmap validation. Here using plotmap"

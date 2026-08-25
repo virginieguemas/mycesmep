@@ -14,6 +14,7 @@ custom_obs_dict = dict()
 
 reference_models = []
 period_manager_test_variable = None
+apply_period_manager_once_for_all_diags = False
 do_SST_for_tuning = False
 do_atlas_explorer = False
 do_parallel_atlas_explorer = False
@@ -100,19 +101,3 @@ thumbnail_monsoon_pr_anncyc_size = '375*600'
 
 regrid_ref_on_model=False
 regridding = 'model_on_ref'
-
-# A function used by plot_CM_atlas.section* function to compute a name for the map plot files
-# If not None, it receives arguments: simu1, simu2 (ref), variable, season
-# See example in CM_atlas.mapper
-map_filename_func = None
-
-# Same for time series plot filename
-# If not None, it receives arguments: region, variable, frequency
-# See example in CM_atlas.mapper
-ts_filename_func = None
-
-ts_regions_file = None
-
-# A toggle for activating 'a la Mapper' interactive selection
-interactive_selection = False
-

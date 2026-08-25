@@ -7,7 +7,6 @@
 
 from climaf.api import *
 from climaf.chtml import *
-from climaf.classes import varIsAliased
 from reference import variable2reference
 from env.clogging import clogger, dedent
 from .time_manager import *
@@ -18,24 +17,19 @@ import shutil
 import getpass
 from climaf.plot.ocean_plot_params import dict_plot_params as ocean_plot_params
 from climaf.chtml import blank_cell
-from climaf.period import cperiod
 
 StringFontHeight = 0.019
 
 hover = False
 
-cscript(
-    'rmse_xyt', 'cdo sqrt -fldmean -timmean -sqr -sub ${in_1} ${in_2} ${out}')
-
+cscript('rmse_xyt','cdo sqrt -fldmean -timmean -sqr -sub ${in_1} ${in_2} ${out}')
 
 def corr_xy(dat1, dat2):
     anom_dat1 = fsub(dat1, cscalar(ccdo(dat1, operator='fldmean')))
     anom_dat2 = fsub(dat2, cscalar(ccdo(dat2, operator='fldmean')))
-    return divide(ccdo(multiply(anom_dat1, anom_dat2), operator='fldmean'),
-                  multiply(ccdo(anom_dat1, operator='fldstd'),
-                           ccdo(anom_dat2, operator='fldstd'))
-                  )
-
+    return divide( ccdo(multiply(anom_dat1, anom_dat2), operator='fldmean'),
+                            multiply(ccdo(anom_dat1, operator='fldstd'),ccdo(anom_dat2, operator='fldstd'))
+                          )
 
 ocean_variables = []
 for oceanvar in ocean_plot_params:
@@ -51,12 +45,11 @@ def is3d(variable):
 
 def build_period_str(dat):
     if isinstance(dat, dict):
-        ds_dat = ds(**dat, check=False)
+        ds_dat = ds(**dat)
     else:
         ds_dat = dat
     tmp_period = str(ds_dat.period)
-    if 'clim_period' in ds_dat.kvp and \
-       (tmp_period == 'fx' or tmp_period == cperiod('fx') or tmp_period == '*'):
+    if 'clim_period' in ds_dat.kvp and str(ds_dat.period) == 'fx':
         tmp_period = ds_dat.kvp['clim_period']
     if 'years' in ds_dat.kvp and ds_dat.period == 'fx':
         tmp_period = ds_dat.kvp['years']
@@ -73,11 +66,9 @@ def replace_keywords_with_values(dat_dict, string):
             if len(dum_split_elt) == 2:
                 kw = dum_split_elt[0]
                 if kw in ds_dat.kvp:
-                    new_string = new_string.replace(
-                        '${' + kw + '}', ds_dat.kvp[kw])
+                    new_string = new_string.replace('${' + kw + '}', ds_dat.kvp[kw])
                 else:
-                    new_string = new_string.replace(
-                        '${' + kw + '}', kw + '_not_available')
+                    new_string = new_string.replace('${' + kw + '}', kw + '_not_available')
         return new_string
     else:
         return string
@@ -95,78 +86,51 @@ def get_realization_simulation_kw(ds_obj):
 def build_plot_title(model, ref=None, add_product_in_title=True):
     if not ref:
         add_product_in_title = False
-    #print('model = ', model)
+    print('model = ', model)
     ds_model = ds(**model)
-    #print('ds_model.kvp = ', ds_model.kvp)
+    print('ds_model.kvp = ', ds_model.kvp)
     if 'customname' in model:
         title = replace_keywords_with_values(model, model['customname'])
     else:
         if 'product' not in ds_model.kvp:
-            if model['project'] in [ 'CMIP5', 'CMIP6' ]:
+            if model['project'] == 'CMIP5':
                 title = ds_model.kvp['model']
             else:
                 title = get_realization_simulation_kw(ds_model)
         else:
-            title = ('OBS' if model['project'] ==
-                     'LMDZ_OBS' else ds_model.kvp["product"])
+            title = ('OBS' if model['project'] == 'LMDZ_OBS' else ds_model.kvp["product"])
     if add_product_in_title:
         ds_ref = ds(**ref)
         print('ref = ', ref)
         if 'model' in ds_ref.kvp:
             ref_in_title = (
-                ref['customname'] if 'customname' in ref \
-                else ds_ref.kvp['model'] + ' ' + get_realization_simulation_kw(ds_ref))
+                ref['customname'] if 'customname' in ref else ds_ref.kvp['model'] + ' ' + get_realization_simulation_kw(
+                    ds_ref))
         else:
-            ref_in_title = ('OBS' if ref['project'] ==
-                            'LMDZ_OBS' else ds_ref.kvp["product"])
-        # We want to remove from ref name any prefix also occurring in
-        # experiment title (in order to keep it short and clear)
-        ix = 0
-        while (title[ix] == ref_in_title[ix]) and (title[ix] != "_") :
-            ix += 1
-        title = title + ' (vs ' + ref_in_title[ix:] + ')'
+            ref_in_title = ('OBS' if ref['project'] == 'LMDZ_OBS' else ds_ref.kvp["product"])
+        title = title + ' (vs ' + ref_in_title + ')'
         title = title.replace('*', '')
     return title
 
-def add_period_in_title(title, period):
-    # Add string PERIOD at the end of TITLE only if not redundant with TITLE's sufffix
-    # Returns modified or unmodified TITLE
-    
-    # Characters - and _ are considered equivalent in suffix analysis.
-    # Also handles the case where title has an additionnal suffix like " (vs .*1990_1999)"
-    
-    pi = len(period) - 1
-    ti = len(title) - 1
-    while (title[ti] == period[pi]) or \
-          (title[ti] in ['-','_'] and period[pi] in ['-','_']) :
-        pi -=1 ; ti -=1
-    if pi == -1 :
-        return title
-    else:
-        return title + ' ' + period
-    
 
 
 # -- 2D Maps
-def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
-                  custom_plot_params={}, do_cfile=True, mpCenterLonF=None,
-                  cdogrid=None, regrid_option='remapbil', safe_mode=True,
-                  ocean_variables=ocean_variables, shade_missing=False,
-                  zonmean_variable=False, plot_context_suffix=None,
-                  add_vectors=False, add_aux_contours=False,
-                  display_field_stats=False):
+def plot_climato(var, dat_dict, season, proj='GLOB', domain={}, custom_plot_params={}, do_cfile=True, mpCenterLonF=None,
+                 cdogrid=None, regrid_option='remapbil', safe_mode=True, ocean_variables=ocean_variables,
+                 shade_missing=False, zonmean_variable=False, plot_context_suffix=None, add_vectors=False,
+                 add_aux_contours=False,
+                 display_field_stats=False):
     #
     # -- Processing the variable: if the variable is a dictionary, need to extract the variable
     #    name and the arguments
+    print('var = ', var)
     grid = None
     table = None
     realm = None
     scale = 1.
     offset = 0.
     title = None
-    units = None
     project_specs = None
-    ratio = None
     if isinstance(var, dict):
         wvar = var.copy()
         variable = wvar['variable']
@@ -243,7 +207,6 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
             wvar.pop('display_field_stats')
         if 'scale' in wvar:
             scale = wvar['scale']
-        global_sum_scale = wvar.pop('global_sum_scale',None)
         if 'offset' in wvar:
             offset = wvar['offset']
         if 'project_specs' in wvar:
@@ -252,53 +215,49 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
         if 'title' in wvar:
             title = wvar['title']
             wvar.pop('title')
-        if 'units' in wvar:
-            units = wvar['units']
-            wvar.pop('units')
         if 'display_bias_corr_rmse' in wvar:
             wvar.pop('display_bias_corr_rmse')
-        ratio = wvar.get('ratio',None)
     else:
         variable = var
         wvar = dict()
     #
     # -- Get the default plot parameters with the function 'plot_params'
-    # -- We also update with a custom dictionary of params (custom_plot_params)
-    # -- if the user sets one
+    # -- We also update with a custom dictionary of params (custom_plot_params) if the user sets one
     context = 'full_field'
     if plot_context_suffix:
         context = context + '_' + plot_context_suffix
     p = plot_params(variable, context, custom_plot_params=custom_plot_params)
     #
-    # -- Add the projection if needed
-    p.setdefault("proj",proj)
+    # -- Add the projection
+    if 'proj' not in p:
+        p.update(dict(proj=proj))
 
     #
     if isinstance(var, dict):
-        for options in [ 'options', 'aux_options' ]:
-            if options in wvar:
-                options_value = wvar.pop(options)
-                if options in p:
-                    p[options] = p[options] + '|' + options_value
-                else:
-                    p[options] = options_value
-                
+        if 'options' in wvar:
+            options = wvar['options']
+            if 'options' in p:
+                p['options'] = p['options'] + '|' + options
+            else:
+                p.update(dict(options=options))
+            wvar.pop('options')
+        if 'aux_options' in wvar:
+            aux_options = wvar['aux_options']
+            if 'aux_options' in p:
+                p['aux_options'] = p['aux_options'] + '|' + aux_options
+            else:
+                p.update(dict(aux_options=aux_options))
+            wvar.pop('aux_options')
     #
     # -- Add the variable and get the dataset
     wdat_dict = dat_dict.copy()
-    wdat_dict.update(variable=variable)
-    #
-    # -- clim_period
-    #clim_period = wvar.get('clim_period', None)
-    if 'clim_period' in wvar:
-        wvar.pop('clim_period')
-        #wdat_dict['clim_period'] = clim_period
+    wdat_dict.update(dict(variable=variable))
     #
     # -- Add the gr and table for the CMIP6 datasets
     if grid:
-        wdat_dict.update(grid=grid)
+        wdat_dict.update(dict(grid=grid))
     if table:
-        wdat_dict.update(table=table)
+        wdat_dict.update(dict(table=table))
         if 'mon' in table:
             wfreq = 'monthly'
         if 'yr' in table:
@@ -321,18 +280,24 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
         if wdat_dict['project'] in project_specs:
             wdat_dict.update(project_specs[wdat_dict['project']])
     #
-    # -- Apply get_period_manager. NO : alreaduy done upstream
-    #wdat_dict = get_period_manager(wdat_dict, diag='clim', ratio=ratio)
+    # -- Apply get_period_manager
+    wdat_dict = get_period_manager(wdat_dict, diag='clim')
     print('wdat_dict in plot_climato = ', wdat_dict)
-    print('wvar in plot_climato = ', wvar)
     #
     # -- Get the dataset
-    clogger.debug('calling compute_clim in plot_climato')
-    climato_dat = compute_climatology(wdat_dict, season, wvar, do_cfile, safe_mode)
-    if climato_dat is None and safe_mode:
-        print('!! Plotting failed for :', wdat_dict, "\n", wvar)
-        print("set clog('debug') and safe_mode=False to identify where the plotting failed")
-        return climaf.chtml.bank_cell
+    if safe_mode:
+        try:
+            ds_dat = ds(**wdat_dict).explore('resolve')
+        except:
+            return safe_mode_cfile_plot(plot(ds(**wdat_dict)), do_cfile, safe_mode)
+    else:
+        try:
+           ds_dat = ds(**wdat_dict).explore('resolve')
+        except:
+           ds_dat = ds(**wdat_dict)
+    #
+    # -- Compute the seasonal climatology
+    climato_dat = clim_average(ds_dat, season)
     #
     # -- If we want to add vectors:
     if add_vectors:
@@ -379,25 +344,21 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
         climato_aux_dat = clim_average(ds(**aux_wdat_dict), season)
         aux_plot_params = add_aux_contours.copy()
         aux_plot_params.pop('variable')
-        
 
     # -- Computing the spatial anomalies if needed (notably for zos)
     if 'spatial_anomalies' in wvar:
-        climato_dat = fsub(climato_dat, str(
-            cvalue(space_average(climato_dat))))
+        climato_dat = fsub(climato_dat, str(cvalue(space_average(climato_dat))))
         wvar.pop('spatial_anomalies')
     #
     # -- If we are working on 3D atmospheric variable, compute the zonal mean
     if is3d(variable) or zonmean_variable:
         climato_dat = zonmean(climato_dat)
-        p["forbid_plotmap"]=True
-        
     #
     # -- Get the period for display in the plot: we build a tmp_period string
     # -- Check whether the period is described by clim_period, years or period (default)
     # -- and make a string with it
     tmp_period = build_period_str(wdat_dict)
-    #
+    # 
     # -- Title of the plot -> If 'customname' is in the dictionary of dat, it will be used
     # -- as the title. If not, it checks whether dat is a reference or a model simulation
     # -- and builds the title
@@ -406,28 +367,35 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
     else:
         title = replace_keywords_with_values(wdat_dict, title)
         #
-    variable_str = variable
-    if units is not None:
-        variable_str += " [%s] "%units
     # -- Min, max et mean of the field
     if display_field_stats:
-        minmaxmean_str = variable_str + field_stats(climato_dat,scale,offset,global_sum_scale)
-        p.setdefault("gsnLeftString",  minmaxmean_str)
-        p.setdefault("gsnCenterString", ' ')
-        p.setdefault("gsnRightString", season)
-        title = add_period_in_title(title, tmp_period)
+        if safe_mode:
+            try:
+                field_min = '%s' % (
+                    float('%.3g' % (float(cMA(ccdo(climato_dat, operator='fldmin'))[0][0][0]) * scale + offset)))
+                field_max = '%s' % (
+                    float('%.3g' % (float(cMA(ccdo(climato_dat, operator='fldmax'))[0][0][0]) * scale + offset)))
+                field_mean = '%s' % (
+                    float('%.3g' % (float(cMA(ccdo(climato_dat, operator='fldmean'))[0][0][0]) * scale + offset)))
+                minmaxmean_str = variable + ' min=' + str(field_min) + ' ; max=' + str(field_max) + ' ; mean=' + str(
+                    field_mean)
+                p.update(dict(gsnLeftString=minmaxmean_str,
+                              gsnCenterString=' ',
+                              gsnRightString=season))
+                title += ' ' + tmp_period
+            except:
+                print('----> display_field_stats failed')
     else:
         # -- Set the left, center and right strings of the plot
-        p.setdefault("gsnLeftString", tmp_period)
-        p.setdefault("gsnCenterString", variable_str)
-        p.setdefault("gsnRightString",season)
+        p.update(dict(gsnLeftString=tmp_period,
+                      gsnCenterString=variable,
+                      gsnRightString=season))
     #
     # -- If the variable is 3d, add the plotting parameters that are specific to the
     # -- zonal mean fields
     if is3d(variable):
         if 'aux_options' in p:
-            p.update(
-                dict(aux_options=p['aux_options'] + '|cnLineThicknessF=2|cnLineLabelsOn=True'))
+            p.update(dict(aux_options=p['aux_options'] + '|cnLineThicknessF=2|cnLineLabelsOn=True'))
         else:
             p.update(dict(aux_options='cnLineThicknessF=2|cnLineLabelsOn=True'))
     #
@@ -439,14 +407,11 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
                                                              mesh_mask_file=wdat_dict['meshmask_for_navlon_navlat'])
             cdogrid = 'r720x360'
         if not cdogrid:
-            climato_dat = regridn(
-                climato_dat, cdogrid='r360x180', option=regrid_option)
+            climato_dat = regridn(climato_dat, cdogrid='r360x180', option=regrid_option)
         else:
-            climato_dat = regridn(
-                climato_dat, cdogrid=cdogrid, option=regrid_option)
+            climato_dat = regridn(climato_dat, cdogrid=cdogrid, option=regrid_option)
     elif cdogrid:
-        climato_dat = regridn(
-            climato_dat, cdogrid=cdogrid, option=regrid_option)
+        climato_dat = regridn(climato_dat, cdogrid=cdogrid, option=regrid_option)
     #
     # -- Select a lon/lat box and discard mpCenterLonF (or get it from var)
     if domain:
@@ -476,13 +441,10 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
     #
     # -- Update p (the plotting parameters) with the dictionary of var
     if isinstance(var, dict):
-        #p.update(wvar)
-        for attribute in list(wvar.keys()):
-            if "${%s}"%attribute in cscripts["plot"].command:
-                p[attribute] = wvar[attribute]
         # -- If the user wants to pass the isolines with min, max, delta, we remove colors
         if 'delta' in var and 'colors' in p:
             p.pop('colors')
+        p.update(wvar)
     #
     # -- Add gray for the missing values
     if shade_missing:
@@ -490,24 +452,42 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
             p['options'] = p['options'] + '|cnMissingValFillColor=gray'
         else:
             p.update(dict(options='cnMissingValFillColor=gray'))
-            
     # -- gsnStringFontHeightF
-    p.setdefault('gsnStringFontHeightF',StringFontHeight)
-    #
-    p["title"] = title
-    if add_aux_contours:
-        p.update(aux_plot_params)
-    else:
-        climato_aux_dat = None
-        
+    if not 'gsnStringFontHeightF' in p:
+       p['gsnStringFontHeightF']=StringFontHeight
     # -- Call the climaf plot function
-    largs = [climato_dat, climato_aux_dat]
-    if  add_vectors:
+    myplot = plot(climato_dat,
+                  title=title,
+                  #gsnStringFontHeightF=StringFontHeight,
+                  **p)
+    # -- ... and update the dictionary 'p'
+    if add_aux_contours and not add_vectors:
+        p.update(aux_plot_params)
+        # -- Call the climaf plot function
+        myplot = plot(climato_dat, climato_aux_dat, title=title,
+                      #gsnStringFontHeightF=StringFontHeight,
+                      **p)
+    elif add_vectors and not add_aux_contours:
         p.update(vectors_options)
-        largs = largs + [ vectors_field_u, vectors_field_v ]
-    myplot = plot(*largs, **p)
+        # -- Call the climaf plot function
+        myplot = plot(climato_dat, None, vectors_field_u, vectors_field_v, title=title,
+                      #gsnStringFontHeightF=StringFontHeight,
+                      **p)
+    elif add_vectors and add_aux_contours:
+        p.update(vectors_options)
+        p.update(aux_plot_params)
+        # -- Call the climaf plot function
+        myplot = plot(climato_dat, climato_aux_dat, vectors_field_u, vectors_field_v, title=title,
+                      #gsnStringFontHeightF=StringFontHeight,
+                      **p)
+    else:
+        # -- Call the climaf plot function
+        myplot = plot(climato_dat, title=title,
+                      #gsnStringFontHeightF=StringFontHeight,
+                      **p)
+
     #
-    #print('climato_dat  = ', climato_dat)
+    #print('climato_dat  = ', cfile(climato_dat))
     # -- If the user doesn't want to do the cfile within plot_climato, set do_cfile=False
     # -- Otherwise we check if the plot has been done successfully.
     # -- If not, the user can set safe_mode=False and clog('debug') to debug.
@@ -520,24 +500,23 @@ def plot_climato( var, dat_dict, season, proj='GLOB', domain={},
 # - la proposer pour le modele et pour la ref
 # - partir du nom sur niveaux modeles, interpoler, renommer, modifier les axes (si besoin)
 # - proposer des niveaux de pression par defaut mais donner la possibilite de changer
-# -
+# -  
 
 def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product_in_title=True,
               ocean_variables=ocean_variables, cdogrid=None, add_climato_contours=False, regrid_option='remapdis', regridding='model_on_ref',
               safe_mode=True, custom_plot_params={}, do_cfile=True, spatial_anomalies=False, shade_missing=False,
               zonmean_variable=False, plot_context_suffix=None, add_vectors=False, add_aux_contours=False,
-              display_bias_corr_rmse=False, display_field_stats=False):
+              display_bias_corr_rmse=False):
     #
     # -- Processing the variable: if the variable is a dictionary, need to extract the variable
     #    name and the arguments
+    print('var = ', var)
     scale = 1.
     offset = 0.
-    units = None
     grid = None
     table = None
     realm = None
     project_specs = None
-    ratio = None
     if isinstance(var, dict):
         wvar = var.copy()
         variable = wvar['variable']
@@ -571,8 +550,6 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
         if 'offset' in wvar:
             offset = wvar['offset']
             wvar.pop('offset')
-        if 'units' in wvar:
-            units = wvar['units']
         if 'zonmean_variable' in wvar:
             zonmean_variable = wvar['zonmean_variable']
             wvar.pop('zonmean_variable')
@@ -622,14 +599,9 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
         if 'realm' in wvar:
             realm = wvar['realm']
             wvar.pop('realm')
-        if 'display_field_stats' in wvar:
-            display_field_stats = wvar['display_field_stats']
-            wvar.pop('display_field_stats')
-        global_sum_scale = wvar.pop('global_sum_scale', None)
         if 'project_specs' in wvar:
             project_specs = wvar['project_specs']
             wvar.pop('project_specs')
-        ratio = wvar.get('ratio',None)
     else:
         variable = var
         wvar = dict()
@@ -637,11 +609,6 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
     # -- Get the datasets of the model and the ref
     wmodel = model.copy()
     wmodel.update(dict(variable=variable))
-    clim_period = wvar.get('clim_period', None)
-    if clim_period:
-        wmodel['clim_period'] = clim_period
-        wvar.pop('clim_period')
-
     # -- Add the gr and table for the CMIP6 datasets
     if 'grid' in wvar:
         wmodel.update(dict(grid=wvar['grid']))
@@ -694,21 +661,23 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
             wref.update(dict(table=table))
     #
     # -- Apply get_period_manager
-    wmodel = get_period_manager(wmodel, diag='clim', ratio=ratio)
-    wref = get_period_manager(wref, diag='clim', ratio=ratio)
+    wmodel = get_period_manager(wmodel, diag='clim')
+    wref = get_period_manager(wref, diag='clim')
     #
     # -- Get the dataset
     ds_model = ds(**wmodel)
-    modelseason = model.get('season',season)
+    ds_ref = ds(**wref)
     #
     # -- Compute the seasonal climatology of the reference
-    refseason = ref.get('season',season)
-    clogger.debug('calling compute_clim for ref in plot_diff')
-    climato_ref = compute_climatology(wref, refseason, wvar, do_cfile, safe_mode)
-    if climato_ref is None and safe_mode:
-        print('!! Plotting failed for :', wref, "\n", wvar)
-        print("set clog('debug') and safe_mode=False to identify where the plotting failed")
-        return climaf.chtml.bank_cell
+    if 'season' in ref:
+        refseason = ref['season']
+    else:
+        refseason = season
+    climato_ref = clim_average(ds_ref, refseason)
+    if 'season' in model:
+        modelseason = model['season']
+    else:
+        modelseason = season
     #
     #
     # -- If we want to add vectors:
@@ -775,14 +744,14 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
         aux_plot_params.pop('variable')
     #
     # -- Here we treat two cases:
-    #       -> the 3D variables: need to compute the zonal means,
+    #       -> the 3D variables: need to compute the zonal means, 
     #          and potentially interpolate on pressure levels with ml2pl
     #       -> the 2D variables:
     #            * only compute the seasonal average for the atmospheric field and regrid the model on the ref
     #              (using diff_regrid)
     #            * for ocean variables, regrid on a 1deg lon/lat grid and compute the difference (using diff_regridn)
     #            * Option: we remove the spatial mean if spatial_anomalies=True (notably for SSH)
-    #
+    # 
     # -- After the vertical interpolation, compute the climatology
     if is3d(variable) or zonmean_variable:
         # -- First case: 3D variable -------------------------------------------- #
@@ -793,8 +762,8 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
             fixed_fields('ml2pl', ('press_levels.txt', model['press_levels']))
             pres_wmodel = wmodel.copy()
             pres_wmodel.pop('variable')
-            ds_pres = ds(variable=(
-                model['press_var'] if 'press_var' in model else 'pres'), **pres_wmodel)
+            ds_pres = ds(variable=(model['press_var'] if 'press_var' in model else 'pres'), **pres_wmodel)
+            print("ds_pres",ds_pres)
             nds_model = ccdo(ds_model, operator='mulc,1')
             nds_pres = ccdo(ds_pres, operator='mulc,1')
             ds_model = ml2pl(nds_model, nds_pres)
@@ -802,78 +771,62 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
         # -- Eventually, compute the zonal mean difference
         if safe_mode:
             try:
-                if regridding == 'model_on_ref':
-                    bias = diff_zonmean(climato_sim, climato_ref)
-                    climato_ref = zonmean(climato_ref)
-                if regridding == 'ref_on_model':
-                    bias = diff_zonmean(climato_ref, climato_sim)
-                    climato_ref = zonmean(climato_ref)
-                if regridding == 'no_regridding':
-                    bias = minus(zonmean(climato_sim), zonmean(climato_ref))
-                    climato_ref = zonmean(climato_ref)
+                if regridding=='model_on_ref':
+                   bias = diff_zonmean(climato_sim, climato_ref)
+                   climato_ref = zonmean(climato_ref)
+                if regridding=='ref_on_model':
+                   bias = diff_zonmean(climato_ref, climato_sim)
+                   climato_ref = zonmean(climato_ref)
+                if regridding=='no_regridding':
+                   bias = minus(zonmean(climato_sim), zonmean(climato_ref))
+                   climato_ref = zonmean(climato_ref)
             except:
                 bias = minus(climato_sim, climato_ref)
-                print('No data found for zonal mean for ',
-                      climato_ref, climato_sim)
+                print('No data found for zonal mean for ', climato_ref, climato_sim)
                 return blank_cell
         else:
-            if regridding == 'model_on_ref':
-                bias = diff_zonmean(climato_sim, climato_ref)
-            if regridding == 'ref_on_model':
-                bias = diff_zonmean(climato_sim, climato_ref)
-            if regridding == 'no_regridding':
-                bias = minus(zonmean(climato_sim), zonmean(climato_ref))
+            if regridding=='model_on_ref':
+               bias = diff_zonmean(climato_sim, climato_ref)
+            if regridding=='ref_on_model':
+               bias = diff_zonmean(climato_sim, climato_ref)
+            if regridding=='no_regridding':
+               bias = minus(zonmean(climato_sim), zonmean(climato_ref))
             climato_ref = zonmean(climato_ref)
     else:
         # -- Alternative: 2D variable ------------------------------------------- #
-        clogger.debug('calling compute_clim for the model in plot_diff')
-        climato_sim = compute_climatology(wmodel, modelseason, wvar, do_cfile, safe_mode)
-        if climato_sim is None and safe_mode:
-            print('!! Plotting failed for :', wmodel, "\n", wvar)
-            print("set clog('debug') and safe_mode=False to identify where the plotting failed")
-            return climaf.chtml.bank_cell
-        
+        climato_sim = clim_average(ds_model, modelseason)
         # -- Particular case of SSH: we compute the spatial anomalies
         if spatial_anomalies:
             try:
-                climato_sim = fsub(climato_sim, cscalar(
-                    ccdo(climato_sim, operator='fldmean')))
-                climato_ref = fsub(climato_ref, cscalar(
-                    ccdo(climato_ref, operator='fldmean')))
+                climato_sim = fsub(climato_sim, cscalar(ccdo(climato_sim, operator='fldmean')))
+                climato_ref = fsub(climato_ref, cscalar(ccdo(climato_ref, operator='fldmean')))
             except:
-                print('==> Error when trying to compute spatial anomalies for ',
-                      climato_ref, climato_sim)
+                print('==> Error when trying to compute spatial anomalies for ', climato_ref, climato_sim)
                 print('==> Check data availability')
                 return ''
         # -- If we work on ocean variables, we regrid both the model and the ref on a 1deg grid
         # -- If not, we regrid the model on the ref
-        if regridding != 'no_regridding':
+        if regridding!='no_regridding':
             if variable in ocean_variables:
                 if 'meshmask_for_navlon_navlat' in wmodel:
                     climato_sim = add_nav_lon_nav_lat_from_mesh_mask(climato_sim,
                                                                      mesh_mask_file=wmodel['meshmask_for_navlon_navlat'])
                 if not cdogrid:
-                    climato_sim = regrid(
-                        climato_sim, climato_ref, option=regrid_option)
+                    climato_sim = regrid(climato_sim, climato_ref, option=regrid_option)
                 else:
-                    climato_sim = regridn(
-                        climato_sim, cdogrid=cdogrid, option=regrid_option)
-                    climato_ref = regridn(
-                        climato_ref, cdogrid=cdogrid, option=regrid_option)
+                    climato_sim = regridn(climato_sim, cdogrid=cdogrid, option=regrid_option)
+                    climato_ref = regridn(climato_ref, cdogrid=cdogrid, option=regrid_option)
             elif cdogrid:
-                climato_sim = regridn(
-                    climato_sim, cdogrid=cdogrid, option=regrid_option)
-                climato_ref = regridn(
-                    climato_ref, cdogrid=cdogrid, option=regrid_option)
+                climato_sim = regridn(climato_sim, cdogrid=cdogrid, option=regrid_option)
+                climato_ref = regridn(climato_ref, cdogrid=cdogrid, option=regrid_option)
             else:
-                if regridding == 'ref_on_model':
-                    clogger.warning(
-                        "Warning in plot_CM_atlas.plot_diff : regridding the reference on the model (and not the model on the reference) ; regridding is set to ref_on_model (in the params file or the diagnostic file)")
-                    climato_ref = regrid(climato_ref, climato_sim)
-                if regridding == 'model_on_ref':
-                    climato_sim = regrid(climato_sim, climato_ref)
+                if regridding=='ref_on_model':
+                   clogger.warning("Warning in plot_CM_atlas.plot_diff : regridding the reference on the model (and not the model on the reference) ; regridding is set to ref_on_model (in the params file or the diagnostic file)")
+                   climato_ref = regrid(climato_ref, climato_sim)
+                if regridding=='model_on_ref':
+                   climato_sim = regrid(climato_sim, climato_ref)
         bias = minus(climato_sim, climato_ref)
-        if regridding == 'no_regridding' and variable in ocean_variables:
+        if regridding=='no_regridding' and variable in ocean_variables:
             bias = regridn(bias, cdogrid='r360x180')
     print('bias = ', bias)
     #
@@ -891,60 +844,45 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
     title = build_plot_title(wmodel, wref, add_product_in_title)
     #
     # -- Check whether the ref is a model or an obs to set the appropriate context
-    context = ('model_model' if 'model' in wref else 'bias')
+    context = ('model_model' if 'model' in ds_ref.kvp else 'bias')
     #
     # -- Get the default plot parameters with the function 'plot_params'
     # -- We also update with a custom dictionary of params (custom_plot_params) if the user sets one
     if plot_context_suffix:
         context = context + '_' + plot_context_suffix
     p = plot_params(variable, context, custom_plot_params=custom_plot_params)
-    if is3d(variable) or zonmean_variable:
-        p["forbid_plotmap"]=True
     #
     # -- Add the projection
-    p.setdefault('proj',proj)
+    if 'proj' not in p:
+        p.update(dict(proj=proj))
     #
     if isinstance(var, dict):
-        for options in [ 'options', 'aux_options' ]:
-            if options in wvar:
-                options_value = wvar.pop(options)
-                if options in p:
-                    p[options] = p[options] + '|' + options_value
-                else:
-                    p[options] = options_value
+        if 'options' in wvar:
+            options = wvar['options']
+            if 'options' in p:
+                p['options'] = p['options'] + '|' + options
+            else:
+                p.update(dict(options=options))
+            wvar.pop('options')
+        if 'aux_options' in wvar:
+            aux_options = wvar['aux_options']
+            if 'aux_options' in p:
+                p['aux_options'] = p['aux_options'] + '|' + aux_options
+            else:
+                p.update(dict(aux_options=aux_options))
+            wvar.pop('aux_options')
     #
-    variable_str = variable
-    if units is not None:
-        variable_str += " [%s] "%units
     #
-    # -- Min, max et mean of the field
-    if display_field_stats:
-        minmaxmean_str = variable_str + \
-            field_stats(bias,scale,offset,global_sum_scale)
-        p.setdefault("gsnLeftString", minmaxmean_str)
-        p.setdefault("gsnCenterString", ' ')
-        p.setdefault("gsnRightString", season)
-        title = add_period_in_title(title, tmp_period)
-    else:
-        # -- Set the left, center and right strings of the plot
-        p.setdefault("gsnLeftString", tmp_period)
-        p.setdefault("gsnCenterString", variable_str)
-        p.setdefault("gsnRightString", season)
+    # -- Set the left, center and right strings of the plot
+    if not 'gsnLeftString' in p: p['gsnLeftString']=tmp_period
+    if not 'gsnCenterString' in p: p['gsnCenterString']=variable
+    if not 'gsnRightString' in p: p['gsnRightString']=modelseason
     #
-    # # -- Set the left, center and right strings of the plot
-    # if not 'gsnLeftString' in p:
-    #     p['gsnLeftString'] = tmp_period
-    # if not 'gsnCenterString' in p:
-    #     p['gsnCenterString'] = variable
-    # if not 'gsnRightString' in p:
-    #     p['gsnRightString'] = modelseason
-    # #
     # -- If the variable is 3d, add the plotting parameters that are specific to the
     # -- zonal mean fields
     if is3d(variable):
         if 'aux_options' in p:
-            p.update(
-                dict(aux_options=p['aux_options'] + '|cnLineThicknessF=2|cnLineLabelsOn=True'))
+            p.update(dict(aux_options=p['aux_options'] + '|cnLineThicknessF=2|cnLineLabelsOn=True'))
         else:
             p.update(dict(aux_options='cnLineThicknessF=2|cnLineLabelsOn=True'))
     #
@@ -983,9 +921,7 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
     if isinstance(var, dict):
         if 'delta' in var and 'colors' in p:
             p.pop('colors')
-        for attribute in list(wvar.keys()):
-            if "${%s}"%attribute in cscripts["plot"].command:
-                p[attribute] = wvar[attribute]
+        p.update(wvar)
     #
     # -- Add gray for the missing values
     if shade_missing:
@@ -998,15 +934,14 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
     refcontext = 'full_field'
     if plot_context_suffix:
         refcontext = refcontext + '_' + plot_context_suffix
-    ref_aux_params = plot_params(
-        variable, refcontext, custom_plot_params=custom_plot_params)
-
+    ref_aux_params = plot_params(variable, refcontext, custom_plot_params=custom_plot_params)
+    
     # -- Field stats
     if display_bias_corr_rmse:
         if 'scale' in p:
-            mscale = float(p['scale'])
+           mscale = float(p['scale'])
         else:
-            mscale = scale
+           mscale = scale
         if safe_mode:
             try:
                 avg_bias = '%s' % (
@@ -1025,37 +960,34 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
                 print('----> display_bias_corr_rmse failed')
         else:
             avg_bias = '%s' % (
-                float('%.3g' % (float(cscalar(ccdo(bias, operator='fldmean'))) * mscale)))
+                    float('%.3g' % (float(cscalar(ccdo(bias, operator='fldmean'))) * mscale )))
             field_rmse = '%s' % (
-                float('%.3g' % (float(cscalar(rmse_xyt(climato_sim, climato_ref)) * mscale))))
+                    float('%.3g' % (float(cscalar(rmse_xyt(climato_sim, climato_ref)) * mscale ))))
             field_corr = '%s' % (
-                float('%.3g' % (float(cscalar(corr_xy(climato_sim, climato_ref))))))
+                    float('%.3g' % (float(cscalar(corr_xy(climato_sim, climato_ref))))))
             stats_str = 'bias=' + str(avg_bias) + ' ; rmse=' + str(field_rmse) + ' ; corr=' + str(
-                field_corr)
+                    field_corr)
             p.update(dict(gsnRightString=stats_str,
-                          gsnCenterString=' ',
-                          gsnLeftString=variable+', '+season))
+                              gsnCenterString=' ',
+                              gsnLeftString=variable+', '+season))
             title += ' ' + tmp_period
     else:
         # -- Set the left, center and right strings of the plot
-        if not 'gsnLeftString' in p:
-            p['gsnLeftString'] = tmp_period
-        if not 'gsnCenterString' in p:
-            p['gsnCenterString'] = variable
-        if not 'gsnRightString' in p:
-            p['gsnRightString'] = season
-        # p.update(dict(gsnLeftString=tmp_period,
+        if not 'gsnLeftString' in p: p['gsnLeftString']=tmp_period
+        if not 'gsnCenterString' in p: p['gsnCenterString']=variable
+        if not 'gsnRightString' in p: p['gsnRightString']=season
+        #p.update(dict(gsnLeftString=tmp_period,
         #              gsnCenterString=variable,
         #              gsnRightString=season))
 
         #
         # -- gsnStringFontHeightF
         if not 'gsnStringFontHeightF' in p:
-            p['gsnStringFontHeightF'] = StringFontHeight
+           p['gsnStringFontHeightF'] = StringFontHeight
         #
         # -- Call the climaf plot function
         myplot = plot(bias, climato_ref, title=title,
-                      # gsnStringFontHeightF=StringFontHeight,
+                      #gsnStringFontHeightF=StringFontHeight,
                       **p)
     # -- ... and update the dictionary 'p'
     # if 'colors' in ref_aux_params and add_climato_contours:
@@ -1083,7 +1015,7 @@ def plot_diff(var, model, ref, season='ANM', proj='GLOB', domain={}, add_product
             p.update({'scale_aux': ref_aux_params['scale']})
         #
         # -- Call the climaf plot function
-        myplot = plot(bias, climato_ref, title=title,
+        myplot = plot(bias,climato_ref,title = title,
                       **p)
 
     #
@@ -1126,12 +1058,11 @@ thumbnail_size_3d = "250*250"
 
 def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variables=[],
                     section_title='Climatology (ref) and bias maps', domain=dict(),
-                    safe_mode=True, add_product_in_title=True, shade_missing=False,
-                    zonmean_variable=False, ocean_variables=ocean_variables,
-                    custom_plot_params={}, custom_obs_dict={}, alternative_dir={},
-                    add_line_of_climato_plots=False,
+                    safe_mode=True, add_product_in_title=True, shade_missing=False, zonmean_variable=False,
+                    ocean_variables=ocean_variables,
+                    custom_plot_params={}, custom_obs_dict={}, alternative_dir={}, add_line_of_climato_plots=False,
                     thumbnail_size=None, regridding='model_on_ref',
-                    do_cfile=True, filename_func=None):
+                    do_cfile=True):
     #
     # -- Upper band at the top of the section
     if do_cfile:
@@ -1139,13 +1070,14 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
     else:
         plots_crs = []
     #
+    #
+    #
     # -- Loop on the atmospheric variables (can also include ocean variables)
     for var in variables:
         line_title = None
         project_specs = None
         w_thumbnail_size = thumbnail_size
-        print('\nvar in section_2D_maps = ', var)
-        ratio = None
+        print('var in section_2D_maps = ', var)
         if isinstance(var, dict):
             variable = var['variable']
             if 'zonmean_variable' in var:
@@ -1160,20 +1092,52 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
             if 'thumbnail_size' in var:
                 w_thumbnail_size = var['thumbnail_size']
                 var.pop('thumbnail_size')
-            wreference = var.pop('reference', reference)
-            ratio = var.get('ratio',None)
         else:
             variable = var
         #
-        # Plot references
-        var_references = select_var_references(variable, reference)
+        # -- Loop on the references => the user can provide multiple references per variable
+        var_references = []
+        if not isinstance(reference, list):
+            reference = [reference]
+        print('reference => ', reference)
+        for ref in reference:
+            if ref == 'default':
+                var_references.append(ref)
+            else:
+                if isinstance(ref, dict):
+                    if 'variable' not in ref:
+                        var_references.append(ref)
+                    else:
+                        if ref['variable'] == variable:
+                            if 'reference' in ref:
+                                ref_list = ref['reference']
+                                if not isinstance(ref_list, list):
+                                    ref_list = [ref_list]
+                                var_references = var_references + ref_list
+                        else:
+                            ref.pop('variable')
+                            var_references.append(ref)
+        #
         print('var_references = ', var_references)
         for wref in var_references:
             #
-            # -- Get the reference (model or obs, reanalysis)
             print('Reference wref = ', wref)
-            ref = process_var_reference(wref, variable, custom_obs_dict, var,
-                                        project_specs, ratio)
+            # -- Get the reference (model or obs, reanalysis)
+            if wref == 'default':
+                ref = variable2reference(variable, my_obs=custom_obs_dict)
+                if not ref:
+                    ref = dict(project='ref_climatos', frequency='seasonal', table='Amon')
+                if variable in ['albt', 'albs', 'crest', 'crelt', 'crett', 'cress']:
+                    ref.update(dict(product='CERES'))
+            else:
+                ref = wref.copy()
+                ref.update(dict(variable=variable))
+                if 'table' in var: ref['table'] = var['table']
+                if 'grid' in var: ref['grid'] = var['grid']
+                if project_specs:
+                    if ref['project'] in project_specs:
+                        ref.update(project_specs[ref['project']])
+                ref = get_period_manager(ref, diag='clim')
             #
             print('custom_obs_dict = ', custom_obs_dict)
             print('ref in plot_climato = ', ref)
@@ -1183,8 +1147,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
             #
             # -- Start the line with the title
             if not line_title:
-                wline_title = var.get("longname", varlongname(variable)) +\
-                                      ' (' + variable + ') ; season = ' + season
+                wline_title = varlongname(variable) + ' (' + variable + ') ; season = ' + season
             else:
                 wline_title = line_title
             # -- Add the reference to the title of the line:
@@ -1205,8 +1168,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
             if w_thumbnail_size:
                 thumbN_size = w_thumbnail_size
             else:
-                thumbN_size = (thumbnail_size_3d if is3d(
-                    variable) or zonmean_variable else thumbnail_size_global)
+                thumbN_size = (thumbnail_size_3d if is3d(variable) or zonmean_variable else thumbnail_size_global)
                 if 'SH' in proj or 'NH' in proj:
                     thumbN_size = thumbnail_polar_size
                 if 'Satellite' in proj:
@@ -1214,8 +1176,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
             #
             #
             # -- Plot the climatology of the reference and add it to the line
-            print('Computing climatology map for ' + variable +
-                  ' ' + proj + ' ' + season + ' of ', ref)
+            print('Computing climatology map for ' + variable + ' ' + proj + ' ' + season + ' of ', ref)
             ref_climato = plot_climato(var, ref, season, proj=proj, domain=domain,
                                        custom_plot_params=custom_plot_params,
                                        ocean_variables=ocean_variables,
@@ -1223,19 +1184,15 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
                                        safe_mode=safe_mode, do_cfile=do_cfile)
             print('ref_climato = ', ref_climato)
             if do_cfile:
-                if filename_func is not None :
-                    alternative_dir.update(
-                        target_filename = filename_func(ref, None, variable, season))
-                index += cell("", ref_climato, thumbnail=thumbN_size,
-                              hover=hover, **alternative_dir)
+                print('alternative_dir = ', alternative_dir)
+                index += cell("", ref_climato, thumbnail=thumbN_size, hover=hover, **alternative_dir)
             else:
                 plots_crs.append(ref_climato)
             #
             # -- Loop on the models and compute the difference against the reference
             for model in models:
                 wmodel = model.copy()
-                print('Computing bias map for ' + variable +
-                      ' ' + proj + ' ' + season + ' of ', model)
+                print('Computing bias map for ' + variable + ' ' + proj + ' ' + season + ' of ', model)
                 model_diff = plot_diff(var, wmodel, ref, season, proj=proj, domain=domain,
                                        custom_plot_params=custom_plot_params,
                                        ocean_variables=ocean_variables,
@@ -1243,11 +1200,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
                                        shade_missing=shade_missing, regridding=regridding,
                                        do_cfile=do_cfile)
                 if do_cfile:
-                    if filename_func is not None :
-                        alternative_dir.update(
-                            target_filename = filename_func(wmodel, ref, variable, season))
-                    index += cell("", model_diff, thumbnail=thumbN_size,
-                                  hover=hover, **alternative_dir)
+                    index += cell("", model_diff, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 else:
                     plots_crs.append(model_diff)
             #
@@ -1261,8 +1214,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
             if do_cfile:
                 index += open_table() + open_line('')
                 # -- Add a blank space to match the columns
-                index += cell("", blank_cell, thumbnail=thumbN_size,
-                              hover=hover, **alternative_dir)
+                index += cell("", blank_cell, thumbnail=thumbN_size, hover=hover, **alternative_dir)
             for model in models:
                 climato_plot = plot_climato(var, model, season, proj=proj, domain=domain,
                                             custom_plot_params=custom_plot_params,
@@ -1270,11 +1222,7 @@ def section_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', variable
                                             safe_mode=safe_mode, shade_missing=shade_missing,
                                             do_cfile=do_cfile)
                 if do_cfile:
-                    if filename_func is not None :
-                        alternative_dir.update(
-                            target_filename = filename_func(model, None, variable, season))
-                    index += cell("", climato_plot, thumbnail=thumbN_size,
-                                  hover=hover, **alternative_dir)
+                    index += cell("", climato_plot, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 else:
                     plots_crs.append(climato_plot)
             #
@@ -1297,7 +1245,7 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
                             safe_mode=True, do_cfile=True, add_product_in_title=True, shade_missing=False,
                             zonmean_variable=False,
                             custom_plot_params={}, custom_obs_dict={}, alternative_dir={},
-                            thumbnail_size=None, filename_func=None):
+                            thumbnail_size=None):
     #
     # -- Upper band at the top of the section
     if do_cfile:
@@ -1310,7 +1258,6 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
         line_title = None
         project_specs = None
         print('var in section_climato_2D_maps = ', var)
-        ratio = None
         if isinstance(var, dict):
             variable = var['variable']
             if 'zonmean_variable' in var:
@@ -1322,31 +1269,61 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
                 var.pop('line_title')
             if 'project_specs' in var:
                 project_specs = var['project_specs']
-            ratio = var.get('ratio',None)
         else:
             variable = var
+        #
+        # -- Loop on the references => the user can provide multiple references per variable
+        var_references = []
         #
         if not reference:
             reference = models[0]
             models.remove(models[0])
         #
-        var_references = select_var_references(variable, reference)
+        if not isinstance(reference, list):
+            reference = [reference]
+        for ref in reference:
+            if ref == 'default':
+                var_references.append(ref)
+            else:
+                if isinstance(ref, dict):
+                    if 'variable' not in ref:
+                        var_references.append(ref)
+                    else:
+                        if ref['variable'] == variable:
+                            if 'reference' in ref:
+                                ref_list = ref['reference']
+                                if not isinstance(ref_list, list):
+                                    ref_list = [ref_list]
+                                var_references = var_references + ref_list
+                        else:
+                            ref.pop('variable')
+                            var_references.append(ref)
+
         #
         for wref in var_references:
-            
             #
-            # -- Get the reference (model or obs, reanalysis)
             print('Reference wref = ', wref)
-            ref = process_var_reference(wref, variable, custom_obs_dict, var,
-                                        project_specs, ratio)
+            # -- Get the reference (model or obs, reanalysis)
+            if wref == 'default':
+                ref = variable2reference(variable, my_obs=custom_obs_dict)
+                if not ref:
+                    ref = dict(project='ref_climatos')
+                if variable in ['albt', 'albs', 'crest', 'crelt', 'crett', 'cress']:
+                    ref.update(dict(product='CERES'))
+            else:
+                ref = wref.copy()
+                ref.update(dict(variable=variable))
+                if project_specs:
+                    if ref['project'] in project_specs:
+                        ref.update(project_specs[ref['project']])
+                ref = get_period_manager(ref, diag='clim')
             #
             # -- Open the html table of this section
             index += open_table()
             #
             # -- Start the line with the title
             if not line_title:
-                wline_title = var.get("longname", varlongname(variable)) +\
-                                      ' (' + variable + ') ; season = ' + season
+                wline_title = varlongname(variable) + ' (' + variable + ') ; season = ' + season
             else:
                 wline_title = line_title
             # -- Add the reference to the title of the line:
@@ -1365,16 +1342,14 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
             if thumbnail_size:
                 thumbN_size = thumbnail_size
             else:
-                thumbN_size = (thumbnail_size_3d if is3d(
-                    variable) or zonmean_variable else thumbnail_size_global)
+                thumbN_size = (thumbnail_size_3d if is3d(variable) or zonmean_variable else thumbnail_size_global)
                 if 'SH' in proj or 'NH' in proj:
                     thumbN_size = thumbnail_polar_size
                 if 'Satellite' in proj:
                     thumbN_size = '325*300'
             #
             # -- Plot the climatology of the reference and add it to the line
-            print('Computing climatology map for ' + variable +
-                  ' ' + proj + ' ' + season + ' of ', ref)
+            print('Computing climatology map for ' + variable + ' ' + proj + ' ' + season + ' of ', ref)
             ref_climato = plot_climato(var, ref, season, proj=proj, domain=domain,
                                        custom_plot_params=custom_plot_params,
                                        ocean_variables=ocean_variables,
@@ -1383,30 +1358,20 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
             # -- if do_cfile, we return the index; if do_cfile=False, add the CRS of the plot to plots_crs
             print('ref_climato = ', ref_climato)
             if do_cfile:
-                if filename_func is not None :
-                    alternative_dir.update(
-                        target_filename = filename_func(ref, None, variable, season))
-                index += cell("", ref_climato, thumbnail=thumbN_size,
-                              hover=hover, **alternative_dir)
+                index += cell("", ref_climato, thumbnail=thumbN_size, hover=hover, **alternative_dir)
             else:
                 plots_crs.append(ref_climato)
             #
             # -- Loop on the models and compute the difference against the reference
             for model in models:
-                print('Computing bias map for ' + variable +
-                      ' ' + proj + ' ' + season + ' of ', model)
+                print('Computing bias map for ' + variable + ' ' + proj + ' ' + season + ' of ', model)
                 model_climato = plot_climato(var, model, season, proj=proj, domain=domain,
                                              custom_plot_params=custom_plot_params,
                                              ocean_variables=ocean_variables,
                                              safe_mode=safe_mode, shade_missing=shade_missing)
                 # -- if do_cfile, we return the index; if do_cfile=False, add the CRS of the plot to plots_crs
                 if do_cfile:
-                    if filename_func is not None :
-                        alternative_dir.update(
-                            target_filename = filename_func(model, None, variable, season))
-                    #print('alternative_dir = ',alternative_dir)
-                    index += cell("", model_climato, thumbnail=thumbN_size,
-                                  hover=hover, **alternative_dir)
+                    index += cell("", model_climato, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 else:
                     plots_crs.append(model_climato)
             #
@@ -1424,11 +1389,9 @@ def section_climato_2D_maps(models=[], reference=[], proj='GLOB', season='ANM', 
 
 # -- Function to produce a section of 2D maps (both atmosphere and ocean variables)
 # -----------------------------------------------------------------------------------
-def section_2D_maps_climobs_bias_modelmodeldiff(
-        models, reference, proj, season, variables, section_title, domain,
-        safe_mode=True, add_product_in_title=True, shade_missing=False,
-        custom_plot_params={}, custom_obs_dict={}, alternative_dir={},
-        filename_func=None):
+def section_2D_maps_climobs_bias_modelmodeldiff(models, reference, proj, season, variables, section_title, domain,
+                                                safe_mode=True, add_product_in_title=True, shade_missing=False,
+                                                custom_plot_params={}, custom_obs_dict={}, alternative_dir={}):
     #
     # -- Upper band at the top of the section
     index = section(section_title, level=4)
@@ -1451,8 +1414,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
         # -> If we look at a polar stereographic projection, we set thumbN_size to thumbnail_polar_size (from params.py)
         # -> For a zonal mean field, we set thumbN_size to thumbnail_size_3d (from params.py)
         # -> And for the other cases, we set thumbN_size to thumbnail_size
-        thumbN_size = (thumbnail_size_3d if is3d(
-            variable) else thumbnail_size_global)
+        thumbN_size = (thumbnail_size_3d if is3d(variable) else thumbnail_size_global)
         if 'SH' in proj or 'NH' in proj:
             thumbN_size = thumbnail_polar_size
         #
@@ -1482,11 +1444,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
             print('Reference wref = ', wref)
             # -- Get the reference (model or obs, reanalysis)
             if wref == 'default':
-                ref_var = variable
-                var_alias = varIsAliased('ref_climatos', variable)
-                if var_alias:
-                    ref_var = var_alias[0]
-                ref = variable2reference(ref_var, my_obs=custom_obs_dict)
+                ref = variable2reference(variable, my_obs=custom_obs_dict)
                 if not ref:
                     ref = dict(project='ref_climatos', frequency='seasonal')
                 if variable in ['albt', 'albs', 'crest', 'crelt', 'crett', 'cress']:
@@ -1495,8 +1453,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
                 ref = wref.copy()
             #
             # -- Plot the climatology of the reference and add it to the line
-            print('Computing climatology map for ' + variable +
-                  ' ' + proj + ' ' + season + ' of ', ref)
+            print('Computing climatology map for ' + variable + ' ' + proj + ' ' + season + ' of ', ref)
             ref_climato = plot_climato(var, ref, season, proj=proj, domain=domain,
                                        custom_plot_params=custom_plot_params,
                                        ocean_variables=ocean_variables,
@@ -1507,8 +1464,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
                 #
                 # -- Start the line with the title
                 if not line_title:
-                    wline_title = varlongname(
-                        variable) + ' (' + variable + ') ; season = ' + season
+                    wline_title = varlongname(variable) + ' (' + variable + ') ; season = ' + season
                 else:
                     wline_title = line_title
                 # -- Add the reference to the title of the line:
@@ -1518,11 +1474,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
                 index += open_table()
                 index += open_line()
                 #
-                if filename_func is not None :
-                    alternative_dir.update(
-                        target_filename = filename_func(ref, None, variable, season))
-                index += cell("", ref_climato, thumbnail=thumbN_size,
-                              hover=hover, **alternative_dir)
+                index += cell("", ref_climato, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 #
                 # -- Plot the bias map of the first model
                 bias_first_model = plot_diff(var, models[0], ref, season, proj=proj, domain=domain,
@@ -1530,26 +1482,17 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
                                              ocean_variables=ocean_variables,
                                              safe_mode=safe_mode, add_product_in_title=add_product_in_title,
                                              shade_missing=shade_missing)
-                if filename_func is not None :
-                    alternative_dir.update(
-                        target_filename = filename_func(models[0], ref, variable, season))
-                index += cell("", bias_first_model, thumbnail=thumbN_size,
-                              hover=hover, **alternative_dir)
+                index += cell("", bias_first_model, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 # -- Loop on the models and compute the difference against the reference
                 if len(models) > 1:
                     for model in models[1:len(models)]:
-                        print('Computing bias map for ' + variable +
-                              ' ' + proj + ' ' + season + ' of ', model)
+                        print('Computing bias map for ' + variable + ' ' + proj + ' ' + season + ' of ', model)
                         model_diff = plot_diff(var, model, models[0], season, proj=proj, domain=domain,
                                                custom_plot_params=custom_plot_params,
                                                ocean_variables=ocean_variables,
                                                safe_mode=safe_mode, add_product_in_title=add_product_in_title,
                                                shade_missing=shade_missing)
-                        if filename_func is not None :
-                            alternative_dir.update(
-                                target_filename = filename_func(model, models[0], variable, season))
-                        index += cell("", model_diff, thumbnail=thumbN_size,
-                                      hover=hover, **alternative_dir)
+                        index += cell("", model_diff, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 #
                 # -- Close the line
                 index += close_line()
@@ -1557,8 +1500,7 @@ def section_2D_maps_climobs_bias_modelmodeldiff(
                 #
             else:
                 # -- Start the line with the title
-                line_title = "No ref available for " + \
-                    varlongname(variable) + ' (' + variable + ')'
+                line_title = "No ref available for " + varlongname(variable) + ' (' + variable + ')'
                 index += open_table()
                 index += open_line(line_title)
                 close_line()
@@ -1635,8 +1577,7 @@ def plot_zonal_profile(variable, model, reference=dict(), season='ANM', domain={
         #
         # -- Name of the simulation
         simname = build_plot_title(wmodel, None)
-        models_dict.update(
-            {simname: apply_scale_offset(zmean_dat, scale, offset)})
+        models_dict.update({simname: apply_scale_offset(zmean_dat, scale, offset)})
         model_names.append(simname)
     #
     if len(models) == 1:
@@ -1663,7 +1604,7 @@ def plot_zonal_profile(variable, model, reference=dict(), season='ANM', domain={
             refname = build_plot_title(wreference, None)
             #
             # -- Build the ensemble
-            #print('simname, refname = ', simname, refname)
+            print('simname, refname = ', simname, refname)
             print('cfile(zmean_dat) = ', cfile(zmean_dat))
             print('cfile(zmean_ref) = ', cfile(zmean_ref))
             models_dict.update({refname: zmean_ref})
@@ -1675,8 +1616,7 @@ def plot_zonal_profile(variable, model, reference=dict(), season='ANM', domain={
             wreference = None
             dat4plot = cens(models_dict)
         # -- Title
-        CenterString = build_plot_title(
-            wmodel, wreference) + ' ' + build_period_str(wmodel)
+        CenterString = build_plot_title(wmodel, wreference) + ' ' + build_period_str(wmodel)
     else:
         dat4plot = cens(models_dict)
         dat4plot.set_order(model_names)
@@ -1732,10 +1672,8 @@ def plot_zonal_profile(variable, model, reference=dict(), season='ANM', domain={
 
 # -- Function to produce a section of 2D maps climatologies (both atmosphere and ocean variables)
 # -----------------------------------------------------------------------------------
-def section_zonal_profiles(
-        models, reference, season, variables, section_title, domain,
-        safe_mode=True, custom_obs_dict={}, alternative_dir={},
-        filename_func=None):
+def section_zonal_profiles(models, reference, season, variables, section_title, domain,
+                           safe_mode=True, custom_obs_dict={}, alternative_dir={}):
     #
     # -- Upper band at the top of the section
     index = section(section_title, level=4)
@@ -1756,11 +1694,7 @@ def section_zonal_profiles(
         #
         # -- Get the reference (model or obs, reanalysis)
         if reference == 'default':
-            ref_var = variable
-            var_alias = varIsAliased('ref_climatos', variable)
-            if var_alias:
-                ref_var = var_alias[0]
-            ref = variable2reference(ref_var, my_obs=custom_obs_dict)
+            ref = variable2reference(variable, my_obs=custom_obs_dict)
             if not ref:
                 ref = dict(project='ref_climatos')
             if variable in ['albt', 'albs', 'crest', 'crelt', 'crett', 'cress']:
@@ -1773,8 +1707,7 @@ def section_zonal_profiles(
         #
         # -- Start the line with the title
         if not line_title:
-            wline_title = varlongname(
-                variable) + ' (' + variable + ') ; season = ' + season
+            wline_title = varlongname(variable) + ' (' + variable + ') ; season = ' + season
         else:
             wline_title = line_title
         # -- Add the reference to the title of the line:
@@ -1794,19 +1727,13 @@ def section_zonal_profiles(
         # -- Plot the ensemble
         ens_zonal_profile = plot_zonal_profile(var, models, ref, season, domain=domain,
                                                safe_mode=safe_mode)
-        index += cell("", ens_zonal_profile, thumbnail=thumbN_size,
-                      hover=hover, **alternative_dir)
+        index += cell("", ens_zonal_profile, thumbnail=thumbN_size, hover=hover, **alternative_dir)
         # -- Loop on the models and compute the difference against the reference
         for model in models:
-            print('Computing zonal profile for ' +
-                  variable + ' ' + season + ' of ', model)
+            print('Computing zonal profile for ' + variable + ' ' + season + ' of ', model)
             zonal_profile = plot_zonal_profile(var, model, ref, season, domain=domain,
                                                safe_mode=safe_mode)
-            if filename_func is not None :
-                alternative_dir.update(
-                    target_filename = filename_func(model, ref, variable, season))
-            index += cell("", zonal_profile, thumbnail=thumbN_size,
-                          hover=hover, **alternative_dir)
+            index += cell("", zonal_profile, thumbnail=thumbN_size, hover=hover, **alternative_dir)
         #
         # -- Close the line
         close_line()
@@ -1814,148 +1741,3 @@ def section_zonal_profiles(
     #
     # -- Close the table of the section
     return index
-
-def compute_climatology(dat_dict, season, specs_dict, do_cfile=False, safe_mode=False):
-    """ Compute the climatology of the dataset represented by DAT_DICT,
-    either directly if the dataset variable is a 'simple' one, or in a
-    more intricated way, i.e. by first computing climatology of component
-    variables. This currently applies to variables defined as a ratio of two
-    variables, which are identified by the occurrence of key "ratio" in dict
-    SPECS_DICT"""
-
-    clogger.info('\nEntering compute_climatology with dat_dict=%s'%dat_dict)
-
-    if "ratio" in specs_dict:
-
-        specs = copy.deepcopy(specs_dict)
-        ratio_specs = specs.pop('ratio')
-        #print("ratio_specs=",ratio_specs)
-        if type(ratio_specs) is str:
-            # e.g. "evap/precip"
-            numer, denom = ratio_specs.split('/')
-        elif type(ratio_specs) is list:
-            # e.g. [ ("npp",{}), ("gpp_srf",{"DIR":"SRF"})] 
-            numer = ratio_specs[0][0]
-            denom = ratio_specs[1][0]
-        threshold = float(specs_dict['ratio_threshold'])
-        
-        # -- Compute the seasonal climatologies
-        numer_dict = copy.deepcopy(dat_dict)
-        numer_dict['variable'] = numer
-        if type(ratio_specs) is list:
-            numer_dict.update(ratio_specs[0][1])
-        numer_ds = compute_climatology(numer_dict, season, specs, do_cfile, safe_mode)
-
-        denom_dict = copy.deepcopy(dat_dict)
-        denom_dict['variable'] = denom
-        if type(ratio_specs) is list:
-            denom_dict.update(ratio_specs[1][1])
-        denom_ds = compute_climatology(denom_dict, season, specs, do_cfile, safe_mode)
-
-        # Apply threshold to denominator
-        denom_ds = ccdo(denom_ds, operator = 'setvrange,%g,1.E+100'%threshold)
-        # Compute ratio
-        climato = ccdo2(numer_ds, denom_ds, operator='div')
-
-        #print("ratio\nnum=%s,\nden=%s"%(numer_ds,denom_ds))
-        return climato
-        
-    else:
-        if safe_mode:
-            try:
-                ds_dat = ds(**dat_dict).explore('resolve')
-            except:
-                #return safe_mode_cfile_plot(plot(ds(**dat_dict)), do_cfile, True)
-                return None
-        else:
-            ds_dat = ds(**dat_dict).explore('resolve')
-        #
-        # -- Compute the seasonal climatology
-        climato = clim_average(ds_dat, season)
-        return climato
-    
-
-def field_stat(dat,operation,scale=1.,offset=0.,other_scale=1.):
-    try :
-        fstat = float(cMA(ccdo(dat, operator=operation))[0][0][0])
-        rep = '%.3g' % ((fstat * scale + offset) * other_scale)
-    except:
-        clogger.error("Issue computing %s on %s (os=%g) %s"%\
-                      (operation,repr(dat),other_scale,type(other_scale)))
-        rep='?'
-    return rep
-
-def field_stats(dat,scale,offset,global_scale=None):
-    field_min = field_stat(dat,'fldmin',scale,offset)
-    field_max = field_stat(dat,'fldmax',scale,offset)
-    field_mean = field_stat(dat,'fldmean',scale,offset)
-    if global_scale :
-        global_sum = field_stat(dat,'fldint',scale,offset,float(global_scale[0]))
-        #rescaled = rescale(dat,scale=scale*float(global_scale[0]),offset=offset)
-        #global_sum = field_stat(rescaled,'fldint')
-        global_sum_string = "; sum=%s %s"%(global_sum, global_scale[1])
-    else:
-        global_sum_string = ""
-    minmaxmean_str = ' min=' + field_min + ' ; max=' + field_max + \
-            ' ; mean=' + field_mean + global_sum_string
-    return minmaxmean_str
-
-def select_var_references(variable, reference):
-    # Provides a list of references based on the content in
-    # arg 'reference'. If it is a dict, for each entry, if it
-    # specifically concerns the variable, and has an entry
-    # 'reference', this latter entry is used. Otherwise the entry in
-    # arg 'reference' is used
-    var_references = []
-    if not isinstance(reference, list):
-        reference = [reference]
-    #print('reference => ', reference)
-    for ref in reference:
-        if ref == 'default':
-            var_references.append('default')
-        else:
-            if isinstance(ref, dict):
-                if 'variable' not in ref:
-                    var_references.append(ref)
-                else:
-                    if ref['variable'] == variable:
-                        if 'reference' in ref:
-                            ref_list = ref['reference']
-                            if not isinstance(ref_list, list):
-                                ref_list = [ref_list]
-                            var_references = var_references + ref_list
-                    else:
-                        ref.pop('variable')
-                        var_references.append(ref)
-    return var_references
-
-def process_var_reference(wref, variable, custom_obs_dict, var, project_specs, ratio):
-    # Interpret and complement a reference 'wref' using:
-    #   - custom_obs_dict if 'wref' is 'default'
-    #   - dicts 'project_specs' and 'var' otherwise (and also invokes get_period_manager)
-    
-    if wref == 'default':
-        ref_var = variable
-        var_alias = varIsAliased('ref_climatos', variable)
-        if var_alias:
-            ref_var = var_alias[0]
-        ref = variable2reference(ref_var, my_obs=custom_obs_dict)
-        if not ref:
-            ref = dict(project='ref_climatos',
-                       frequency='seasonal', table='Amon')
-            if variable in ['albt', 'albs', 'crest', 'crelt', 'crett', 'cress']:
-                ref.update(dict(product='CERES'))
-    else:
-        ref = wref.copy()
-        ref['variable'] = variable
-        # Copy table and grid : this was orginally not active in
-        # section_climato_2D_maps...
-        if 'table' in var:
-            ref['table'] = var['table']
-        if 'grid' in var:
-            ref['grid'] = var['grid']
-        if project_specs:
-            if ref['project'] in project_specs:
-                ref.update(project_specs[ref['project']])
-        ref = get_period_manager(ref, diag='clim', ratio=ratio)
-    return(ref)

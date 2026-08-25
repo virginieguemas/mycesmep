@@ -1,4 +1,3 @@
-#!/bin/bash
 #set +x
 #set -e
 
@@ -11,136 +10,156 @@
 # --     Contact: jerome.servonnat__at__lsce.ipsl.fr
 # --
 # -------------------------------------------------------- >
-if [ -z $BASH_ARGV ] ; then
-    echo "This script must be sourced. Type "
-    echo "  . $0"
-    exit
-fi
 date
-directory_of_this_script=$(cd $(dirname $BASH_ARGV); pwd)
 
-# Here, script install_lite.sh may set (or have set) a value for
-# 'root', to a directory hosting the full C-ESM-EP code. This allow to
-# have light installs. Otherwise, 'root' is set to the directory
-# of current script, which is fine if it hosts a full code set
+# -- Useful functions
+function my_append { 
+    function my_append_usage {
+	echo "Function my_append (in .bash_login)"
+	echo "Append/prepend a string to a variable"
+	echo "Use to set PATH variables"
+	echo "Usage : my_append [bexdpvh] -[-s sep] VAR DIR"
+	echo "        my_append -ep PATH /usr/bin"
+	echo "        my_append -bv FER_GO ${HOME}/GRAF/FERRET/GO"
+	echo "        -v : variable type, separator=[space] (default)"
+	echo "        -p : path type, separator=:"
+	echo "        -s sep : choose altenate separator"
+	echo "        -b : prepend at begining"
+	echo "        -e : append at end (default)"
+	echo "        -x : check that directory is executable"
+	echo "        -d : check that directory exists"
+}
+    local l_sep=" " l_order="end" l_check_dir="no" l_check_exe="no"
+    local name OPTIND OPTARG OPTNAME l_return=0
+    while getopts bexds:pvh OPTNAME ; do
+ 	case ${OPTNAME} in
+	    ( h ) my_append_usage   ;;
+            ( b ) l_order="beg"     ;;
+            ( e ) l_order="end"     ;;
+	    ( x ) l_check_exe="yes" ;;
+	    ( d ) l_check_dir="yes" ;;
+            ( s ) l_sep=${OPTARG}   ;;
+	    ( p ) l_sep=":"         ;;
+	    ( v ) l_sep=" "         ;;
+	esac
+    done
+    shift $(( ${OPTIND} - 1 ))
 
-#root=                             #HERE
-root=${root:-$directory_of_this_script}
-
-# -- Source useful functions (my_append..)
-source $root/utils.sh
+    [[ ${#} -lt 2 || -z ${2} ]]  && return
+    [[ ${l_check_dir} = "yes" ]] && [[ ! -d ${2} ]] && return
+    [[ ${l_check_exe} = "yes" ]] && [[ ! -x ${2} ]] && return
+	    
+    if [[ $(printenv ${1}) = "" ]] ; then
+	eval "export ${1}=${2}"
+    else
+        if ! eval test -z "\"\${$1##*${l_sep}$2${l_sep}*}\"" -o -z "\"\${$1%%*${l_sep}$2}\"" -o -z "\"\${$1##$2${l_sep}*}\"" -o -z "\"\${$1##$2}\""  ; then
+	    [[ ${l_order} = "end" ]] && eval "$1=\"\$$1${l_sep}$2\""
+	    [[ ${l_order} = "beg" ]] && eval "$1=\"$2${l_sep}\$$1\""
+        fi
+    fi
+}
 
 # -- Setup the environment...
 # -------------------------------------------------------- >
 
+if [[ -d "${PWD}/share/cesmep_modules" ]] ; then
+    cesmep_modules=${PWD}/share/cesmep_modules
+elif [[ -d "${PWD}/../share/cesmep_modules" ]] ; then
+    cesmep_modules=$(cd ${PWD}/../share/cesmep_modules; pwd)
+elif [[ -d "${PWD}/../../share/cesmep_modules" ]] ; then
+    cesmep_modules=$(cd ${PWD}/../../share/cesmep_modules; pwd)
+fi
+
 # --> At TGCC - Irene
 if [[ -d "/ccc" && ! -d "/data" ]] ; then
-    export atTGCC=1
-    export irene_tools=/ccc/cont003/home/igcmg/igcmg/Tools/irene
-    my_append -ep PATH $irene_tools
-    export CLIMAF=/ccc/cont003/home/igcmg/igcmg/Tools/climaf
-    my_append -bp PYTHONPATH $CLIMAF
-    # How to find environment container, and which container to use
-    export PCOCC_CONFIG_PATH=/ccc/work/cont003/igcmg/igcmg/climaf_python_docker_archives/.config/pcocc
-    export CESMEP_CONTAINER=${CESMEP_CONTAINER:-"ipsl:cesmep_container"}
-fi
-
-# --> At IDRIS - Jean-Zay
-if [[ -d "/gpfsdswork" ]]; then
-    echo "loading module singularity"
-    set +x
-    module load singularity
-    if [ -z $singularity_container ]
+    # container to use for setting the environment
+    prerequisites_container=cesmep_container
+    export LC_ALL=C.UTF-8  # Needed by pcocc (actually by Click in python 3.6)
+    export LANG=C.UTF-8    # Needed by pcocc (actually by Click in python 3.6)
+    if ! pcocc image show $prerequisites_container #> /dev/null 2>&1 ;
     then
-	# identify one container among those managed by idrcontmgr
-	export singularity_container=$(idrcontmgr ls | /usr/bin/grep sif | tail -n -1)
-    fi
-    if [ -z $singularity_container ] 
-    then
-	echo -e"\n\nBefore your first run of C-ESM-EP at IDRIS, you must "
-	echo -e "declare the singularity container that satisfies C-ESM-EP "
-	echo -e "prerequisites, by issuing (only once) these commands :"
-	echo -e "\n\t module load singularity"
-	echo -e "\t idrcontmgr cp /gpfswork/rech/psl/commun/Tools/cesmep_environment/<file>\n"
-	echo -e "\n where <file> is the newest '.sif' file in that Tools directory"
+	echo -e"\n\nBefore you firt run of C-ESM-EP at TGCC, you must tell pcocc which is the Docker "
+	echo "container that satisfies C-ESM-EP prerequisites, by issuing (only once) a command like"
+	echo -e "\n\t pcocc image import docker-archive:\$container_archive $prerequisites_container\n"
+	echo -e "where \$container_archive is one of the files in :"
+	echo -e "\t/ccc/work/cont003/igcmg/igcmg/climaf_python_docker_archives/"
+	echo -e "(ask your C-ESM-EP guru for the up-to-date location and file)"
 	exit 1
     fi
-    my_append -bp PYTHONPATH /gpfswork/rech/psl/commun/Tools/climaf
+    CLIMAF=/src/climaf  # This is Climaf location in container
+    my_append -bp PYTHONPATH ${CLIMAF}
+    my_append -bp PYTHONPATH ${cesmep_modules}
+    my_append -ep PATH ~igcmg/Tools/irene
 fi
 
-# --> On Spirit
+# --> On Ciclad or Spirit
 if [[ -d "/data" && -d "/thredds/ipsl" && ! -d "/scratch/globc"  ]] ; then 
     if [[ $(uname -n) == spirit* ]] ; then
-	emodule=${CESMEP_CLIMAF_MODULE:-env20240920_climafV3.1_IPSL21}
-	if [ ${emodule:0:1} != "/" ]; then
-	    prefix=/net/nfs/tools/Users/SU/modulefiles/jservon/climaf
-	    emodule=$prefix/$emodule
-	fi
+	# --> On Spirit
+	emodule=/net/nfs/tools/Users/SU/modulefiles/jservon/climaf/spirit_0
 	echo Loading module $emodule for CliMAF and C-ESM-EP
 	set +x
 	module purge
-	module load $emodule || exit
-	# If one wants to use an alternate CLiMAF version
-	#export PYTHONPATH=~/climaf_installs/climaf_running:$PYTHONPATH
+	module load $emodule
     else
-	echo "C-ESM-EP is not maintained on system $(uname -n)"
-	exit 1
+	unset PYTHONPATH
+	module load climaf
+	module switch climaf/2.0.0-python3.6_test # This sets CLIMAF
+	working_conda=/net/nfs/tools/Users/SU/jservon/miniconda3_envs/analyse_3.6_test
+	LD_LIBRARY_PATH=${working_conda}/lib:$LD_LIBRARY_PATH
+	CLIMAF=/home/ssenesi/climaf_installs/climaf_running
+	my_append -bp PATH ${CLIMAF}
+	my_append -bp PATH ${CLIMAF}/bin
+	my_append -bp PYTHONPATH ${CLIMAF}
+	# -- CDFTools
+	my_append -bp PATH /home/lvignon/bin
+	# Others
+	export HDF5_DISABLE_VERSION_CHECK=1
+	export UVCDAT_ANONYMOUS_LOG=False
     fi
-fi
-
-# Obelix at LSCE
-if [[ -d "/home/orchideeshare/"  ]] ; then
-    
-    # We are using a conda environment, only by setting some env variables
-    export ENV=/home/orchideeshare/igcmg/Tools/miniforge3/envs/20250128
-    export PATH=$ENV/bin:$ENVS/../../bin:$PATH
-    export LD_LIBRARY_PATH=$ENV/lib:$LD_LIBRARY_PATH
-    export NCARG_ROOT=$ENV
-    export PROJ_DATA=$ENV/proj
-    export PYPROJ_GLOBAL_CONTEXT=ON
-    export HDF5_DISABLE_VERSION_CHECK=1
-
-    # One could design a module 'cesmep' reproducing the sequence above
-    # Next 3 lines would then be useful
     #
-    #. /usr/share/Modules/init/ksh # Acces to module command
-    #module purge
-    #module load cesmep
-
-    # Next sequence, which uses conda.sh and conda activate, would also
-    # work but take circa 15s on Obelix
-    #
-    # Initialize the current bash shell 
-    #export MAMBA_ROOT_PREFIX=/home/orchideeshare/igcmg/Tools/miniforge3
-    #source $MAMBA_ROOT_PREFIX/etc/profile.d/conda.sh
-    # Activate the relevant environment
-    #echo -n "Activating the conda environment may take up to 15s on obelix..."
-    #conda activate 20250128
-    #echo
-
-    # Set which CliMAF is used
-    export CLIMAF=/home/orchideeshare/igcmg/Tools/cesmep/climaf_code
-    # One may change the CliMAF version used:
-    #export CLIMAF=~/climaf
-    
-    export PYTHONPATH=$CLIMAF:$PYTHONPATH
+    set +x
+    my_append -bp PYTHONPATH ${cesmep_modules}
+    echo "PATH ${PATH}"
 fi
 
 # --> At CNRM
-if [[ -d "/cnrm" ]] ; then   
+if [[ -d "/cnrm" ]] ; then
+   
     unset PYTHONPATH
+
+    # CDAT
+    # Remove CDAT dependency for now
+    # CONDA=/cnrm/est/COMMON/conda2/
+    # source $CONDA/etc/profile.d/conda.sh
+    # working_conda=$CONDA/envs/cdat_env
+    # conda activate ${working_conda}
+    # my_append -bp LD_LIBRARY_PATH ${working_conda}/lib
+    # my_append -bp PYTHONPATH ${working_conda}/lib/python2.7/site-packages
+    # my_append -bp PATH $CONDA/bin
+    # export HDF5_DISABLE_VERSION_CHECK=1
+    # export UVCDAT_ANONYMOUS_LOG=False
 
     # CliMAF
     export CLIMAF=/cnrm/est/COMMON/climaf/current
     my_append -bp PYTHONPATH /cnrm/est/COMMON/climaf/add_packages/lib/python3.10/site-packages/
     my_append -bp PYTHONPATH ${CLIMAF}
+    my_append -bp PYTHONPATH ${cesmep_modules}
     my_append -bp PATH ${CLIMAF}/bin
+
+    # -- CDFTools
+    # Also remove CDFTools
+    # my_append -bp PATH /cnrm/est/COMMON/CDFTOOLS_3.0/bin
+    
+    echo "PATH ${PATH}"
+    echo "PYTHONPATH ${PYTHONPATH}"
 fi
 
 
 # --> At Cerfacs on Scylla
 if [[ -d "/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP" ]] ; then
         echo "We work at Cerfacs on Scylla"
+
     unset PYTHONPATH
 
     # CDAT
@@ -150,17 +169,30 @@ if [[ -d "/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP" ]] ; then
 
     # CliMAF
     export CLIMAF=/data/scratch/globc/dcom/CMIP6_TOOLS/climaf
+    export cesmep_modules=/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP/share/cesmep_modules
     my_append -bp PYTHONPATH ${CLIMAF}
+    my_append -bp PYTHONPATH ${cesmep_modules}
     my_append -bp PATH ${CLIMAF}/bin
     export CLIMAF_CACHE=/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP/climafcache_${component}
+    echo ">>> CC= "$CLIMAF_CACHE
+    echo ">>> PP= "$PYTHONPATH
+
+    # -- CDFTools
+    #my_append -bp PATH /data/home/globc/moine/CDFTOOLS_3.0_forCliMAF/bin
+    #echo "PATH ${PATH}"
 fi
 
 
 # --> At Cerfacs on kraken
 if [[ -d "/scratch/globc/coquart/C-ESM-EP" ]] ; then
         echo "We work at Cerfacs on Kraken"
+
     unset PYTHONPATH
+
+    # CDO
     module load tools/cdo/1.9.5
+
+    # NCO
     module load tools/nco/4.7.6
 
     # CDAT
@@ -175,25 +207,24 @@ if [[ -d "/scratch/globc/coquart/C-ESM-EP" ]] ; then
 
     # CliMAF
     export CLIMAF=/scratch/globc/coquart/climaf
+    export cesmep_modules=/scratch/globc/coquart/C-ESM-EP/share/cesmep_modules
     my_append -bp PYTHONPATH ${CLIMAF}
+    my_append -bp PYTHONPATH ${cesmep_modules}
     my_append -bp PATH ${CLIMAF}/bin
+    echo ">>> PP= "$PYTHONPATH
+
+    # -- CDFTools
+    #my_append -bp PATH /data/home/globc/moine/CDFTOOLS_3.0_forCliMAF/bin
+    #echo "PATH ${PATH}"
 fi
 
-# Complement PYTHONPATH and PATH
-my_append -bp PYTHONPATH ${root}/share/cesmep_modules
-my_append -bp PYTHONPATH ${root}
-my_append -bp PYTHONPATH ${directory_of_this_script}
-#
-my_append -bp PATH ${root}
-
 # Set CliMAF cache
-export CLIMAF_CACHE=$(python3 -c 'from locations import climaf_cache; print(climaf_cache)')
+here=$(cd $(dirname $BASH_ARGV); pwd) #In order to know the dir of present file
+cache=$(cd $here ; python3 -c 'from locations import climaf_cache; print(climaf_cache)')
+if [[ ! "$CLIMAF_CACHE" = /data/scratch/globc/* ]] ; then  # special case for Cerfacs
+    export CLIMAF_CACHE=$cache
+fi
 
-echo
-echo "Environment settings for C-ESM-EP"
-echo "---------------------------------"
-echo CLIMAF_CACHE        = $CLIMAF_CACHE
+echo CLIMAF_CACHE = $CLIMAF_CACHE
 echo CESMEP_CLIMAF_CACHE = $CESMEP_CLIMAF_CACHE
-echo PYTHONPATH          = $PYTHONPATH
-[ ! -z $CESMEP_CONTAINER ] && echo CESMEP_CONTAINER     = $CESMEP_CONTAINER
-echo 
+

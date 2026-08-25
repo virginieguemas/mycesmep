@@ -7,48 +7,27 @@
 # ------------------------------------------------------------------------------------ #
 
 # -- Python 2 <-> 3 compatibility ---------------------------------------------------------
-# from __future__ import unicode_literals, print_function, absolute_import, division
+#from __future__ import unicode_literals, print_function, absolute_import, division
 from __future__ import unicode_literals, print_function, division
 
 # -- Imports
+from climaf.api import *
+from climaf.chtml import * 
+from CM_atlas import *
+from env.site_settings import onCiclad, onSpirit, atTGCC, atCNRM
+#from climaf.utils import Climaf_Error
 from getpass import getuser
+from climaf import __path__ as cpath
+import json
 import os
 import copy
 import subprocess
+import shlex
 from optparse import OptionParser
-#
-from env.site_settings import onSpirit, atTGCC, atCNRM, atIDRIS, onObelix
-from climaf.api import *
-from climaf.chtml import *
-#
-from CM_atlas import *
 from locations import path_to_cesmep_output_rootdir, path_to_cesmep_output_rootdir_on_web_server, \
     root_url_to_cesmep_outputs
-try:
-    from libIGCM_settings import AtlasPath, AtlasTitle
-except:
-    try:
-        from settings import AtlasPath, AtlasTitle
-    except:
-        AtlasPath = "NONE"
-        AtlasTitle = "NONE"
 
-if AtlasPath != os.path.basename(AtlasPath):
-    AtlasBasename = os.path.basename(AtlasPath)
-    AtlasDirname = os.path.dirname(AtlasPath)+"/"
-else:
-    AtlasBasename = AtlasPath
-    AtlasDirname = ""
-
-#csync(True)
-
-import env    
-try:
-    # For the time being, the C-ESM-EP is not validated when CliMAF  
-    # version performs automatic check of dataset's period vs files
-    env.environment.data_check = False
-except:
-    pass
+csync(True)
 
 # -----------------------------------------------------------------------------------
 # --   PART 1: Get the instructions from:
@@ -84,15 +63,22 @@ parser.add_option("--cesmep_frontpage",
 (opts, args) = parser.parse_args()
 
 
-# -- Define the path to the main C-ESM-EP directory as path of the current code file:
+# -- Define the path to the main C-ESM-EP directory:
 # -----------------------------------------------------------------------------------
-main_cesmep_path = os.path.dirname(os.path.abspath(__file__)) + "/"
+rootmainpath = os.getcwd()
+print('rootmainpath = ',rootmainpath)
+if os.path.isfile(rootmainpath+'main_C-ESM-EP.py'):
+     main_cesmep_path = rootmainpath
+if os.path.isfile(rootmainpath+'/../main_C-ESM-EP.py'):
+     main_cesmep_path = rootmainpath+'/../'
+if os.path.isfile(rootmainpath+'/../../main_C-ESM-EP.py'):
+      main_cesmep_path = rootmainpath+'/../../'
 
 
 # -- Get the default parameters from default_atlas_settings.py -> Priority = default
 # -----------------------------------------------------------------------------------
 default_file = '/share/default/default_atlas_settings.py'
-# execfile(main_cesmep_path+default_file)
+#execfile(main_cesmep_path+default_file)
 exec(open(main_cesmep_path+default_file).read())
 
 # -- Get the values for comparison and component
@@ -108,20 +94,16 @@ cesmep_frontpage = opts.cesmep_frontpage
 #     - the parameter file
 #     - the diagnostics file
 datasets_setup = main_cesmep_path + comparison + '/datasets_setup.py'
-param_file = main_cesmep_path + comparison + '/' + \
-    component + '/params_' + component + '.py'
+param_file = main_cesmep_path + comparison + '/' + component + '/params_' + component + '.py'
 diagnostics_file = param_file.replace('params_', 'diagnostics_')
 if not os.path.isfile(diagnostics_file):
-    diagnostics_file = main_cesmep_path + \
-        'share/cesmep_diagnostics/diagnostics_' + component + '.py'
+    diagnostics_file = main_cesmep_path + 'share/cesmep_diagnostics/diagnostics_' + component + '.py'
 print('-- Use diagnostics_file =', diagnostics_file)
 
 
-# -- If there is a datasets_setup_available_period.py file, we use 'models' from
-# -- this file and tell diagnostics codes to use it (via use_available_period_set)
+# -- If we specify a datasets_setup from the command line, we use 'models' from this file
 # -----------------------------------------------------------------------------------
-datasets_setup_available_period_set_file = datasets_setup.replace(
-    '.py', '_available_period_set.py')
+datasets_setup_available_period_set_file = datasets_setup.replace('.py', '_available_period_set.py')
 if os.path.isfile(datasets_setup_available_period_set_file):
     use_available_period_set = True
     exec(open(datasets_setup_available_period_set_file).read())
@@ -150,52 +132,26 @@ username = getuser()
 user_login = (os.getcwd().split('/')[4] if username == 'fabric' else username)
 
 
-# -- Use the site specifications from module locations.py, to compute atlas_dir
-# -- and atlas_url
+# -- Get the site specifications:
 # -----------------------------------------------------------------------------------
-# -> path_to_cesmep_output_rootdir = where (directory) we physically store the 
-# results of the C-ESM-EP (root directory of the whole atlas tree)
+# -> path_to_cesmep_output_rootdir = where (directory) we physically store the results of the C-ESM-EP
+# (root directory of the whole atlas tree)
+# -> path_to_cesmep_output_rootdir_on_web_server = path to the results on the web server (which are
+# soft- or hard-linked to results on path_to_cesmep_output_rootdir, or even copied from there)
+# -> root_url_to_cesmep_outputs = URL of the root directory of the C-ESM-EP atlas (need to add 'C-ESM-EP',
+# comparison and component to reach the atlas)
 
-# -> path_to_cesmep_output_rootdir_on_web_server = path to the results on the 
-# web server (which are soft- or hard-linked to results on
-# path_to_cesmep_output_rootdir, or even copied from there)
-
-# -> root_url_to_cesmep_outputs = URL of the root directory of the C-ESM-EP atlas (need 
-# to add 'C-ESM-EP', comparison and component to reach the atlas)
-
-try:
-    from settings import publish
-except:
-    publish = True
-
-# -- C-ESM-EP tree from the C-ESM-EP output rootdir
-if AtlasBasename != "NONE":
-    suffix_to_comparison = f'C-ESM-EP/{AtlasDirname}'
-else:
-    try:
-        from libIGCM_settings import TagName, SpaceName, OUT
-    except:
-        suffix_to_comparison = 'C-ESM-EP/' + comparison + '_' + user_login + '/'
-    else:
-        try:
-            from libIGCM_settings import JobName, ExperimentName
-        except:
-            # Odd syntax from an old version of CESMEP. To me removed at some date...
-            from libIGCM_settings import ExperimentName as JobName, ExpType as ExperimentName
-        suffix_to_comparison = f'C-ESM-EP/{TagName}/{SpaceName}/{ExperimentName}/{JobName}/{OUT}/{comparison}/'
-
-    # -- Location of the directory where we will store the results of the atlas
-atlas_dir = path_to_cesmep_output_rootdir + \
-    '/' + suffix_to_comparison + component
+# -- Location of the directory where we will store the results of the atlas
+atlas_dir = path_to_cesmep_output_rootdir + '/C-ESM-EP/' + comparison + '_' + user_login + '/' + component
 
 # -- Url of the atlas (without the html file)
-atlas_url = atlas_dir.replace(
-    path_to_cesmep_output_rootdir, root_url_to_cesmep_outputs)
+atlas_url = atlas_dir.replace(path_to_cesmep_output_rootdir, root_url_to_cesmep_outputs)
+
 
 
 # -- We create the atlas directory if it doesn't exist, or remove the figures
 # -----------------------------------------------------------------------------------
-if atCNRM or atTGCC or onSpirit or atIDRIS or onObelix:
+if atCNRM or atTGCC or onCiclad or onSpirit:
     if not os.path.isdir(atlas_dir):
         os.makedirs(atlas_dir)
     else:
@@ -205,6 +161,12 @@ if atCNRM or atTGCC or onSpirit or atIDRIS or onObelix:
 # -- Specify the directory where we will output the atlas html file and the figures
 # -----------------------------------------------------------------------------------
 alternative_dir = {'dirname': atlas_dir}
+
+
+# -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug',
+# -- intermediate -> 'warning')
+# -----------------------------------------------------------------------------------
+clog(verbose)
 
 
 # -- Print the models
@@ -223,31 +185,34 @@ print('==> ----------------------------------- #')
 print('==> Against reference:')
 print('==> ----------------------------------- #')
 print('  ')
-if type(reference) is not list:
-    references = [reference]
+if reference=='default':
+   print('  reference = default')
+   print('  --> you are using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)')
+   print('  --> you can setup you own references in custom_obs_dict.py for each variable independently')
 else:
-    references = reference
-for ref in references:
-    print()
-    if ref == 'default':
-        print('  --> Using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)')
-        print('  --> you can setup you own references in custom_obs_dict.py for each variable independently')
-    else:
-        for key in ref:
-            print('  '+key+' = ', ref[key])
-print('  --')
-print('  --')
+   for key in reference:
+        print('  '+key+' = ', reference[key])
+   print('  --')
+   print('  --')
 
 
 # -----------------------------------------------------------------------------------
-# --   End PART 1
-# --
+# --   End PART 1 
+# -- 
 # -----------------------------------------------------------------------------------
 
 
 # -----------------------------------------------------------------------------------
-# --   PART 2: Build the html, i.e. some init + execute the params code then
-# --   the diagnostics code
+# --   PART 2: Build the html
+# --              - the header
+# --              - and the sections of diagnostics:
+# --                 * Atlas Explorer
+# --                 * Atmosphere
+# --                 * Blue Ocean - physics
+# --                 * White Ocean - Sea Ice 
+# --                 * Green Ocean - Biogeochemistry
+# --                 * Land Surfaces
+# --                 ...
 # -----------------------------------------------------------------------------------
 
 
@@ -256,10 +221,9 @@ print('  --')
 style_file = main_cesmep_path+'share/fp_template/cesmep_atlas_style_css'
 
 
-# -- Head title of the atlas -> default value should be set by parmas_xx.py and,
-# -- if not, by  diagnostics_${comp}.py
+# -- Head title of the atlas -> default value should be override from diagnostics_${comp}.py
 # ---------------------------------------------------------------------------- >
-atlas_head_title = None
+atlas_head_title = component
 
 
 # -- Get the parameters from the param file -> Priority = 2
@@ -268,19 +232,16 @@ if os.path.isfile(param_file):
     exec(open(param_file).read())
 
 
-# -- Set the html file name
+# -- Add the season to the html file name
 # -----------------------------------------------------------------------------------
 if not index_name:
     index_name = 'atlas_'+component+'_'+comparison+'.html'
 
 
-# -- Set the verbosity of CliMAF , based on 'verbose' in params file
-# -----------------------------------------------------------------------------------
-clog(verbose)
-
-# -- Automatically zoom on the plot when the mouse is on it ?
+# -- Automatically zoom on the plot when the mouse is on it
 # ---------------------------------------------------------------------------- >
 hover = False
+
 
 # -- Add the compareCompanion (P. Brockmann)
 # --> Works as a 'basket' on the html page to select some figures and
@@ -332,7 +293,7 @@ if add_compareCompanion:
     print('Add compareCompanion')
     index += compareCompanion()
 
-# -- Finalize the index  (SS : why is it done here, while opening index is done in diag code ?)
+# -- End the index
 index += trailer()
 
 
@@ -341,94 +302,71 @@ climaf_doc_url = 'https://climaf.readthedocs.io/en/master/'
 # -- Replace url to CliMAF documentation with url to C-ESM-EP frontpage
 index = index.replace(climaf_doc_url, cesmep_frontpage)
 # -- Replace CliMAF documentation with C-ESM-EP frontpage of comparison COMPARISON
-index = index.replace('CliMAF documentation',
-                      'Back to C-ESM-EP frontpage of comparison: '+comparison)
+index = index.replace('CliMAF documentation', 'Back to C-ESM-EP frontpage of comparison: '+comparison)
 
 # -- Write the atlas html file
-if interactive_selection:
-    mapper_style_sheet = main_cesmep_path + "/share/fp_template/mapper.css"
-    mapper_script = main_cesmep_path + "/share/fp_template/mapper.js"
-    os.system(f'cp {mapper_style_sheet} {mapper_script} {atlas_dir}')
-    index = mapper_page
-    
 outfile = atlas_dir + "/" + index_name
 print('outfile = ', outfile)
 with open(outfile, "w") as filout:
     filout.write(index)
 
-if onSpirit or onObelix:
-    if publish:
-        # -- Copy on thredds...
-        # -----------------------------------------------------------------------------
-        # -- thredds directory (web server)
-        threddsdir = atlas_dir.replace(path_to_cesmep_output_rootdir,
-                                       path_to_cesmep_output_rootdir_on_web_server)
-        os.system('rm -rf ' + threddsdir)
-        th_dir = os.path.dirname(threddsdir)
-        if not os.path.isdir(th_dir):
-            os.makedirs(th_dir)
-        os.system('cp -r '+ atlas_dir + ' ' + th_dir)
-        os.system('rm -rf '+ atlas_dir)
-        print("Atlas moved to : " + threddsdir)
-        
-        # -- and print the url of the atlas
-        print("Available at this address " + \
-              outfile.replace(path_to_cesmep_output_rootdir,
-                              root_url_to_cesmep_outputs))
-    else:
-        print("Index available here: "+outfile)
+blabla = None
+if onCiclad or onSpirit:
+   # -- Copy on thredds... 
+   # ----------------------------------------------------------------------------------------------
+   # -- thredds directory (web server)
+   threddsdir = str.replace(atlas_dir,'scratchu','thredds/ipsl')
+   os.system('rm -rf '+threddsdir)
+   th_dir = str.replace(threddsdir,'/'+component,'')
+   if not os.path.isdir(th_dir):
+        os.makedirs(th_dir)
+   os.system('cp -r '+atlas_dir+' '+th_dir)
+   print("index copied in : "+threddsdir)
+
+   # -- Url to use to access the page from the web
+   #alt_dir_name = "/thredds/fileServer/IPSLFS"+str.split(threddsdir,'thredds/ipsl')[1]+'/'+subdir
+   #alt_dir_name = "/thredds/fileServer/IPSLFS"+str.split(threddsdir,'thredds/ipsl')[1]
+   #root_url = "https://vesg.ipsl.upmc.fr"
+   alt_dir_name = threddsdir.replace('/thredds/ipsl','/thredds/fileServer/ipsl_thredds')
+   root_url = "https://thredds-su.ipsl.fr"
+
+   # -- and return the url of the atlas
+   # ----------------------------------------------------------------------------------------------
+   print("Available at this address "+root_url+outfile.replace(atlas_dir,alt_dir_name))
+
 
 #
 
 #
-if atTGCC or atIDRIS:
-
-    # -- Copie des résultats de scratch à work
-    if atTGCC:
-        path_to_comparison_outdir_workdir_hpc = atlas_dir.replace(
-            'scratch', 'work')
-    if atIDRIS:
-        path_to_comparison_outdir_workdir_hpc = atlas_dir.replace(
-            'fsn1', 'fswork')
-    if not os.path.isdir(path_to_comparison_outdir_workdir_hpc):
-        os.makedirs(path_to_comparison_outdir_workdir_hpc)
+if atTGCC:
+    # -- Ecriture du fichier html dans le repertoire sur scratch
+    path_to_comparison_outdir_workdir_tgcc = atlas_dir.replace('scratch', 'work')
+    if not os.path.isdir(path_to_comparison_outdir_workdir_tgcc):
+        os.makedirs(path_to_comparison_outdir_workdir_tgcc)
     else:
-        print('rm -rf '+path_to_comparison_outdir_workdir_hpc+'/*')
-        os.system('rm -rf '+path_to_comparison_outdir_workdir_hpc+'/*')
-    cmd1 = 'cp -fr '+atlas_dir+'/* '+path_to_comparison_outdir_workdir_hpc
-    print("Copying to WORKDIR with: ",cmd1)
+        print('rm -rf '+path_to_comparison_outdir_workdir_tgcc+'/*')
+        os.system('rm -rf '+path_to_comparison_outdir_workdir_tgcc+'/*')
+    cmd1 = 'cp -r '+atlas_dir+'/* '+path_to_comparison_outdir_workdir_tgcc
+    print(cmd1)
     os.system(cmd1)
     #
+    # -- thredds_cp du repertoire copie sur le work
+    path_to_comparison_on_web_server = path_to_cesmep_output_rootdir_on_web_server + '/C-ESM-EP/' + comparison + '_' + \
+                                       user_login
+    cmd12 = 'rm -rf '+path_to_comparison_on_web_server+'/'+component
+    print(cmd12)
+    os.system(cmd12)
+    cmd2 = 'thredds_cp '+path_to_comparison_outdir_workdir_tgcc+' '+path_to_comparison_on_web_server+'/'
+    print(cmd2)
+    os.system(cmd2)
+
     print(' -- ')
     print(' -- ')
     print(' -- ')
-    if publish:
-        # -- thredds_cp des résultats de work à thredds (après un nettoyage de la cible)
-        path_to_comparison_on_web_server = path_to_cesmep_output_rootdir_on_web_server + \
-            '/' + suffix_to_comparison
-        cmd12 = 'rm -rf '+path_to_comparison_on_web_server+'/'+component
-        print(cmd12)
-        os.system(cmd12)
-        if atTGCC:
-            cmd2 = 'thredds_cp '+path_to_comparison_outdir_workdir_hpc + \
-                ' '+path_to_comparison_on_web_server
-        if atIDRIS:
-            cmd2 = 'cp -fr '+path_to_comparison_outdir_workdir_hpc + \
-                ' '+path_to_comparison_on_web_server
-            
-        print("Copying to web server with: ",cmd2)
-        try :
-            subprocess.check_output(cmd2, shell=True, stderr=subprocess.STDOUT)
-        except subprocess.CalledProcessError as e:
-            print(e.output)
-            raise
-        print('Index available at : ' +
-              outfile.replace(path_to_cesmep_output_rootdir, root_url_to_cesmep_outputs))
-    else:
-        print('Index available at : ' + outfile)
-        
-    print("The atlas is ready as ", index_name.replace(
-        atlas_dir, path_to_comparison_outdir_workdir_hpc))
+    print('Index available at : ' + outfile.replace(path_to_cesmep_output_rootdir, root_url_to_cesmep_outputs))
+
+if atTGCC:
+    print("The atlas is ready as ", index_name.replace(atlas_dir, path_to_comparison_outdir_workdir_tgcc))
 else:
     print("The atlas is ready as ", index_name)
 
@@ -451,3 +389,5 @@ elif routine_cache_cleaning == 'figures_only':
 # -----------------------------------------------------------------------------------
 # -- End of the atlas
 # -----------------------------------------------------------------------------------
+
+
