@@ -400,7 +400,6 @@ for component in job_components:
             memory = param_line.replace(' ', '').split('=')[1].split('#')[0]
         if 'queue' in param_line and param_line[0] != '#':
             queue = param_line.replace(' ', '').split('=')[1].split('#')[0]
-
     #
     # -- Needed to copy the html error page if necessary
     if component not in metrics_components:
@@ -555,13 +554,13 @@ for component in job_components:
         jobname=component + '_' + comparison + '_C-ESM-EP'
         env_variables = ' --export=component=' + component + ',comparison=' + comparison + \
             ',WD=${PWD},cesmep_frontpage=' + frontpage_address + ',CESMEP_CLIMAF_CACHE=' + cesmep_climaf_cache  
-        cmd = r'\n\ncd ' + submitdir + r' ;\n\n'\
-            r'jobID=$(sbatch --job-name=' + jobname + ' ' + job_options + env_variables + r' ../' + job_script + \
-            r' | awk "{print \$4}" ) ; \n'+\
-            r'echo $jobID > ' + launched_jobs + r'\n'+\
-            r'sbatch --dependency=afternotok:$jobID '+ env_variables + \
-            r',atlas_pathfilename=' + atlas_pathfilename + r' ' + \
-            r'--job-name=err_on_' + jobname + r' ../../share/fp_template/copy_html_error_page.sh ; \n\ncd -'
+        cmd = '\n\ncd ' + submitdir + ' ;\n\n'\
+            'jobID=$(sbatch --job-name=' + jobname + ' ' + job_options + env_variables + ' ../' + job_script + \
+            ' | awk "{print \$4}" ) ; \n'+\
+            'echo $jobID > ' + launched_jobs + '\n'+\
+            'sbatch --dependency=afternotok:$jobID '+ env_variables + \
+            ',atlas_pathfilename=' + atlas_pathfilename + ' ' + \
+            '--job-name=err_on_' + jobname + ' ../../share/fp_template/copy_html_error_page.sh ; \n\ncd -'
     #
     if atCNRM:
         jobname = component + '_' + comparison + '_C-ESM-EP'
@@ -574,7 +573,7 @@ for component in job_components:
         variables += ',comparison=' + comparison
         variables += ',WD=$(pwd)'
         #variables += ',cesmep_frontpage=' + frontpage_address
-        variables += ',cesmep_frontpage=../'
+        variables += ',cesmep_frontpage=../' + frontpage_html
         variables += ',CESMEP_CLIMAF_CACHE=' + cesmep_climaf_cache
         #
         mail = ''

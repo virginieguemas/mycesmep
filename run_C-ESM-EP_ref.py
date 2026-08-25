@@ -555,13 +555,13 @@ for component in job_components:
         jobname=component + '_' + comparison + '_C-ESM-EP'
         env_variables = ' --export=component=' + component + ',comparison=' + comparison + \
             ',WD=${PWD},cesmep_frontpage=' + frontpage_address + ',CESMEP_CLIMAF_CACHE=' + cesmep_climaf_cache  
-        cmd = r'\n\ncd ' + submitdir + r' ;\n\n'\
-            r'jobID=$(sbatch --job-name=' + jobname + ' ' + job_options + env_variables + r' ../' + job_script + \
-            r' | awk "{print \$4}" ) ; \n'+\
-            r'echo $jobID > ' + launched_jobs + r'\n'+\
-            r'sbatch --dependency=afternotok:$jobID '+ env_variables + \
-            r',atlas_pathfilename=' + atlas_pathfilename + r' ' + \
-            r'--job-name=err_on_' + jobname + r' ../../share/fp_template/copy_html_error_page.sh ; \n\ncd -'
+        cmd = '\n\ncd ' + submitdir + ' ;\n\n'\
+            'jobID=$(sbatch --job-name=' + jobname + ' ' + job_options + env_variables + ' ../' + job_script + \
+            ' | awk "{print \$4}" ) ; \n'+\
+            'echo $jobID > ' + launched_jobs + '\n'+\
+            'sbatch --dependency=afternotok:$jobID '+ env_variables + \
+            ',atlas_pathfilename=' + atlas_pathfilename + ' ' + \
+            '--job-name=err_on_' + jobname + ' ../../share/fp_template/copy_html_error_page.sh ; \n\ncd -'
     #
     if atCNRM:
         jobname = component + '_' + comparison + '_C-ESM-EP'
@@ -584,7 +584,7 @@ for component in job_components:
         # at CNRM, we use sqsub on PCs for launching on aneto; env vars are sent using arg '-e'
         cmd = '( \n\t cd ' + submitdir + ' ; \n\n' + \
               '\t sqsub \\\n\t\t-e \"' + variables + '\"' + \
-              ' \\\n\t\t-b "--job-name=' + jobname + \
+              ' \\\n\t\t-b "--partition=P8HOST --job-name=' + jobname + \
               ' --time=03:00:00 --nodes=1' + mail + ' " \\\n\t\t../' + job_script + \
               ' > jobname.tmp  2>&1; \n\n' + \
  \
@@ -592,7 +592,7 @@ for component in job_components:
  \
               '\t echo -n Job submitted : $jobId\n\n' + \
  \
-              ' \t sqsub -b \"-d afternotok:$jobID\" ' + \
+              ' \t sqsub -b \"--partition=P8HOST -d afternotok:$jobID\" ' + \
               '-e \"atlas_pathfilename=' + atlas_pathfilename + ',' + variables + '\"' + \
               ' ../../share/fp_template/copy_html_error_page.sh >/dev/null 2>&1 \n)\n'
 

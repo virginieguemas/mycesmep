@@ -86,9 +86,7 @@ def get_realization_simulation_kw(ds_obj):
 def build_plot_title(model, ref=None, add_product_in_title=True):
     if not ref:
         add_product_in_title = False
-    print('model = ', model)
     ds_model = ds(**model)
-    print('ds_model.kvp = ', ds_model.kvp)
     if 'customname' in model:
         title = replace_keywords_with_values(model, model['customname'])
     else:
@@ -101,14 +99,13 @@ def build_plot_title(model, ref=None, add_product_in_title=True):
             title = ('OBS' if model['project'] == 'LMDZ_OBS' else ds_model.kvp["product"])
     if add_product_in_title:
         ds_ref = ds(**ref)
-        print('ref = ', ref)
         if 'model' in ds_ref.kvp:
             ref_in_title = (
                 ref['customname'] if 'customname' in ref else ds_ref.kvp['model'] + ' ' + get_realization_simulation_kw(
                     ds_ref))
         else:
             ref_in_title = ('OBS' if ref['project'] == 'LMDZ_OBS' else ds_ref.kvp["product"])
-        title = title + ' (vs ' + ref_in_title + ')'
+            title = title + ' (vs ' + ref_in_title + ')'
         title = title.replace('*', '')
     return title
 

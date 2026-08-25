@@ -1,0 +1,17 @@
+copied from /cnrm/ioga/Users/voldoire/cesmep/C-ESM-EP   on 7th July 2026
+cleaning of lr* vlr*
+
+Aurore a créé le fichier setup_v3.0_c.sh qui fait pour elle la même chose que setenv_C-ESM-EP.sh -> renommé setup_v3.0_c_aurore.sh ; setup_v3.0_c_virginie.sh construit en mergeant le default et celui d'aurore
+
+setenv_C-ESM-EP.sh est légèrement différent de celui sous /cnrm/est/COMMON/C-ESM-EP (à investiguer)
+
+python run_C-ESM-EP.py lr_nemo422_1850-1879_ref 
+ou
+python run_C-ESM-EP.py lr_nemo423_2000-2049_ref3 
+ou 
+python run_C-ESM-EP.py lr_nemo423_2000-2049_ref3_edmf
+
+
+file:///cnrm/ioga/Users/guemas/NO_SAVE//C-ESM-EP/lr_nemo422_1850-1879_ref_guemas/C-ESM-EP_lr_nemo422_1850-1879_ref.html
+
+Beware that the directory name for cesmep is hardcoded l.272 and 286 and 417 and 499 of run_C-ESM-EP.py (to be corrected)

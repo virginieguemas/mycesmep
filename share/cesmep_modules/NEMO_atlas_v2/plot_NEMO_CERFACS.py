@@ -801,7 +801,9 @@ def zonal_mean_slice(model, variable, basin, season, ref=None, add_product_in_ti
             # -- Add the selection of the vertical levels corresponding with the ref
             tmp_ref = xr.open_dataset(cfile(clim_ref), decode_times=False)
             str_depth_vals = ''
-            for val in tmp_ref['depth'].values:
+            if 'depth' in tmp_ref : depname='depth'
+            elif 'deptht' in tmp_ref : depname='deptht'
+            for val in tmp_ref[depname].values:
                 str_depth_vals += ',' + str(int(val))
 
             mask_dat = ccdo( fds(mask_file, variable='mask', period='fx'), operator='sellevel'+str_depth_vals)
@@ -846,11 +848,14 @@ def zonal_mean_slice(model, variable, basin, season, ref=None, add_product_in_ti
             else:
                 mask_file = os.path.dirname(model_dat.baseFiles().split(' ')[0]) + '/' + basin.lower() + '_mask.nc'
             print('mask_file = ', mask_file)
+            print('clim_model = ', clim_model)
 
             # -- Select vertical levels 
             tmp_model = xr.open_dataset(cfile(clim_model), decode_times=False)
             str_depth_vals = ''
-            for val in tmp_model['depth'].values:
+            if 'depth' in tmp_model : namedep='depth'
+            elif 'deptht' in tmp_model : namedep='deptht'
+            for val in tmp_model[namedep].values:
                 str_depth_vals += ',' + str(int(val))
             mask_dat = ccdo( fds(mask_file, variable='mask', period='fx'), operator='sellevel'+str_depth_vals)
             #mask_dat = fds(mask_file, variable='mask', period='fx')

@@ -1,6 +1,6 @@
 # -- Provide your e-mail if you want to receive an e-mail at the end of the execution of the jobs
-#email = "stephane.senesi@ipsl.fr"
-email = None
+email = "virginie.guemas@meteo.fr"
+#email = None
 
 # Choose if you prefer one mail per C-ESM-EP run or one mail per C-ESM-EP component job
 one_mail_per_component = False
