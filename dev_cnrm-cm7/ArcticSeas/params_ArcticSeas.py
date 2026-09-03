@@ -56,11 +56,9 @@ ArcticSeas_tools_dir = '/home/guemas/sea_ice_diag_tools'
 
 # -- Mask netcdf file: one data variable (2D, on the model t-grid) per sea/region,
 # -- with a 'long_name' attribute giving the sea name; built by
-# -- ArcticSeas_tools_dir/masks/create_mask_regions.py
-# -- /!\ As of 2026-08, create_mask_regions.py stops (sys.exit()) before writing out
-# --     the individual Arctic seas (Barents, Kara, Laptev...): that part of the
-# --     script is still legacy/unreachable code. Point this to a mask file that
-# --     actually contains the per-sea breakdown once that script is completed.
+# -- ArcticSeas_tools_dir/masks/create_mask_regions.py (grid='cnrmcm7' case), which
+# -- writes it as 'mask.ArcticSeas.cnrmcm7.nc' in its run directory.
+# -- /!\ TO BE ADAPTED to the actual location on the machine running the atlas
 ArcticSeas_maskfile = '/home/guemas/tmp/test_regions/mask.ArcticSeas.cnrmcm7.nc'
 
 # -- Grid description netcdf file (NEMO mesh_mask/mesh_hgr-like file) giving the
@@ -77,23 +75,31 @@ ArcticSeas_dyvar = 'e2t'
 # --   sithick -> sea ice volume (area-weighted mean sea ice thickness over the sea)
 ArcticSeas_variables = ['siconc', 'sithick']
 
-# -- Restrict to a subset of seas (list of the 'long_name'/variable names found in
-# -- ArcticSeas_maskfile); set to None (or empty list) to use every region found in
-# -- the mask file
+# -- Restrict to a subset of seas (list of the netcdf variable names found in
+# -- ArcticSeas_maskfile); set to None (or an empty list) to use every region found
+# -- in the mask file.
+# -- Default = exactly the seas defined in the "5b-5q. Arctic Ocean sub-divisions"
+# -- section of create_mask_regions.py (IHO S-23 based), i.e. everything written to
+# -- 'newmask' between the Fram Strait masks and the Mediterranean Sea mask, before
+# -- its closing sys.exit(). Fram Strait itself (framstra/framstru/framstrv) is left
+# -- out: it is a narrow strait "gate" mask for transport diagnostics, not a sea.
 ArcticSeas_seas_list = [
-    'Central Arctic',
-    'Barents Sea',
-    'Kara Sea',
-    'Laptev Sea',
-    'East Siberian Sea',
-    'Chukchi Sea',
-    'Beaufort Sea',
-    'Baffin Bay',
-    'Hudson',
-    'Labrador Sea',
-    'Bering',
-    'Okhotsk',
-    'Nordic Seas',
+    'eastsibe',  # East Siberian Sea
+    'laptevse',  # Laptev Sea
+    'karaseax',  # Kara Sea
+    'barentse',  # Barents Sea
+    'whitesea',  # White Sea
+    'greenlds',  # Greenland Sea
+    'norwegia',  # Norwegian Sea
+    'icelands',  # Iceland Sea
+    'davisstr',  # Davis Strait
+    'hudsonst',  # Hudson Strait
+    'hudsonba',  # Hudson Bay
+    'baffinba',  # Baffin Bay
+    'lincolns',  # Lincoln Sea
+    'nwpassag',  # Northwestern Passages
+    'beaufort',  # Beaufort Sea
+    'chukchis',  # Chukchi Sea
 ]
 
 # -- Compute annual means before calling comp_seaiceindex.py (recommended: shorter,

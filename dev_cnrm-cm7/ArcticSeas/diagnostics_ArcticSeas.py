@@ -62,10 +62,13 @@ if do_ArcticSeas_timeseries:
         index += close_line() + close_table()
 
     else:
-        # -- Get the list of seas from the mask file (long_name if available, else var name)
+        # -- Get the list of seas from the mask file: netcdf variable names (e.g. 'barentse')
+        # -- are used to index the data, their 'long_name' attribute (e.g. 'Barents Sea') to
+        # -- label the html page and the plots
         # -----------------------------------------------------------------------------------------
         mask_ds = xr.open_dataset(ArcticSeas_maskfile)
         available_seas = list(mask_ds.data_vars)
+        sea_display_names = {sea: mask_ds[sea].attrs.get('long_name', sea) for sea in available_seas}
         mask_ds.close()
 
         if ArcticSeas_seas_list:
@@ -132,7 +135,8 @@ if do_ArcticSeas_timeseries:
             dict(variable='sithick', title='Sea ice volume', ylabel='Area-weighted mean sea ice thickness (m)'),
         ]
         for sea in seas:
-            index += start_line(sea)
+            sea_name = sea_display_names.get(sea, sea)
+            index += start_line(sea_name)
             for spec in variable_plot_specs:
                 variable = spec['variable']
                 fig, ax = plt.subplots(figsize=(6, 4))
@@ -148,7 +152,7 @@ if do_ArcticSeas_timeseries:
                         has_curve = True
                     out_ds.close()
 
-                ax.set_title("%s - %s" % (sea, spec['title']))
+                ax.set_title("%s - %s" % (sea_name, spec['title']))
                 ax.set_xlabel('Time')
                 ax.set_ylabel(spec['ylabel'])
                 if has_curve:
