@@ -41,10 +41,11 @@ domain = dict()
 # ---------------------------------------------------------------------------- >
 # -- Arctic Seas : per-sea sea ice area / volume time series
 # -- Relies on the external script comp_seaiceindex.py from the sea_ice_diag_tools
-# -- repository, which averages a variable over each region described in a mask
-# -- netcdf file (one region = one data variable in the mask file).
-# --   -> applied to 'siconc'  => (mean) sea ice area  per sea
-# --   -> applied to 'sithick' => (mean) sea ice volume per sea
+# -- repository, which computes the area-weighted average of a variable over each
+# -- region described in a mask netcdf file (one region = one data variable in the
+# -- mask file), weighting by the grid cell area (dxvar*dyvar) from a grid file.
+# --   -> applied to 'siconc'  => area-weighted mean sea ice area  per sea
+# --   -> applied to 'sithick' => area-weighted mean sea ice volume per sea
 # ---------------------------------------------------------------------------- >
 do_ArcticSeas_timeseries = True
 
@@ -62,9 +63,18 @@ ArcticSeas_tools_dir = '/home/guemas/sea_ice_diag_tools'
 # --     actually contains the per-sea breakdown once that script is completed.
 ArcticSeas_maskfile = '/home/guemas/tmp/test_regions/mask.ArcticSeas.cnrmcm7.nc'
 
+# -- Grid description netcdf file (NEMO mesh_mask/mesh_hgr-like file) giving the
+# -- size of the grid cells (used to area-weight the mean computed over each sea).
+# -- Used as a fallback only: if the model dictionary (see datasets_setup.py) already
+# -- defines a 'mesh_hgr' (or 'gridfile') key, that per-model file is used instead,
+# -- since different simulations may not share the same grid/resolution.
+ArcticSeas_gridfile = '/home/guemas/mytools/cnrmcm7/masks/mesh_mask.nc'
+ArcticSeas_dxvar = 'e1t'
+ArcticSeas_dyvar = 'e2t'
+
 # -- Variables used to compute the per-sea indices
-# --   siconc  -> sea ice area  (mean sea ice concentration over the sea)
-# --   sithick -> sea ice volume (mean sea ice thickness over the sea)
+# --   siconc  -> sea ice area  (area-weighted mean sea ice concentration over the sea)
+# --   sithick -> sea ice volume (area-weighted mean sea ice thickness over the sea)
 ArcticSeas_variables = ['siconc', 'sithick']
 
 # -- Restrict to a subset of seas (list of the 'long_name'/variable names found in

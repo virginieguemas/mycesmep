@@ -4,10 +4,10 @@
 # --          CliMAF Earth System Model Evaluation Platform                                               - |
 # --      diagnostics_ArcticSeas.py                                                                       - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithick) averaged                     - |
-# --      over each Arctic sea, computed with the external script                                        - |
+# --      Time series of sea ice area (siconc) and sea ice volume (sithick) area-weighted                - |
+# --      averaged over each Arctic sea, computed with the external script                                - |
 # --      comp_seaiceindex.py (sea_ice_diag_tools repository) applied to a mask file                      - |
-# --      describing the individual seas.                                                                - |
+# --      describing the individual seas and a grid file giving the cell areas.                          - |
 # --                                                                                                      - /
 # ---------------------------------------------------------------------------------------------------- /
 
@@ -93,6 +93,14 @@ if do_ArcticSeas_timeseries:
                 if model_label not in model_labels:
                     model_labels.append(model_label)
 
+                # -- Prefer a per-model grid description file (models may not share the
+                # -- same grid/resolution) over the global fallback from params_ArcticSeas.py
+                gridfile = wmodel.get('mesh_hgr', wmodel.get('gridfile', ArcticSeas_gridfile))
+
+                if not os.path.exists(gridfile):
+                    print("ArcticSeas: grid file not found for %s -> %s" % (model_label, gridfile))
+                    continue
+
                 try:
                     dat = ds(**wmodel)
                     if ArcticSeas_annual_mean:
@@ -103,10 +111,13 @@ if do_ArcticSeas_timeseries:
                         workdir, 'seaindex_%s_%s.nc' % (variable, sanitize(model_label)))
 
                     cmd = ['python3', comp_seaiceindex_script,
-                           '--maskfile', ArcticSeas_maskfile,
-                           '--datafile', datafile,
-                           '--variable', variable,
-                           '--outfile', outfile]
+                           '--data', datafile,
+                           '--var', variable,
+                           '--mask', ArcticSeas_maskfile,
+                           '--grid', gridfile,
+                           '--dxvar', ArcticSeas_dxvar,
+                           '--dyvar', ArcticSeas_dyvar,
+                           '--out', outfile]
                     subprocess.run(cmd, check=True)
                     seaindex_files[variable][model_label] = outfile
                 except Exception as e:
@@ -117,8 +128,8 @@ if do_ArcticSeas_timeseries:
         # -----------------------------------------------------------------------------------------
         index += open_table()
         variable_plot_specs = [
-            dict(variable='siconc', title='Sea ice area', ylabel='Mean sea ice concentration'),
-            dict(variable='sithick', title='Sea ice volume', ylabel='Mean sea ice thickness (m)'),
+            dict(variable='siconc', title='Sea ice area', ylabel='Area-weighted mean sea ice concentration'),
+            dict(variable='sithick', title='Sea ice volume', ylabel='Area-weighted mean sea ice thickness (m)'),
         ]
         for sea in seas:
             index += start_line(sea)
