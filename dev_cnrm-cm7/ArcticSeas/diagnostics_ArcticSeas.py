@@ -4,10 +4,10 @@
 # --          CliMAF Earth System Model Evaluation Platform                                               - |
 # --      diagnostics_ArcticSeas.py                                                                       - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithick) area-weighted                - |
-# --      averaged over each Arctic sea, computed with the external script                                - |
-# --      comp_seaiceindex.py (sea_ice_diag_tools repository) applied to a mask file                      - |
-# --      describing the individual seas and a grid file giving the cell areas.                          - |
+# --      Time series of sea ice area (siconc) and sea ice volume (sithick) computed as an                - |
+# --      area-weighted sum (or mean, see ArcticSeas_meanORsum) over each Arctic sea, using                - |
+# --      the external script comp_seaiceindex.py (sea_ice_diag_tools repository) applied to               - |
+# --      a mask file describing the individual seas and a grid file giving the cell areas.               - |
 # --                                                                                                      - /
 # ---------------------------------------------------------------------------------------------------- /
 
@@ -120,6 +120,7 @@ if do_ArcticSeas_timeseries:
                            '--grid', gridfile,
                            '--dxvar', ArcticSeas_dxvar,
                            '--dyvar', ArcticSeas_dyvar,
+                           '--meanORsum', ArcticSeas_meanORsum,
                            '--out', outfile]
                     subprocess.run(cmd, check=True)
                     seaindex_files[variable][model_label] = outfile
@@ -130,10 +131,20 @@ if do_ArcticSeas_timeseries:
         # ==> -- one for the ice volume (sithick), overlaying all the simulations
         # -----------------------------------------------------------------------------------------
         index += open_table()
-        variable_plot_specs = [
-            dict(variable='siconc', title='Sea ice area', ylabel='Area-weighted mean sea ice concentration'),
-            dict(variable='sithick', title='Sea ice volume', ylabel='Area-weighted mean sea ice thickness (m)'),
-        ]
+        if ArcticSeas_meanORsum == 'sum':
+            variable_plot_specs = [
+                dict(variable='siconc', title='Sea ice area',
+                     ylabel='Sea ice area (area-weighted sum of siconc x cell area)'),
+                dict(variable='sithick', title='Sea ice volume',
+                     ylabel='Sea ice volume (area-weighted sum of sithick x cell area)'),
+            ]
+        else:
+            variable_plot_specs = [
+                dict(variable='siconc', title='Sea ice concentration',
+                     ylabel='Area-weighted mean sea ice concentration'),
+                dict(variable='sithick', title='Sea ice thickness',
+                     ylabel='Area-weighted mean sea ice thickness (m)'),
+            ]
         for sea in seas:
             sea_name = sea_display_names.get(sea, sea)
             index += start_line(sea_name)

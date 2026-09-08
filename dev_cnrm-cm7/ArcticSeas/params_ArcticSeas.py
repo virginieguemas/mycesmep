@@ -41,11 +41,13 @@ domain = dict()
 # ---------------------------------------------------------------------------- >
 # -- Arctic Seas : per-sea sea ice area / volume time series
 # -- Relies on the external script comp_seaiceindex.py from the sea_ice_diag_tools
-# -- repository, which computes the area-weighted average of a variable over each
-# -- region described in a mask netcdf file (one region = one data variable in the
-# -- mask file), weighting by the grid cell area (dxvar*dyvar) from a grid file.
-# --   -> applied to 'siconc'  => area-weighted mean sea ice area  per sea
-# --   -> applied to 'sithick' => area-weighted mean sea ice volume per sea
+# -- repository, which computes, for a variable, either the area-weighted mean or
+# -- the area-weighted sum (area-integral) over each region described in a mask
+# -- netcdf file (one region = one data variable in the mask file), weighting by
+# -- the grid cell area (dxvar*dyvar) taken from a grid file.
+# --   -> applied to 'siconc'  with meanORsum='sum'  => actual sea ice area  per sea
+# --   -> applied to 'sithick' with meanORsum='sum'  => actual sea ice volume per sea
+# -- (meanORsum='mean' instead gives the area-weighted mean concentration/thickness)
 # ---------------------------------------------------------------------------- >
 do_ArcticSeas_timeseries = True
 
@@ -71,9 +73,15 @@ ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
 
 # -- Variables used to compute the per-sea indices
-# --   siconc  -> sea ice area  (area-weighted mean sea ice concentration over the sea)
-# --   sithick -> sea ice volume (area-weighted mean sea ice thickness over the sea)
+# --   siconc  -> sea ice area
+# --   sithick -> sea ice volume
 ArcticSeas_variables = ['siconc', 'sithick']
+
+# -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice
+# --           area, sithick gives the actual sea ice volume, in each sea
+# -- 'mean' -> area-weighted mean: siconc gives the mean sea ice concentration,
+# --           sithick gives the mean sea ice thickness, in each sea
+ArcticSeas_meanORsum = 'sum'
 
 # -- Restrict to a subset of seas (list of the netcdf variable names found in
 # -- ArcticSeas_maskfile); set to None (or an empty list) to use every region found
