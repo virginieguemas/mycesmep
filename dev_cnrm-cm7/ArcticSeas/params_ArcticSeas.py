@@ -86,12 +86,15 @@ ArcticSeas_meanORsum = 'sum'
 # -- Restrict to a subset of seas (list of the netcdf variable names found in
 # -- ArcticSeas_maskfile); set to None (or an empty list) to use every region found
 # -- in the mask file.
-# -- Default = exactly the seas defined in the "5b-5q. Arctic Ocean sub-divisions"
-# -- section of create_mask_regions.py (IHO S-23 based), i.e. everything written to
-# -- 'newmask' between the Fram Strait masks and the Mediterranean Sea mask, before
-# -- its closing sys.exit(). Fram Strait itself (framstra/framstru/framstrv) is left
-# -- out: it is a narrow strait "gate" mask for transport diagnostics, not a sea.
+# -- Default = the seas defined in the "5b-5q. Arctic Ocean sub-divisions" section of
+# -- create_mask_regions.py (IHO S-23 based), i.e. everything written to 'newmask'
+# -- between the Fram Strait masks and the Mediterranean Sea mask, before its closing
+# -- sys.exit(); plus 'arcticoc', the overall Arctic Ocean (its opening "5." section,
+# -- encompassing all the 5b-5q sub-divisions and the central Arctic). Fram Strait
+# -- itself (framstra/framstru/framstrv) is left out: it is a narrow strait "gate"
+# -- mask for transport diagnostics, not a sea.
 ArcticSeas_seas_list = [
+    'arcticoc',  # Arctic Ocean (overall basin)
     'eastsibe',  # East Siberian Sea
     'laptevse',  # Laptev Sea
     'karaseax',  # Kara Sea
