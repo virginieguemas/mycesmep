@@ -1,0 +1,144 @@
+#!/bin/bash
+if [[ -d "/cnrm" ]] ; then
+##########
+## CNRM ##
+##########
+echo "at CNRM"
+#SBATCH --partition P8HOST
+# Nom du job
+#SBATCH --job-name CESMEP
+# Temps limite du job
+#SBATCH --time=03:00:00
+#SBATCH --nodes=1
+elif [[ -d "/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP" ]] ; then
+echo "at Cerfacs scylla"
+#############
+## CERFACS ##
+#############
+set -x
+# Nom du job
+# Nombre de noeuds et de processus
+#SBATCH --nodes=1 --ntasks-per-node=1
+elif [[ -d "/data" && -d "/thredds/ipsl" ]]; then
+echo "on Ciclad - Climserv - CLIMERI"
+######################
+## Ciclad - CLIMERI ##
+######################
+# Using qsub for the job submission ; arguments are passed via run_C-ESM-EP.py 
+elif [[ -d "/ccc" && ! -d "/data" ]]; then
+echo "at TGCC"
+######################
+## CURIE   TGCC/CEA ##
+######################
+#MSUB -r C-ESM-EP_job
+#MSUB -eo
+#MSUB -n 1              # Reservation du processus
+#MSUB -T 36000          # Limite de temps elapsed du job
+##MSUB -q standard
+#MSUB -q skylake
+#MSUB -Q normal
+#MSUB -A devcmip6
+#MSUB -m store,work,scratch
+fi
+set +x
+# -------------------------------------------------------- >
+# --
+# -- Script to run a CliMAF atlas on Ciclad:
+# --   - sets up the environment
+# --   - specify the parameter file and the season
+# --   - automatically sets up the CliMAF cache
+# --   - and run the atlas
+# --
+# --
+# --     Author: Jerome Servonnat
+# --     Contact: jerome.servonnat__at__lsce.ipsl.fr
+# --
+# --
+# -------------------------------------------------------- >
+date
+
+
+# -- On doit pouvoir le soumettre en batch, ou le soumettre en interactif dans le repertoire de la composante
+# -> # -- On doit pouvoir le soumettre en batch, ou le soumettre en interactif dans le repertoire de la composante
+
+# -> Separer le cas batch et le cas interactif : identifier les deux
+
+# -- Specify the atlas script
+# -------------------------------------------------------- >
+atlas_file='main_C-ESM-EP.py'
+env_script='setenv_C-ESM-EP.sh'
+
+# -- Cas interactif depuis le repertoire de la comparaison
+if [[ $1 != '' ]]; then
+
+  component=${1%/}
+  comparison=$(basename $PWD)
+  #comparison=$(basename $(dirname $0) | sed 's=/==g')
+  env=../${env_script}
+  main=../${atlas_file}
+  #datasets_setup_file=datasets_setup.py
+  # -- Name of the parameter file
+  #param_file=${component}/params_${component}.py
+
+else
+
+  # -- comparison, component et WD sont les variables passees avec qsub -v
+  echo '$comparison'
+  echo $comparison
+  echo '$component'
+  echo $component
+  echo '$WD'
+  echo $WD
+  echo '$cesmep_frontpage'
+  echo $cesmep_frontpage
+  env=../../${env_script}
+  main=../../${atlas_file}
+  #datasets_setup_file=../datasets_setup.py
+  if [[ -n ${WD} ]]; then
+     cd $WD
+  fi
+  component=${component%/}
+  # -- Name of the parameter file
+  #param_file=params_${component}.py
+
+fi
+
+
+# -- Setup the environment...
+# -------------------------------------------------------- >
+source ${env}
+
+# -- Provide a season
+# -------------------------------------------------------- >
+#season='ANM'
+
+# -- Set CliMAF cache (automatically)
+# -------------------------------------------------------- >
+if [[ -d "/ccc" && ! -d "/data" ]]; then
+export CLIMAF_CACHE=${CCCSCRATCHDIR}/climafcache_${component}
+export TMPDIR=${CLIMAF_CACHE}
+fi
+
+if [[ -d "/data" && -d "/thredds/ipsl" ]]; then
+export CLIMAF_CACHE=/thredds/ipsl/${USER}/climafcache_${component}
+export TMPDIR=${CLIMAF_CACHE}
+fi
+
+if [[ -d "/cnrm" ]]; then
+    [ -z $CLIMAF_CACHE ] &&  echo "CLIMAF_CACHE should be set by launch job" && exit 1
+    export CLIMAF_CACHE
+    export TMPDIR=${CLIMAF_CACHE}
+fi
+
+if [[ -d "/data/scratch/globc" ]] ; then
+export CLIMAF_CACHE=/data/scratch/globc/dcom/CMIP6_TOOLS/C-ESM-EP/climafcache_${component}
+fi
+
+
+# -- Run the atlas...
+# -------------------------------------------------------- >
+echo "Running ${atlas_file} for season ${season} with parameter file ${param_file}"
+echo "Using CliMAF cache = ${CLIMAF_CACHE}"
+#echo python3 ${main} -p ${param_file} --season ${season} --datasets_setup ${datasets_setup_file} --comparison ${comparison}
+#python3 ${main} -p ${param_file} --season ${season} --datasets_setup ${datasets_setup_file} --comparison ${comparison}
+python3 ${main} --comparison ${comparison} --component ${component} --cesmep_frontpage $cesmep_frontpage
