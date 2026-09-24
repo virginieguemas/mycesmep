@@ -53,24 +53,33 @@ do_ArcticSeas_timeseries = True
 
 # -- Path to the sea_ice_diag_tools clone holding comp_seaiceindex.py
 # -- (https://git.meteo.fr/cnrm-cerfacs-esm/seaice/sea_ice_diag_tools)
-# -- /!\ TO BE ADAPTED to the actual location on the machine running the atlas
-ArcticSeas_tools_dir = '/home/guemas/sea_ice_diag_tools'
+ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools'
 
 # -- Mask netcdf file: one data variable (2D, on the model t-grid) per sea/region,
 # -- with a 'long_name' attribute giving the sea name; built by
-# -- ArcticSeas_tools_dir/masks/create_mask_regions.py (grid='cnrmcm7' case), which
-# -- writes it as 'mask.ArcticSeas.cnrmcm7.nc' in its run directory.
-# -- /!\ TO BE ADAPTED to the actual location on the machine running the atlas
-ArcticSeas_maskfile = '/home/guemas/tmp/test_regions/mask.ArcticSeas.cnrmcm7.nc'
+# -- ArcticSeas_tools_dir/masks/create_mask_regions.py (grid='cnrmcm7' case).
+# -- If it is missing, diagnostics_ArcticSeas.py runs create_mask_regions.py itself
+# -- (from this same directory, so its relative 'mask.ArcticSeas.cnrmcm7.nc' output
+# -- lands here) to build it before going any further.
+ArcticSeas_maskfile = '/cnrm/ioga/Users/guemas/grid_files/cnrmcm7/mask.ArcticSeas.cnrmcm7.nc'
 
 # -- Grid description netcdf file (NEMO mesh_mask/mesh_hgr-like file) giving the
 # -- size of the grid cells (used to area-weight the mean computed over each sea).
 # -- Used as a fallback only: if the model dictionary (see datasets_setup.py) already
 # -- defines a 'mesh_hgr' (or 'gridfile') key, that per-model file is used instead,
 # -- since different simulations may not share the same grid/resolution.
-ArcticSeas_gridfile = '/home/guemas/mytools/cnrmcm7/masks/mesh_mask.nc'
+ArcticSeas_gridfile = '/cnrm/ioga/Users/guemas/grid_files/cnrmcm7/mesh_mask.nc'
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
+
+# -- Where the per-sea sea ice area/volume time series computed by comp_seaiceindex.py
+# -- are cached, one sub-directory per simulation (based on its customname), one
+# -- netcdf file per variable inside. Reused across atlas runs: a simulation is only
+# -- (re-)processed by comp_seaiceindex.py if no cache exists yet, or if the
+# -- simulation now extends further in time than what is cached (i.e. it was
+# -- lengthened since the cache was last built).
+# -- /!\ TO BE ADAPTED for other users: this defaults to the developer's own space.
+ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/ArcticSeas_cache'
 
 # -- Variables used to compute the per-sea indices
 # --   siconc  -> sea ice area
@@ -90,9 +99,11 @@ ArcticSeas_meanORsum = 'sum'
 # -- create_mask_regions.py (IHO S-23 based), i.e. everything written to 'newmask'
 # -- between the Fram Strait masks and the Mediterranean Sea mask, before its closing
 # -- sys.exit(); plus 'arcticoc', the overall Arctic Ocean (its opening "5." section,
-# -- encompassing all the 5b-5q sub-divisions and the central Arctic). Fram Strait
-# -- itself (framstra/framstru/framstrv) is left out: it is a narrow strait "gate"
-# -- mask for transport diagnostics, not a sea.
+# -- encompassing all the 5b-5q sub-divisions and the central Arctic); plus the
+# -- central Arctic and marginal-seas aggregates added afterwards ('centrarc' and
+# -- its 'wcentarc'/'ecentarc' east/west split, 'margseas' = union of the 16
+# -- marginal seas above). Fram Strait itself (framstra/framstru/framstrv) is left
+# -- out: it is a narrow strait "gate" mask for transport diagnostics, not a sea.
 ArcticSeas_seas_list = [
     'arcticoc',  # Arctic Ocean (overall basin)
     'eastsibe',  # East Siberian Sea
@@ -111,6 +122,10 @@ ArcticSeas_seas_list = [
     'nwpassag',  # Northwestern Passages
     'beaufort',  # Beaufort Sea
     'chukchis',  # Chukchi Sea
+    'margseas',  # Arctic Marginal Seas (union of the 16 seas above)
+    'centrarc',  # Central Arctic
+    'wcentarc',  # Western Central Arctic
+    'ecentarc',  # Eastern Central Arctic
 ]
 
 # -- Compute annual means before calling comp_seaiceindex.py (recommended: shorter,
