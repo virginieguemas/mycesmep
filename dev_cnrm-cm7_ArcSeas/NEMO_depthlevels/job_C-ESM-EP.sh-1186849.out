@@ -1,0 +1,409 @@
+at CNRM
+Fri Sep 25 09:15:10 CEST 2026
+$comparison
+dev_cnrm-cm7_ArcSeas
+$component
+NEMO_depthlevels
+$WD
+/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NEMO_depthlevels
+$cesmep_frontpage
+../
+Fri Sep 25 09:15:10 CEST 2026
+PATH /cnrm/est/COMMON/climaf/climaf_3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PYTHONPATH /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules:/cnrm/est/COMMON/climaf/climaf_3.0:/cnrm/est/COMMON/climaf/add_packages/lib/python3.12/site-packages/
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+CESMEP_CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Running main_C-ESM-EP.py for season  with parameter file 
+Using CliMAF cache = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+find: ‘/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdopgax9c2r’: No such file or directory
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !
+python => 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+---
+Required softwares to run CliMAF => you are using the following versions/installations:
+rootmainpath =  /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NEMO_depthlevels
+-- Use diagnostics_file = /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NEMO_depthlevels/../../share/cesmep_diagnostics/diagnostics_NEMO_depthlevels.py
+==> ----------------------------------- #
+==> Working on models:
+==> ----------------------------------- #
+  
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1870-1899
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  piC-LR_633_oas5_x2553_trip_t0d
+  customname =  CNRM-CM6.2 (runoffs corr)
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4
+  --
+  --
+  project =  N4CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1920-1949
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  AOGCM_drv632_NEMO422_LR_t7
+  customname =  REF1
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  2020-2049
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  CM67_N4_3_REF3
+  customname =  REF3
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+==> ----------------------------------- #
+==> Against reference:
+==> ----------------------------------- #
+  
+  reference = default
+  --> you are using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)
+  --> you can setup you own references in custom_obs_dict.py for each variable independently
+---------------------------------
+-- Running Atlas Explorer      --
+-- atlas_explorer_variables =  --
+->  [{'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}, {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}, {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}, {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}]
+--                             --
+
+var in section_2D_maps =  {'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+reference =>  ['default']
+var_references =  ['default']
+Reference wref =  default
+custom_obs_dict =  {}
+ref in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+Computing climatology map for to200 GLOB ANM of  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+var =  {'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal', 'grid': 'gn'}
+wdat_dict in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal', 'grid': 'gn'}
+ref_climato =  plot(regridn(time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),cdogrid='r360x180',option='remapbil'),color='WhViBlGrYeOrRe',colors='0 0.5 1 2 3 4 6 8 10 12 14 16 18 20 22 24 26 28 30',contours=1,focus='ocean',gsnCenterString='to200',gsnLeftString='195501-201212',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=-273.15,options='gsnAddCyclic=True',title='WOA13-v2',units='degC')
+Computing bias map for to200 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4'}
+var =  {'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..to200.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon', 'period': '1870-1899'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..to200.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-10 -8 -6 -5 -4 -3 -2 -1 -0.5 0 0.5 1 2 3 4 5 6 8 10',contours=1,focus='ocean',gsnCenterString='to200',gsnLeftString='1870-1899',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='CNRM-CM6.2 (runoffs corr) (vs WOA13-v2)',units='degC')
+Computing bias map for to200 GLOB ANM of  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N4CPL..to200.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon', 'period': '1920-1949'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N4CPL..to200.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-10 -8 -6 -5 -4 -3 -2 -1 -0.5 0 0.5 1 2 3 4 5 6 8 10',contours=1,focus='ocean',gsnCenterString='to200',gsnLeftString='1920-1949',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='REF1 (vs WOA13-v2)',units='degC')
+Computing bias map for to200 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'to200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..to200.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to200', 'grid': 'gn', 'table': 'Omon', 'period': '2020-2049'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..to200.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-10 -8 -6 -5 -4 -3 -2 -1 -0.5 0 0.5 1 2 3 4 5 6 8 10',contours=1,focus='ocean',gsnCenterString='to200',gsnLeftString='2020-2049',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='REF3 (vs WOA13-v2)',units='degC')
+var in section_2D_maps =  {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+reference =>  ['default']
+var_references =  ['default']
+Reference wref =  default
+custom_obs_dict =  {}
+ref in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+Computing climatology map for to1000 GLOB ANM of  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+var =  {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal', 'grid': 'gn'}
+wdat_dict in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal', 'grid': 'gn'}
+ref_climato =  plot(regridn(time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),cdogrid='r360x180',option='remapbil'),color='WhViBlGrYeOrRe',colors='0 0.5 1 2 3 4 5 6 7 8 9 10 11 12 13',contours=1,focus='ocean',gsnCenterString='to1000',gsnLeftString='195501-201212',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=-273.15,options='gsnAddCyclic=True',title='WOA13-v2',units='degC')
+Computing bias map for to1000 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4'}
+var =  {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..to1000.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon', 'period': '1870-1899'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..to1000.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 0.0 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='to1000',gsnLeftString='1870-1899',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='CNRM-CM6.2 (runoffs corr) (vs WOA13-v2)',units='degC')
+Computing bias map for to1000 GLOB ANM of  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N4CPL..to1000.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon', 'period': '1920-1949'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N4CPL..to1000.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 0.0 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='to1000',gsnLeftString='1920-1949',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='REF1 (vs WOA13-v2)',units='degC')
+Computing bias map for to1000 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'to1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..to1000.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'to1000', 'grid': 'gn', 'table': 'Omon', 'period': '2020-2049'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'to1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..to1000.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%to1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='temp_19lev',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 0.0 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='to1000',gsnLeftString='2020-2049',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,offset=0,options='gsnAddCyclic=True',title='REF3 (vs WOA13-v2)',units='degC')
+var in section_2D_maps =  {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+reference =>  ['default']
+var_references =  ['default']
+Reference wref =  default
+custom_obs_dict =  {}
+ref in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+Computing climatology map for so200 GLOB ANM of  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+var =  {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal', 'grid': 'gn'}
+wdat_dict in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal', 'grid': 'gn'}
+ref_climato =  plot(regridn(time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),cdogrid='r360x180',option='remapbil'),color='matlab_jet',colors='26.0 26.5 27.0 27.5 28.0 28.5 29.0 29.5 30.0 30.5 31.0 31.5 32.0 32.5 33.0 33.5 34.0 34.5 35.0 35.5 36.0 36.5 37.0 37.5 38.0 38.5 39.0 39.5 40.0',contours=1,focus='ocean',gsnCenterString='so200',gsnLeftString='195501-201212',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='WOA13-v2',units='psu')
+Computing bias map for so200 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4'}
+var =  {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..so200.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon', 'period': '1870-1899'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..so200.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 -0.25 0.0 0.25 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='so200',gsnLeftString='1870-1899',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='CNRM-CM6.2 (runoffs corr) (vs WOA13-v2)',units='psu')
+Computing bias map for so200 GLOB ANM of  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N4CPL..so200.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon', 'period': '1920-1949'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N4CPL..so200.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 -0.25 0.0 0.25 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='so200',gsnLeftString='1920-1949',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='REF1 (vs WOA13-v2)',units='psu')
+Computing bias map for so200 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'so200', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..so200.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so200', 'grid': 'gn', 'table': 'Omon', 'period': '2020-2049'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so200', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..so200.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-5 -4 -3 -2.5 -2.0 -1.5 -1.0 -0.5 -0.25 0.0 0.25 0.5 1.0 1.5 2.0 2.5 3 4 5',contours=1,focus='ocean',gsnCenterString='so200',gsnLeftString='2020-2049',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='REF3 (vs WOA13-v2)',units='psu')
+var in section_2D_maps =  {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+reference =>  ['default']
+var_references =  ['default']
+Reference wref =  default
+custom_obs_dict =  {}
+ref in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+Computing climatology map for so1000 GLOB ANM of  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+var =  {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal', 'grid': 'gn'}
+wdat_dict in plot_climato =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal', 'grid': 'gn'}
+ref_climato =  plot(regridn(time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),cdogrid='r360x180',option='remapbil'),color='matlab_jet',colors='34.0 34.25 34.5 34.75 35.0 35.25 35.5 35.75 36.0 36.25 36.5',contours=1,focus='ocean',gsnCenterString='so1000',gsnLeftString='195501-201212',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='WOA13-v2',units='psu')
+Computing bias map for so1000 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4'}
+var =  {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..so1000.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon', 'period': '1870-1899'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..so1000.1870-1899.global.piC-LR_633_oas5_x2553_trip_t0d./cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 -0.1 0.1 0.25 0.5 0.75 1.0 1.25 1.5',contours=1,focus='ocean',gsnCenterString='so1000',gsnLeftString='1870-1899',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='CNRM-CM6.2 (runoffs corr) (vs WOA13-v2)',units='psu')
+Computing bias map for so1000 GLOB ANM of  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N4CPL..so1000.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon', 'period': '1920-1949'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N4CPL..so1000.1920-1949.global.AOGCM_drv632_NEMO422_LR_t7./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 -0.1 0.1 0.25 0.5 0.75 1.0 1.25 1.5',contours=1,focus='ocean',gsnCenterString='so1000',gsnLeftString='1920-1949',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='REF1 (vs WOA13-v2)',units='psu')
+Computing bias map for so1000 GLOB ANM of  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR'}
+var =  {'variable': 'so1000', 'season': 'ANM', 'table': 'Omon', 'grid': 'gn', 'project_specs': {'IGCM_OUT': {'DIR': 'OCE'}}}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon'}
+dat_dict before .resolve  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+bias =  minus(regrid(time_average(ds('N3CPL..so1000.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')))
+add_product_title_in_title in plot_diff =  True
+wmodel before build_plot_title =  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'so1000', 'grid': 'gn', 'table': 'Omon', 'period': '2020-2049'}
+wref before build_plot_title =  {'project': 'ref_climatos', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'variable': 'so1000', 'frequency': 'seasonal'}
+myplot =  plot(minus(regrid(time_average(ds('N3CPL..so1000.2020-2049.global.CM67_N4_3_REF3./cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR.CNRM-CM62-LR')),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')),option='remapdis'),time_average(ds('ref_climatos%refproduct%so1000%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*'))),color='BlueDarkRed18',colors='-1.5 -1.25 -1.0 -0.75 -0.5 -0.25 -0.1 0.1 0.25 0.5 0.75 1.0 1.25 1.5',contours=1,focus='ocean',gsnCenterString='so1000',gsnLeftString='2020-2049',gsnRightString='ANM',gsnStringFontHeightF=0.019,mpCenterLonF=200,options='gsnAddCyclic=True',title='REF3 (vs WOA13-v2)',units='psu')
+num_cores =  16
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+warning  : pdftk not available, can not stamp pdf files
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+CliMAF climaf_version = 3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : pdftk not available, can not stamp pdf files
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+Available macros read from ~/.climaf.macros are : []
+				warning  : no file found for {'project': 'ref_climatos', 'simulation': 'refproduct', 'variable': 'to200', 'period': fx, 'domain': 'global', 'frequency': 'seasonal', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'obs_type': '*'}, at these data locations ['/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/${frequency}/${variable}/${product}/ac/${variable}_${table}_${product}_${obs_type}_${clim_period}-clim.nc', '/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/${frequency}/${variable}/${product}/ac/${variable}_${table}_${product}_${clim_period}-clim.nc'] 
+				warning  : i.e. at ['/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/seasonal/to200/WOA13-v2/ac/to200_Omon_WOA13-v2_*_195501-201212-clim.nc', '/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/seasonal/to200/WOA13-v2/ac/to200_Omon_WOA13-v2_195501-201212-clim.nc']
+			warning  : no file found for {'project': 'ref_climatos', 'simulation': 'refproduct', 'variable': 'to200', 'period': fx, 'domain': 'global', 'frequency': 'seasonal', 'product': 'WOA13-v2', 'clim_period': '195501-201212', 'table': 'Omon', 'obs_type': '*'}, at these data locations ['/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/${frequency}/${variable}/${product}/ac/${variable}_${table}_${product}_${obs_type}_${clim_period}-clim.nc', '/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/${frequency}/${variable}/${product}/ac/${variable}_${table}_${product}_${clim_period}-clim.nc'] 
+			warning  : i.e. at ['/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/seasonal/to200/WOA13-v2/ac/to200_Omon_WOA13-v2_*_195501-201212-clim.nc', '/cnrm/est/COMMON/climaf/reference_datasets_from_IPSL/climatos/*/seasonal/to200/WOA13-v2/ac/to200_Omon_WOA13-v2_195501-201212-clim.nc']
+			error    : "No file found for ds('ref_climatos%refproduct%to200%fx%global%seasonal%WOA13-v2%195501-201212%Omon%*')"
+/usr/lib/python3/dist-packages/xarray/coding/times.py:170: SerializationWarning: Ambiguous reference date string: 0-01-16 12:00:00. The first value is assumed to be the year hence will be padded with zeros to remove the ambiguity (the padded reference date string is: 0000-01-16 12:00:00). To remove this message, remove the ambiguity by padding your reference date strings with zeros.
+  warnings.warn(warning_msg, SerializationWarning)
+slurmstepd: error: *** JOB 1186849 ON ncx14 CANCELLED AT 2026-09-25T09:20:01 ***

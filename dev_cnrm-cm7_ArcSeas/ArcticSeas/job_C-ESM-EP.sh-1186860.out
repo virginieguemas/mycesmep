@@ -1,0 +1,135 @@
+at CNRM
+Fri Sep 25 11:12:53 CEST 2026
+$comparison
+dev_cnrm-cm7_ArcSeas
+$component
+ArcticSeas
+$WD
+/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas
+$cesmep_frontpage
+../
+Fri Sep 25 11:12:54 CEST 2026
+PATH /cnrm/est/COMMON/climaf/climaf_3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PYTHONPATH /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules:/cnrm/est/COMMON/climaf/climaf_3.0:/cnrm/est/COMMON/climaf/add_packages/lib/python3.12/site-packages/
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+CESMEP_CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Running main_C-ESM-EP.py for season  with parameter file 
+Using CliMAF cache = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/xarray/backends/file_manager.py", line 211, in _acquire_with_cache_info
+    file = self._cache[self._key]
+           ~~~~~~~~~~~^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/lru_cache.py", line 56, in __getitem__
+    value = self._cache[key]
+            ~~~~~~~~~~~^^^^^
+KeyError: [<class 'netCDF4._netCDF4.Dataset'>, ('/home/guemas/mytools/cnrmcm7/masks/mesh_mask.nc',), 'r', (('clobber', True), ('diskless', False), ('format', 'NETCDF4'), ('persist', False)), 'dbca14cf-ddb1-4bd5-9387-4e1812145cbc']
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/check_masks.py", line 42, in <module>
+    gridtmp = xr.open_dataset(gridfile)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/api.py", line 573, in open_dataset
+    backend_ds = backend.open_dataset(
+                 ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/netCDF4_.py", line 646, in open_dataset
+    store = NetCDF4DataStore.open(
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/netCDF4_.py", line 409, in open
+    return cls(manager, group=group, mode=mode, lock=lock, autoclose=autoclose)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/netCDF4_.py", line 356, in __init__
+    self.format = self.ds.data_model
+                  ^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/netCDF4_.py", line 418, in ds
+    return self._acquire()
+           ^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/netCDF4_.py", line 412, in _acquire
+    with self._manager.acquire_context(needs_lock) as root:
+  File "/usr/lib/python3.12/contextlib.py", line 137, in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/file_manager.py", line 199, in acquire_context
+    file, cached = self._acquire_with_cache_info(needs_lock)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3/dist-packages/xarray/backends/file_manager.py", line 217, in _acquire_with_cache_info
+    file = self._opener(*self._args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "src/netCDF4/_netCDF4.pyx", line 2469, in netCDF4._netCDF4.Dataset.__init__
+  File "src/netCDF4/_netCDF4.pyx", line 2028, in netCDF4._netCDF4._ensure_nc_success
+FileNotFoundError: [Errno 2] No such file or directory: '/home/guemas/mytools/cnrmcm7/masks/mesh_mask.nc'
+python => 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+---
+Required softwares to run CliMAF => you are using the following versions/installations:
+rootmainpath =  /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas
+-- Use diagnostics_file = /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas/../../dev_cnrm-cm7_ArcSeas/ArcticSeas/diagnostics_ArcticSeas.py
+==> ----------------------------------- #
+==> Working on models:
+==> ----------------------------------- #
+  
+  project =  N4CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1920-1949
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  AOGCM_drv632_NEMO422_LR_t7
+  customname =  REF1
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  2020-2049
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  CM67_N4_3_REF3
+  customname =  REF3
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+==> ----------------------------------- #
+==> Against reference:
+==> ----------------------------------- #
+  
+  reference = default
+  --> you are using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)
+  --> you can setup you own references in custom_obs_dict.py for each variable independently
+ArcticSeas: check_masks.py failed -> Command '['python3', '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/check_masks.py']' returned non-zero exit status 1.
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'siconc'}
+Traceback (most recent call last):
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas/../../main_C-ESM-EP.py", line 263, in <module>
+    exec(open(diagnostics_file).read())
+  File "<string>", line 203, in <module>
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules/CM_atlas/plot_CM_atlas.py", line 89, in build_plot_title
+    ds_model = ds(**model)
+               ^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 1808, in ds
+    return cdataset(**select_projects(**kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 583, in __init__
+    attval = processDatasetArgs(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 513, in processDatasetArgs
+    attval['period'] = init_period(attval['period'])
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/period.py", line 325, in init_period
+    raise Climaf_Period_Error("Could not create a period with string %s" % dates)
+climaf.period.Climaf_Period_Error: 'Could not create a period with string '

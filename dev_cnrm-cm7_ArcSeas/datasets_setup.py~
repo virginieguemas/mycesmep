@@ -153,25 +153,18 @@ from my_projects import *
 period='2000-2049'
 if atCNRM:
     models = [
+
            dict(project = 'N4CPL',
-           model = 'CNRM-CM62-LR',  
-           clim_period = '1920-1949', 
-           ts_period = 'full',
-           mip = 'CMIP', 
-           frequency = 'monthly',
-           experiment = 'AOGCM_drv632_NEMO422_LR_t7', 
-           customname='REF1', 
-           root='/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR')
+           model='CNRM-CM62-LR',  period=1900-1949, mip='CMIP', frequency='monthly',
+           experiment='AOGCM_drv632_NEMO422_LR_t7', customname='CM67_N4_REF', root='/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR')
+    ,
+           dict(project = 'N4CPL',
+           model='CNRM-CM62-LR',  period=period, mip='CMIP', frequency='monthly',
+           experiment='CM67_N4_EKE_ETAU0', customname='EKE_ETAU0', root='/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR')
     ,
            dict(project = 'N3CPL',
-           model='CNRM-CM62-LR',  
-           clim_period = '2020-2049',
-           ts_period = 'full',
-           mip='CMIP', 
-           frequency='monthly',
-           experiment='CM67_N4_3_REF3', 
-           customname='REF3', 
-           root='/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR')
+           model='CNRM-CM62-LR',  period=period, mip='CMIP', frequency='monthly',
+           experiment='CM67_N4_3_REF3', customname='REF3', root='/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR')
 
     ]
     for model in models:

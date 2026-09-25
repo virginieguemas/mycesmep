@@ -1,0 +1,10 @@
+(0)	---------------
+(0)	  MAIN FIELD  
+(0)	---------------
+fatal:_NhlNewColor:no available colors
+(0)	using gsn_csm_contour_map
+
+
+stdout and stderr of script call :
+	 (ncl -Q /cnrm/est/COMMON/climaf/climaf_3.0/climaf/../scripts/gplot.ncl main_file='"/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/d9/b91b30a708b58d1980572c53cd44e5efe055a27ce783841929f662.nc"'     plotname='"/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/80/a0f4f36c0800ca09ac466968bc1979f9ed1ded0cfc29e8b14b142b_2284.png"' colormap='"BlueWhiteOrangeRed"'    main_var='"rlutcs"'    title='"REF3 (vs CERES)"'           ccolors='"-50 -40 -30 -20 -10 -5 -2 2 5 10 20 30 40 50"'    proj='"NH20"' contours='"1"'                   gsnLeftString='"2020-2049"' gsnRightString='"JJA"' gsnCenterString='"rlutcs"'  gsnStringFontHeightF=0.019   options='"gsnAddCyclic=True"'             )
+

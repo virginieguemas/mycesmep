@@ -1,0 +1,27 @@
+debug    : TMPDIR found: /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+debug    : Create temporary dir /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3
+debug    : CDO command init: cdo -O -f nc
+debug    : Alias and variable considered: ['thetao', 'thetao', '1', '273.1'] -- thetao
+debug    : Region considered: None
+debug    : Units considered: None
+debug    : Missing values considered: None
+debug    : Period considered: 1920-01-01T00:00:00,1949-12-31T23:59:00
+debug    : Operator considered: intlevel,200
+debug    : Command launched cdo -O -f nc -selname,thetao -expr,thetao=thetao*1+273.1 -seldate,1920-01-01T00:00:00,1949-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_192001-192912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/tmp_AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_192001-192912.nc
+debug    : Time at launch 1790320722.5472205
+debug    : cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lat
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lon
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lat!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lon!
+
+debug    : Time at end 1790320757.517519
+debug    : Command launched cdo -O -f nc -selname,thetao -expr,thetao=thetao*1+273.1 -seldate,1920-01-01T00:00:00,1949-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_193001-193912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/tmp_AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_193001-193912.nc
+debug    : Time at launch 1790320757.5243094
+debug    : cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lat
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lon
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lat!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lon!
+
+debug    : Time at end 1790320793.090465
+debug    : Command launched cdo -O -f nc -selname,thetao -expr,thetao=thetao*1+273.1 -seldate,1920-01-01T00:00:00,1949-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_194001-194912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdogezk8du3/tmp_AOGCM_drv632_NEMO422_LR_t7_oceanT_monthly_thetao_194001-194912.nc
+debug    : Time at launch 1790320793.0973482

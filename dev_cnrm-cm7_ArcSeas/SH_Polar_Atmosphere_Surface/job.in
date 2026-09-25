@@ -1,0 +1,13 @@
+( 
+	 cd /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/SH_Polar_Atmosphere_Surface ; 
+
+	 sqsub \
+		-e "component=SH_Polar_Atmosphere_Surface,comparison=dev_cnrm-cm7_ArcSeas,WD=$(pwd),cesmep_frontpage=../,CESMEP_CLIMAF_CACHE=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2" \
+		-b "--job-name=SH_Polar_Atmosphere_Surface_dev_cnrm-cm7_ArcSeas_C-ESM-EP --time=03:00:00 --nodes=1 --mail-type=END --mail-user=virginie.guemas@meteo.fr " \
+		../job_C-ESM-EP.sh > jobname.tmp  2>&1; 
+
+ 	jobId=$(cat jobname.tmp | cut -d " " -f 4 jobname.tmp); rm jobname.tmp  ; 
+	 echo -n Job submitted : $jobId
+
+ 	 sqsub -b "-d afternotok:$jobID" -e "atlas_pathfilename=/cnrm/ioga/Users/guemas/NO_SAVE///C-ESM-EP/dev_cnrm-cm7_ArcSeas_guemas/SH_Polar_Atmosphere_Surface/atlas_SH_Polar_Atmosphere_Surface_dev_cnrm-cm7_ArcSeas.html,component=SH_Polar_Atmosphere_Surface,comparison=dev_cnrm-cm7_ArcSeas,WD=$(pwd),cesmep_frontpage=../,CESMEP_CLIMAF_CACHE=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2" ../../share/fp_template/copy_html_error_page.sh >/dev/null 2>&1 
+)

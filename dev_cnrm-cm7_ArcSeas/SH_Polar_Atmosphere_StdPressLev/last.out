@@ -1,0 +1,11 @@
+debug    : TMPDIR found: /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+debug    : Create temporary dir /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo1rlhh5ar
+debug    : CDO command init: cdo -O -f nc
+debug    : Alias and variable considered: None -- ua
+debug    : Region considered: None
+debug    : Units considered: None
+debug    : Missing values considered: None
+debug    : Period considered: 2020-01-01T00:00:00,2049-12-31T23:59:00
+debug    : Operator considered: None
+debug    : Command launched cdo -O -f nc -selname,ua -seldate,2020-01-01T00:00:00,2049-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo1rlhh5ar/CM67_N4_3_REF3_arpsfx_monthly_ua_195001-205912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo1rlhh5ar/tmp_CM67_N4_3_REF3_arpsfx_monthly_ua_195001-205912.nc
+debug    : Time at launch 1790320510.1814666

@@ -1,0 +1,16 @@
++ fieldin=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/7a/8d979fded8bb207f881c63243ed8610b021a3864fde0d5da2c0da9.nc
++ fieldgrid=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/4c/3c84156cd708e26ad302072a594411fd8a050ba0f8f56cef33e41e.nc
++ fieldout=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/e8/49eefd095664c03564a088ba0895bf1184eaac23771e989386965c_2213.nc
++ var=ua850
++ option=remapbil
++ climaf_tmp_grid=/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NH_Polar_Atmosphere_StdPressLev/climaf_tmp_grid_2898
++ '[' -f /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/4c/3c84156cd708e26ad302072a594411fd8a050ba0f8f56cef33e41e.nc ']'
++ cdo griddes /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/4c/3c84156cd708e26ad302072a594411fd8a050ba0f8f56cef33e41e.nc
++ cdo remapbil,/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NH_Polar_Atmosphere_StdPressLev/climaf_tmp_grid_2898 -selname,ua850 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/7a/8d979fded8bb207f881c63243ed8610b021a3864fde0d5da2c0da9.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/e8/49eefd095664c03564a088ba0895bf1184eaac23771e989386965c_2213.nc
+cdo    remapbil: Bilinear weights from gaussian (256x128) to lonlat (240x121) grid
++ rm /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/NH_Polar_Atmosphere_StdPressLev/climaf_tmp_grid_2898
+
+
+stdout and stderr of script call :
+	 /cnrm/est/COMMON/climaf/climaf_3.0/climaf/../scripts/regrid.sh /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/7a/8d979fded8bb207f881c63243ed8610b021a3864fde0d5da2c0da9.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/4c/3c84156cd708e26ad302072a594411fd8a050ba0f8f56cef33e41e.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/e8/49eefd095664c03564a088ba0895bf1184eaac23771e989386965c_2213.nc ua850 
+
