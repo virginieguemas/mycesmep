@@ -3,11 +3,15 @@
 # --      Scientific diagnostics for the                                                                  - \
 # --          CliMAF Earth System Model Evaluation Platform                                               - |
 # --      diagnostics_ArcticSeas.py                                                                       - |
+# --        ==> add html code to 'index' (initialized with 'header')                                      - |
+# --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
+# --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
 # --      Time series of sea ice area (siconc) and sea ice volume (sithick) computed as an                - |
-# --      area-weighted sum (or mean, see ArcticSeas_meanORsum) over each Arctic sea, using                - |
-# --      the external script comp_seaiceindex.py (sea_ice_diag_tools repository) applied to               - |
-# --      a mask file describing the individual seas and a grid file giving the cell areas.               - |
+# --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
+#         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
+#         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
+#         individual seas is computed by create_mask_regions.py from the sea_ice_diag_tools repository    - |
 # --                                                                                                      - /
 # ---------------------------------------------------------------------------------------------------- /
 
@@ -56,24 +60,35 @@ def latest_year_in_ncfile(ncfile):
 
 
 if do_ArcticSeas_timeseries:
-    # ==> -- Open the section
+    # 
+    # ==> -- Open the section and an html file
     # -----------------------------------------------------------------------------------------
-    index += section("Sea ice area and volume time series per Arctic sea", level=4)
-
+    # WARNING : Different from MyOwnDiagnostics
+    index += section("Sea ice area and volume per Arctic sea", level=4)
+    #
+    # ==> -- Control the size of the thumbnail -> thumbN_size
+    # Note: ArcticSeas_thumbnail_size defined in params_ArcticSeas.py
+    # -----------------------------------------------------------------------------------------
     if thumbnail_size:
         thumbN_size = thumbnail_size
     elif 'ArcticSeas_thumbnail_size' in dir() and ArcticSeas_thumbnail_size:
         thumbN_size = ArcticSeas_thumbnail_size
     else:
         thumbN_size = thumbnail_size_global
-
+    # 
+    # Create a working directory under the execution directory if non-existant already
+    # -----------------------------------------------------------------------------------------
     workdir = os.path.join(getcwd(), 'ArcticSeas_workfiles')
     if not os.path.isdir(workdir):
         os.makedirs(workdir)
-
+    #
+    # Complete path to the scripts required for the diagnostics under ArcticSeas
+    # -----------------------------------------------------------------------------------------
     comp_seaiceindex_script = os.path.join(ArcticSeas_tools_dir, 'comp_seaiceindex.py')
     create_mask_regions_script = os.path.join(ArcticSeas_tools_dir, 'masks', 'create_mask_regions.py')
-
+    #
+    # Ecriture des messages d'erreur dans la page html
+    # -----------------------------------------------------------------------------------------
     if not os.path.exists(comp_seaiceindex_script):
         index += open_table()
         index += start_line('Error')
@@ -103,15 +118,20 @@ if do_ArcticSeas_timeseries:
                 subprocess.run(['python3', create_mask_regions_script], cwd=mask_dir, check=True)
             except Exception as e:
                 print("ArcticSeas: create_mask_regions.py failed -> %s" % e)
+        #
+        # WARNING : code to be generalized so that it takes command line arguments for the different 
+        # potential grids
 
         if not os.path.exists(ArcticSeas_maskfile):
             index += open_table()
             index += start_line('Error')
             index += "Mask file still missing after running create_mask_regions.py: %s" % ArcticSeas_maskfile
             index += close_line() + close_table()
-
+ 
+        # Finally !!! We have everything we need to run the actual diagnostics
+        # --------------------------------------------------------------------------------------------
         else:
-            # -- Sanity-check plot of the mask geometry (check_masks.py from sea_ice_diag_tools):
+            # -- Use check_masks.py from the sea_ice_diag_tools repository to draw
             # -- a map colouring each named Arctic sea. check_masks.py also produces an Antarctic
             # -- map (same script, unrelated hemisphere), which is left out of this Arctic-only
             # -- page. Only (re-)run it when there is no plot yet or it predates the mask file
@@ -122,6 +142,10 @@ if do_ArcticSeas_timeseries:
             check_masks_arctic_png = os.path.join(mask_dir, 'check_masks_arctic.png')
             need_check_plot = (not os.path.exists(check_masks_arctic_png)
                                 or os.path.getmtime(check_masks_arctic_png) < os.path.getmtime(ArcticSeas_maskfile))
+            # WARNING : Need to simplify by removing the plt.show() in check_masks.py and the
+            #           MPLPACKEND=Agg here
+            # WARNING : Same generalization as create_mask_regions.py needed
+            # WARNING : Penser à ne pas plotter les mers manquantes
 
             if need_check_plot and os.path.exists(check_masks_script):
                 try:
@@ -129,7 +153,10 @@ if do_ArcticSeas_timeseries:
                                     env=dict(os.environ, MPLBACKEND='Agg'))
                 except Exception as e:
                     print("ArcticSeas: check_masks.py failed -> %s" % e)
-
+          
+            #
+            # ==> -- Add the Arctic seas plot to the html page
+            # -----------------------------------------------------------------------------------------
             if os.path.exists(check_masks_arctic_png):
                 index += section("Arctic seas", level=5)
                 index += open_table()
@@ -146,17 +173,22 @@ if do_ArcticSeas_timeseries:
             available_seas = list(mask_ds.data_vars)
             sea_display_names = {sea: mask_ds[sea].attrs.get('long_name', sea) for sea in available_seas}
             mask_ds.close()
-
+            #
+            # -- Determine which seas to plot according to params_ArcticSeas.py
+            # -----------------------------------------------------------------------------------------
             if ArcticSeas_seas_list:
                 seas = [sea for sea in ArcticSeas_seas_list if sea in available_seas]
                 missing_seas = [sea for sea in ArcticSeas_seas_list if sea not in available_seas]
             else:
                 seas = available_seas
                 missing_seas = []
-
+            #
+            # ==> -- Apply the period_for_diag_manager 
+            # -----------------------------------------------------------------------------------------
+            # WARNING : From MyOwnDiagnostics, check whether we need that
             Wmodels = copy.deepcopy(models)
 
-            # ==> -- Apply the period_manager; for each model/variable, reuse the cached
+            # ==> -- For each model/variable, reuse the cached
             # ==> -- per-sea time series from ArcticSeas_cache_dir if it already covers the
             # ==> -- simulation's latest available year, otherwise (re-)compute it with
             # ==> -- comp_seaiceindex.py and update the cache
@@ -223,9 +255,9 @@ if do_ArcticSeas_timeseries:
             if ArcticSeas_meanORsum == 'sum':
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice area',
-                         ylabel='Sea ice area (area-weighted sum of siconc x cell area)'),
+                         ylabel='Sea ice area (millions km2)'),
                     dict(variable='sithick', title='Sea ice volume',
-                         ylabel='Sea ice volume (area-weighted sum of sithick x cell area)'),
+                         ylabel='Sea ice volume (Thousand km3)'),
                 ]
             else:
                 variable_plot_specs = [
