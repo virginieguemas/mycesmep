@@ -32,7 +32,7 @@ from climaf.operators_derive import derive
 # -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug', intermediate -> 'warning')
 verbose = 'debug'
 # -- Safe Mode (set to False and verbose='debug' if you want to debug)
-safe_mode = True
+safe_mode = False
 # -- Set to True to clean the CliMAF cache
 clean_cache = False
 # -- routine_cache_cleaning is a dictionary or list of dictionaries provided
