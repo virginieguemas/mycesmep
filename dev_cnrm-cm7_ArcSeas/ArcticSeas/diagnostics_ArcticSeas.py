@@ -25,18 +25,33 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-# -- Init html index
+# -- Init html index - Example from MyOwnDiag - fonction from CLIMAF library 
 # -----------------------------------------------------------------------------------
 index = header(atlas_head_title, style_file=style_file)
 
 
 def sanitize(name):
     """Turn a sea/model name into a safe token for file names."""
+    # Replace every character other than letter or number by _ (/-:) and join 
+    # together in a safe name all the initial and replaced characters
     return "".join(c if c.isalnum() else "_" for c in name)
+
+
+# -- sia/siv = sea ice area/volume (area-weighted sum)
+# -- sic/sit = sea ice concentration/thickness (area-weighted mean)
+CACHE_VARIABLE_LABELS = {
+    ('siconc', 'sum'): 'sia',
+    ('sithick', 'sum'): 'siv',
+    ('siconc', 'mean'): 'sic',
+    ('sithick', 'mean'): 'sit',
+}
 
 
 def latest_year_of_wmodel(wmodel):
     """Latest year covered by a period-managed model dict, from build_str_period()."""
+    # build_str_period return a chain of characters holding the first and last years 
+    # then the number with 4 digits of more but keep the first 4
+    # the function returns the last of those 4 digit numbers (last year) if it exists
     years = re.findall(r'\d{4}', str(build_str_period(wmodel)))
     return int(years[-1]) if years else None
 
@@ -61,13 +76,15 @@ def latest_year_in_ncfile(ncfile):
 
 if do_ArcticSeas_timeseries:
     # 
-    # ==> -- Open the section and an html file
+    # ==> -- Open the section and an html file - Functin from CLIMAF library
     # -----------------------------------------------------------------------------------------
     # WARNING : Different from MyOwnDiagnostics
     index += section("Sea ice area and volume per Arctic sea", level=4)
     #
     # ==> -- Control the size of the thumbnail -> thumbN_size
     # Note: ArcticSeas_thumbnail_size defined in params_ArcticSeas.py
+    # Different from what is done in other diagnostics to avoir overwriting plot parameters
+    # for all diagnostics running in parallel
     # -----------------------------------------------------------------------------------------
     if thumbnail_size:
         thumbN_size = thumbnail_size
@@ -87,7 +104,7 @@ if do_ArcticSeas_timeseries:
     comp_seaiceindex_script = os.path.join(ArcticSeas_tools_dir, 'comp_seaiceindex.py')
     create_mask_regions_script = os.path.join(ArcticSeas_tools_dir, 'masks', 'create_mask_regions.py')
     #
-    # Ecriture des messages d'erreur dans la page html
+    # Writing error messages in the html page - functions used from CLIMAF library
     # -----------------------------------------------------------------------------------------
     if not os.path.exists(comp_seaiceindex_script):
         index += open_table()
@@ -115,6 +132,9 @@ if do_ArcticSeas_timeseries:
             if not os.path.isdir(mask_dir):
                 os.makedirs(mask_dir)
             try:
+            # We need to use a subprocess here because 1. the script uses variable names that could
+            # overwrite local variables otherwise, 2. it ends with a sys.exit() which would stop
+            # the diagnostics otherwise, 3. it writes the output in the execution directory
                 subprocess.run(['python3', create_mask_regions_script], cwd=mask_dir, check=True)
             except Exception as e:
                 print("ArcticSeas: create_mask_regions.py failed -> %s" % e)
@@ -195,19 +215,27 @@ if do_ArcticSeas_timeseries:
             # -----------------------------------------------------------------------------------------
             seaindex_files = dict()
             model_labels = []
+            #
+            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithick']
             for variable in ArcticSeas_variables:
                 seaindex_files[variable] = dict()
+                # Wmodels is a list of dictionaries holding information set in datasetsetup.py
                 for model in Wmodels:
                     wmodel = model.copy()
+                    # Climaf needs the variable to find the input netcdf files
                     wmodel.update(dict(variable=variable))
-                    wmodel = get_period_manager(wmodel, diag='ArcticSeas')
-
+                    # -- get_period_manager() with diag='ts' is what actually
+                    # -- resolves ts_period into a concrete 'period' usable by ds()
+                    # -- period included in the wmodel dictionary 
+                    wmodel = get_period_manager(wmodel, diag='ts')
+                    # Build a title for the plots in case customname is not there (C-ESM-EP function)
                     model_label = wmodel.get('customname', build_plot_title(wmodel, None))
                     if model_label not in model_labels:
                         model_labels.append(model_label)
-
-                    cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), variable + '.nc')
-
+                    # Build a name for the output files (sea ice volume and sea ice area)
+                    cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
+                    cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
+                    # Finding the last simulation year
                     simulation_latest_year = latest_year_of_wmodel(wmodel)
                     cache_latest_year = latest_year_in_ncfile(cache_file)
                     up_to_date = (cache_latest_year is not None and simulation_latest_year is not None
