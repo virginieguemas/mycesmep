@@ -63,6 +63,8 @@ def latest_year_in_ncfile(ncfile):
     try:
         cached = xr.open_dataset(ncfile)
         first_var = next(iter(cached.data_vars), None)
+        # iter iterates on the keys of cached.data_vars dictionary and next takes the
+        # first, if there is none, fist_var becomes None (very unlikely but in case ...)
         if first_var is None:
             cached.close()
             return None
@@ -70,6 +72,7 @@ def latest_year_in_ncfile(ncfile):
         times = cached[time_dim].values
         cached.close()
         return int(str(times[-1])[:4]) if len(times) else None
+        # times[-1] is the last date of the file, its first four digits are the year
     except Exception:
         return None
 
@@ -152,9 +155,8 @@ if do_ArcticSeas_timeseries:
         # --------------------------------------------------------------------------------------------
         else:
             # -- Use check_masks.py from the sea_ice_diag_tools repository to draw
-            # -- a map colouring each named Arctic sea. check_masks.py also produces an Antarctic
-            # -- map (same script, unrelated hemisphere), which is left out of this Arctic-only
-            # -- page. Only (re-)run it when there is no plot yet or it predates the mask file
+            # -- a map colouring each named Arctic sea.
+            # -- Only (re-)run it when there is no plot yet or it predates the mask file
             # -- (e.g. the mask was just rebuilt above); MPLBACKEND=Agg avoids the script's
             # -- closing plt.show() blocking/failing headless.
             # -----------------------------------------------------------------------------------------
@@ -165,12 +167,15 @@ if do_ArcticSeas_timeseries:
             # WARNING : Need to simplify by removing the plt.show() in check_masks.py and the
             #           MPLPACKEND=Agg here
             # WARNING : Same generalization as create_mask_regions.py needed
-            # WARNING : Penser à ne pas plotter les mers manquantes
+            # WARNING : No plot for missing seas
 
             if need_check_plot and os.path.exists(check_masks_script):
                 try:
                     subprocess.run(['python3', check_masks_script], cwd=mask_dir, check=True,
                                     env=dict(os.environ, MPLBACKEND='Agg'))
+                # We need to use a subprocess here because 1. the script uses variable names that could
+                # overwrite local variables otherwise, 2. it ends with a sys.exit() which would stop
+                # the diagnostics otherwise, 3. it writes the output in the execution directory
                 except Exception as e:
                     print("ArcticSeas: check_masks.py failed -> %s" % e)
           
@@ -183,6 +188,8 @@ if do_ArcticSeas_timeseries:
                 index += start_line('Arctic seas')
                 index += cell('Arctic seas', check_masks_arctic_png, thumbnail=thumbN_size, hover=hover,
                                **alternative_dir)
+                # Options thumbnail, hover, alternative_dir set globally in C-ESM-EP, check those in
+                # case of issues with the plotting on the html
                 index += close_line() + close_table()
 
             # -- Get the list of seas from the mask file: netcdf variable names (e.g. 'barentse')
@@ -254,10 +261,14 @@ if do_ArcticSeas_timeseries:
                         continue
 
                     try:
+                        # Gather in dataset dat all informations about model read in datasetup.py and
+                        # the period of the netcdf files computed by get_period_manager
                         dat = ds(**wmodel)
                         if ArcticSeas_annual_mean:
                             dat = ccdo(dat, operator='yearmean')
+                            # Determine which command line to run
                         datafile = cfile(dat)
+                        # Actual computation
 
                         if not os.path.isdir(os.path.dirname(cache_file)):
                             os.makedirs(os.path.dirname(cache_file))
@@ -283,7 +294,7 @@ if do_ArcticSeas_timeseries:
             if ArcticSeas_meanORsum == 'sum':
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice area',
-                         ylabel='Sea ice area (millions km2)'),
+                         ylabel='Sea ice area (Millions km2)'),
                     dict(variable='sithick', title='Sea ice volume',
                          ylabel='Sea ice volume (Thousand km3)'),
                 ]
@@ -296,19 +307,24 @@ if do_ArcticSeas_timeseries:
                 ]
             for sea in seas:
                 sea_name = sea_display_names.get(sea, sea)
+                # If sea_display_names is not defined for sea, sea_name is sea
                 index += start_line(sea_name)
                 for spec in variable_plot_specs:
                     variable = spec['variable']
                     fig, ax = plt.subplots(figsize=(6, 4))
+                    # New figure created for each sea, each variable, each diagnostics
                     has_curve = False
+                    # Determine whether a legend will be needed (at least one line)
                     for model_label, outfile in seaindex_files.get(variable, dict()).items():
                         if not os.path.exists(outfile):
                             continue
+                        # Warning : if missing file, should be written on the html page
                         out_ds = xr.open_dataset(outfile)
                         if sea in out_ds.data_vars:
                             da = out_ds[sea]
                             time_dim = da.dims[0]
                             ax.plot(out_ds[time_dim].values, da.values, lw=1.5, label=model_label)
+                            # One line per simulation with its label
                             has_curve = True
                         out_ds.close()
 
