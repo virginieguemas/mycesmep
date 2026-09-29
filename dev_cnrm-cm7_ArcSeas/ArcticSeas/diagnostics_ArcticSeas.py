@@ -155,7 +155,7 @@ if do_ArcticSeas_timeseries:
         # --------------------------------------------------------------------------------------------
         else:
             # -- Use check_masks.py from the sea_ice_diag_tools repository to draw
-            # -- a map colouring each named Arctic sea.
+            # -- a map colouring each named Arctic sea for each simulation
             # -- Only (re-)run it when there is no plot yet or it predates the mask file
             # -- (e.g. the mask was just rebuilt above); MPLBACKEND=Agg avoids the script's
             # -- closing plt.show() blocking/failing headless.
@@ -166,8 +166,7 @@ if do_ArcticSeas_timeseries:
                                 or os.path.getmtime(check_masks_arctic_png) < os.path.getmtime(ArcticSeas_maskfile))
             # WARNING : Need to simplify by removing the plt.show() in check_masks.py and the
             #           MPLPACKEND=Agg here
-            # WARNING : Same generalization as create_mask_regions.py needed
-            # WARNING : No plot for missing seas
+            # WARNING : Remove plot for missing seas
 
             if need_check_plot and os.path.exists(check_masks_script):
                 try:
