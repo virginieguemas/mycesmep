@@ -148,6 +148,17 @@ ArcticSeas_seas_list = [
 # -- (monthly) frequency.
 ArcticSeas_annual_mean = True
 
+# -- What to do, for a given sea/variable plot, when data is available for only
+# -- some of the simulations (the others failed: no file found, missing grid file,
+# -- comp_seaiceindex.py error...):
+# --   'error'   -> replace the whole figure by an error message listing the
+# --                simulations that are missing
+# --   'partial' -> plot the simulations that do have data anyway, silently
+# --                leaving out the missing ones
+# -- Regardless of this setting, if NO simulation has data at all for a given
+# -- sea/variable, an error message is always shown instead of an (empty) figure.
+ArcticSeas_on_missing_simulations = 'error'
+
 # -- Thumbnail size for the time series plots
 ArcticSeas_thumbnail_size = '450*300'
 

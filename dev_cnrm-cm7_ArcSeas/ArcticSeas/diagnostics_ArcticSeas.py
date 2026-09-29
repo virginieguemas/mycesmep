@@ -233,20 +233,35 @@ if do_ArcticSeas_timeseries:
                     wmodel.update(dict(variable=variable))
                     # -- get_period_manager() with diag='ts' is what actually
                     # -- resolves ts_period into a concrete 'period' usable by ds()
-                    # -- period included in the wmodel dictionary 
+                    # -- period included in the wmodel dictionary
                     wmodel = get_period_manager(wmodel, diag='ts')
+
+                    # -- when it finds no file for a variable/simulation, get_period_manager() 
+                    # -- prints 'Error in get_period_manager => No File found for ...' 
+                    # -- and leaves 'period' unset) 
+                    if 'period' not in wmodel:
+                        model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
+                        print("ArcticSeas: no data found for %s / %s, skipping" % (model_label, variable))
+                        if model_label not in model_labels:
+                            model_labels.append(model_label)
+                        continue
+                        # We skip to next model here if period is not available 
+                        # build_plot_title and other functions would crash without valid period below
+
                     # Build a title for the plots in case customname is not there (C-ESM-EP function)
                     model_label = wmodel.get('customname', build_plot_title(wmodel, None))
+                                                           # No reference simulation, hence None
                     if model_label not in model_labels:
                         model_labels.append(model_label)
                     # Build a name for the output files (sea ice volume and sea ice area)
                     cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
                     cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
-                    # Finding the last simulation year
+                    # Finding the last simulation year both in the input and output files 
                     simulation_latest_year = latest_year_of_wmodel(wmodel)
                     cache_latest_year = latest_year_in_ncfile(cache_file)
                     up_to_date = (cache_latest_year is not None and simulation_latest_year is not None
                                   and cache_latest_year >= simulation_latest_year)
+                    # The output sea ice index file does not need to be updated.
 
                     if up_to_date:
                         seaindex_files[variable][model_label] = cache_file
@@ -259,6 +274,7 @@ if do_ArcticSeas_timeseries:
                     if not os.path.exists(gridfile):
                         print("ArcticSeas: grid file not found for %s -> %s" % (model_label, gridfile))
                         continue
+                        # Here we skip to the next model because we do not need to update the diagnostics
 
                     try:
                         # Gather in dataset dat all informations about model read in datasetup.py and
@@ -266,10 +282,11 @@ if do_ArcticSeas_timeseries:
                         dat = ds(**wmodel)
                         if ArcticSeas_annual_mean:
                             dat = ccdo(dat, operator='yearmean')
-                            # Determine which command line to run
+                            # Determine which command line to run if needed
                         datafile = cfile(dat)
-                        # Actual computation
+                        # Actual computation of annual means if needed
 
+                        # Create a cache directory to hold the sea ice index output files if not there
                         if not os.path.isdir(os.path.dirname(cache_file)):
                             os.makedirs(os.path.dirname(cache_file))
 
@@ -311,30 +328,46 @@ if do_ArcticSeas_timeseries:
                 index += start_line(sea_name)
                 for spec in variable_plot_specs:
                     variable = spec['variable']
-                    fig, ax = plt.subplots(figsize=(6, 4))
-                    # New figure created for each sea, each variable, each diagnostics
-                    has_curve = False
-                    # Determine whether a legend will be needed (at least one line)
+
+                    # -- Gather the data available for this sea/variable first, so we know
+                    # -- which simulations (if any) are missing before deciding whether to
+                    # -- plot the available ones or to report an error instead
+                    # -----------------------------------------------------------------------------------------
+                    curves = []  # (model_label, time_values, data_values) for simulations with data
+                    present_labels = []
                     for model_label, outfile in seaindex_files.get(variable, dict()).items():
                         if not os.path.exists(outfile):
                             continue
-                        # Warning : if missing file, should be written on the html page
                         out_ds = xr.open_dataset(outfile)
                         if sea in out_ds.data_vars:
                             da = out_ds[sea]
                             time_dim = da.dims[0]
-                            ax.plot(out_ds[time_dim].values, da.values, lw=1.5, label=model_label)
-                            # One line per simulation with its label
-                            has_curve = True
+                            curves.append((model_label, out_ds[time_dim].values, da.values))
+                            present_labels.append(model_label)
                         out_ds.close()
+                    # model_labels holds every simulation ArcticSeas attempted (see the compute
+                    # loop above); any of them missing from present_labels has no data here
+                    missing_labels = [m for m in model_labels if m not in present_labels]
+
+                    fig, ax = plt.subplots(figsize=(6, 4))
+                    # New figure created for each sea, each variable, each diagnostics
+                    if not curves:
+                        # -- Always an error message here, regardless of ArcticSeas_on_missing_simulations
+                        ax.text(0.5, 0.5, 'No data available for any simulation',
+                                ha='center', va='center', wrap=True, transform=ax.transAxes)
+                    elif missing_labels and ArcticSeas_on_missing_simulations == 'error':
+                        ax.text(0.5, 0.5, 'Data missing for: %s' % ', '.join(missing_labels),
+                                ha='center', va='center', wrap=True, transform=ax.transAxes)
+                    else:
+                        # -- ArcticSeas_on_missing_simulations == 'partial' (or nothing missing):
+                        # -- plot the simulations that do have data, silently skipping the rest
+                        for model_label, time_values, data_values in curves:
+                            ax.plot(time_values, data_values, lw=1.5, label=model_label)
+                        ax.legend(fontsize=8)
 
                     ax.set_title("%s - %s" % (sea_name, spec['title']))
                     ax.set_xlabel('Time')
                     ax.set_ylabel(spec['ylabel'])
-                    if has_curve:
-                        ax.legend(fontsize=8)
-                    else:
-                        ax.text(0.5, 0.5, 'no data', ha='center', va='center', transform=ax.transAxes)
                     fig.tight_layout()
 
                     png_path = os.path.join(workdir, 'ts_%s_%s.png' % (sanitize(sea), variable))
