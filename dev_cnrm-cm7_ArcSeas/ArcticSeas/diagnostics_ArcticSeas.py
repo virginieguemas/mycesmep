@@ -48,11 +48,11 @@ CACHE_VARIABLE_LABELS = {
 
 
 def latest_year_of_wmodel(wmodel):
-    """Latest year covered by a period-managed model dict, from build_str_period()."""
-    # build_str_period return a chain of characters holding the first and last years 
+    """Latest year covered by a period-managed model dict, from build_period_str()."""
+    # build_period_str return a chain of characters holding the first and last years
     # then the number with 4 digits of more but keep the first 4
     # the function returns the last of those 4 digit numbers (last year) if it exists
-    years = re.findall(r'\d{4}', str(build_str_period(wmodel)))
+    years = re.findall(r'\d{4}', str(build_period_str(wmodel)))
     return int(years[-1]) if years else None
 
 
