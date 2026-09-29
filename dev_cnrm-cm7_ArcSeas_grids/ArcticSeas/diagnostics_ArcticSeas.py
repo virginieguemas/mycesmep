@@ -1,18 +1,22 @@
 # ------------------------------------------------------------------------------------------------------ \
 # --                                                                                                    - \
-# --      Scientific diagnostics for the                                                                  - \
+# --      Scientific diagnostics for the                                                                 - \
 # --          CliMAF Earth System Model Evaluation Platform                                               - |
 # --      diagnostics_ArcticSeas.py                                                                       - |
 # --        ==> add html code to 'index' (initialized with 'header')                                      - |
 # --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
 # --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithic) computed as an                - |
+# --      Time series of sea ice area (siconc) and sea ice volume (sithic) computed as an                 - |
 # --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
 #         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
 #         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
 #         individual seas is computed by create_mask_regions.py from the sea_ice_diag_tools repository    - |
 # --                                                                                                      - /
+# --                                                                                                     - /
+# --      Contact : virginie.guemas@meteo.fr                                                            - /
+# --      History : Created September 2026   -    virginie.guemas@meteo.fr                             - /
+# --                                                                                                  - /
 # ---------------------------------------------------------------------------------------------------- /
 
 from os import getcwd
@@ -46,6 +50,8 @@ CACHE_VARIABLE_LABELS = {
     ('sithic', 'mean'): 'sit',
 }
 
+# Warning : Those might not be the variables names in netcdf files 
+# To be generalized with aliases
 
 def latest_year_of_wmodel(wmodel):
     """Latest year covered by a period-managed model dict, from build_period_str()."""
@@ -60,6 +66,7 @@ def latest_year_in_ncfile(ncfile):
     """Latest year found in the (single) time-like dimension of a netcdf file."""
     if not os.path.exists(ncfile):
         return None
+    # If there is no netcdf file yet, this function returns None
     try:
         cached = xr.open_dataset(ncfile)
         first_var = next(iter(cached.data_vars), None)
@@ -68,6 +75,7 @@ def latest_year_in_ncfile(ncfile):
         if first_var is None:
             cached.close()
             return None
+        # If the netcdf file is empty, this function returns None
         time_dim = cached[first_var].dims[0]
         times = cached[time_dim].values
         cached.close()
@@ -75,18 +83,18 @@ def latest_year_in_ncfile(ncfile):
         # times[-1] is the last date of the file, its first four digits are the year
     except Exception:
         return None
+    # If for any reason the last year of the file can not be computed, this function returns None
 
 
 if do_ArcticSeas_timeseries:
     # 
-    # ==> -- Open the section and an html file - Functin from CLIMAF library
+    # ==> -- Open the section and an html file - Function from CLIMAF library
     # -----------------------------------------------------------------------------------------
-    # WARNING : Different from MyOwnDiagnostics
     index += section("Sea ice area and volume per Arctic sea", level=4)
     #
     # ==> -- Control the size of the thumbnail -> thumbN_size
     # Note: ArcticSeas_thumbnail_size defined in params_ArcticSeas.py
-    # Different from what is done in other diagnostics to avoir overwriting plot parameters
+    # Different from what is done in other diagnostics to avoid overwriting plot parameters
     # for all diagnostics running in parallel
     # -----------------------------------------------------------------------------------------
     if thumbnail_size:
@@ -106,6 +114,7 @@ if do_ArcticSeas_timeseries:
     # -----------------------------------------------------------------------------------------
     comp_seaiceindex_script = os.path.join(ArcticSeas_tools_dir, 'comp_seaiceindex.py')
     create_mask_regions_script = os.path.join(ArcticSeas_tools_dir, 'masks', 'create_mask_regions.py')
+    check_masks_script = os.path.join(ArcticSeas_tools_dir, 'masks', 'check_masks.py')
     #
     # Writing error messages in the html page - functions used from CLIMAF library
     # -----------------------------------------------------------------------------------------
@@ -116,94 +125,128 @@ if do_ArcticSeas_timeseries:
                   % comp_seaiceindex_script
         index += close_line() + close_table()
 
-    elif not os.path.exists(ArcticSeas_maskfile) and not os.path.exists(create_mask_regions_script):
-        index += open_table()
-        index += start_line('Error')
-        index += "Mask file not found: %s, and create_mask_regions.py not found at %s to build it ; " \
-                  "check ArcticSeas_maskfile and ArcticSeas_tools_dir in params_ArcticSeas.py" \
-                  % (ArcticSeas_maskfile, create_mask_regions_script)
-        index += close_line() + close_table()
-
     else:
-        mask_dir = os.path.dirname(ArcticSeas_maskfile)
-
-        # -- Build the mask file if it is not there yet: create_mask_regions.py takes
-        # -- --maskfile/--gridfile (land-sea mask + lon/lat, both read from
-        # -- ArcticSeas_gridfile, a NEMO mesh_mask-like file) and --out (the mask file to
-        # -- produce, ArcticSeas_maskfile) ; msk/umsk/vmsk/lon/lat variable names are left
-        # -- to the script's own defaults, which already match the CNRM-CM7 NEMO grid.
+        # -- Simulations may not all share the same grid/land-sea mask (different NEMO
+        # -- configurations, resolutions...). ArcticSeas_gridfile and ArcticSeas_maskfile
+        # -- (params_ArcticSeas.py) are dictionaries giving, for each simulation (keyed by
+        # -- its 'customname', or its 'experiment' if it has none), the grid description file
+        # -- to use and the matching Arctic-seas mask file (built on demand if missing).
+        # -- Simulations sharing the same grid should repeat the same paths: the mask itself is
+        # -- then only built once, but the "Arctic seas" check plot
+        # -- further down is still shown once per simulation, each with its own label.
         # -----------------------------------------------------------------------------------------
-        if not os.path.exists(ArcticSeas_maskfile):
+        def resolve_grid_and_mask(wmodel):
+            """Returns the complete path for the gridfile and the maskfile if they are defined in
+               param_ArcticSeas.py, None if not, and the model_label for the plots"""
+            # model_label is customname is defined, else experiment if defined else unknow ...
+            model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
+            if model_label not in ArcticSeas_gridfile or model_label not in ArcticSeas_maskfile:
+                return None, None, model_label
+            gridfile = ArcticSeas_gridfile[model_label]
+            maskfile = ArcticSeas_maskfile[model_label]
+            return gridfile, maskfile, model_label
+
+        def ensure_mask(gridfile, maskfile):
+            """Build maskfile from gridfile with create_mask_regions.py if it is missing."""
+            if os.path.exists(maskfile):
+                return True
+            if not os.path.exists(create_mask_regions_script):
+                print("ArcticSeas: create_mask_regions.py not found at %s ; cannot build %s"
+                      % (create_mask_regions_script, maskfile))
+                return False
+            mask_dir = os.path.dirname(maskfile)
             if not os.path.isdir(mask_dir):
                 os.makedirs(mask_dir)
             try:
-            # We need to use a subprocess here because 1. the script uses variable names that could
-            # overwrite local variables otherwise, 2. it ends with a sys.exit() which would stop
-            # the diagnostics otherwise
+                # We need to use a subprocess here because 1. the script uses variable names that
+                # could overwrite local variables otherwise, 2. it ends with a sys.exit() which
+                # would stop the diagnostics otherwise
                 subprocess.run(['python3', create_mask_regions_script,
-                                 '--maskfile', ArcticSeas_gridfile,
-                                 '--gridfile', ArcticSeas_gridfile,
-                                 '--out', ArcticSeas_maskfile], check=True)
+                                 '--maskfile', gridfile, '--gridfile', gridfile,
+                                 '--out', maskfile], check=True)
             except Exception as e:
-                print("ArcticSeas: create_mask_regions.py failed -> %s" % e)
+                print("ArcticSeas: create_mask_regions.py failed for %s -> %s" % (maskfile, e))
+            return os.path.exists(maskfile)
 
-        if not os.path.exists(ArcticSeas_maskfile):
+        def ensure_check_masks_plot(gridfile, maskfile, label):
+            """(Re-)run check_masks.py for this grid if its plot is missing or predates maskfile.
+            check_masks.py always writes fixed relative filenames ('check_masks_arctic.png',
+            'check_masks_antarctic.png') in its current directory -- run it in workdir and
+            immediately rename the Arctic one to <mask file name without .nc>.png, so every
+            distinct grid ends up with its own plot name. MPLBACKEND=Agg avoids the script's
+            closing plt.show() blocking/failing headless."""
+            png = os.path.join(workdir, os.path.splitext(os.path.basename(maskfile))[0] + '.png')
+            need = not os.path.exists(png) or os.path.getmtime(png) < os.path.getmtime(maskfile)
+            if need and os.path.exists(check_masks_script):
+                try:
+                    subprocess.run(['python3', check_masks_script,
+                                     '--gridfile', gridfile, '--mask', maskfile, '--label', label],
+                                    cwd=workdir, check=True, env=dict(os.environ, MPLBACKEND='Agg'))
+                    generated = os.path.join(workdir, 'check_masks_arctic.png')
+                    if os.path.exists(generated):
+                        os.replace(generated, png)
+                except Exception as e:
+                    print("ArcticSeas: check_masks.py failed for %s -> %s" % (label, e))
+            return png if os.path.exists(png) else None
+            # WARNING : Remove plot for missing seas
+
+        # -- Find every distinct grid/mask actually needed by the configured simulations,
+        # -- then build/locate each of them (deduplicated by mask file)
+        # -----------------------------------------------------------------------------------------
+        # From MyOwnDiagnostics, not sure we need to copy those
+        Wmodels = copy.deepcopy(models)
+        grids_needed = dict()  # maskfile -> (gridfile, [label, ...]) -- one label per simulation
+        # sharing this maskfile, in the order they are encountered in Wmodels
+        for model in Wmodels:
+            gridfile, maskfile, label = resolve_grid_and_mask(model)
+            if gridfile is None:
+                print("ArcticSeas: no ArcticSeas_gridfile/ArcticSeas_maskfile entry for %s, skipping"
+                      % label)
+                continue
+            if maskfile in grids_needed:
+                grids_needed[maskfile][1].append(label)
+            else:
+                grids_needed[maskfile] = (gridfile, [label])
+
+        available_masks = dict()  # maskfile -> (gridfile, [label, ...]), only those built/found
+        for maskfile, (gridfile, labels) in grids_needed.items():
+            if ensure_mask(gridfile, maskfile):
+                available_masks[maskfile] = (gridfile, labels)
+        # Build all required maskfiles only once thanks to the information stored in grids_needed
+        # If maskfile properly built fill in available_masks
+
+        if not available_masks:
             index += open_table()
             index += start_line('Error')
-            index += "Mask file still missing after running create_mask_regions.py: %s" % ArcticSeas_maskfile
+            index += "No Arctic seas mask file could be found or built for any of the configured " \
+                      "simulations (see the job log for details)."
             index += close_line() + close_table()
- 
+
         # Finally !!! We have everything we need to run the actual diagnostics
         # --------------------------------------------------------------------------------------------
         else:
-            # -- Use check_masks.py from the sea_ice_diag_tools repository to draw
-            # -- a map colouring each named Arctic sea. It takes --gridfile
-            # -- (lon/lat, ArcticSeas_gridfile) and --mask (ArcticSeas_maskfile) ; two
-            # -- output PNGs maps are written as relative filenames in its current
-            # -- directory, so it is run with cwd=mask_dir.
-            # -- Only (re-)run it when there is no plot yet or it predates the mask file
-            # -- (e.g. the mask was just rebuilt above); MPLBACKEND=Agg avoids the script's
-            # -- closing plt.show() blocking/failing headless.
+            # -- Sanity-check plot of the mask geometry, one per distinct grid (not one per
+            # -- simulation: the label already lists every simulation sharing that grid) 
             # -----------------------------------------------------------------------------------------
-            check_masks_script = os.path.join(ArcticSeas_tools_dir, 'masks', 'check_masks.py')
-            check_masks_arctic_png = os.path.join(mask_dir, 'check_masks_arctic.png')
-            need_check_plot = (not os.path.exists(check_masks_arctic_png)
-                                or os.path.getmtime(check_masks_arctic_png) < os.path.getmtime(ArcticSeas_maskfile))
-            # WARNING : Need to simplify by removing the plt.show() in check_masks.py and the
-            #           MPLPACKEND=Agg here
-            # WARNING : No plot for missing seas
-
-            if need_check_plot and os.path.exists(check_masks_script):
-                try:
-                    subprocess.run(['python3', check_masks_script,
-                                     '--gridfile', ArcticSeas_gridfile,
-                                     '--mask', ArcticSeas_maskfile],
-                                    cwd=mask_dir, check=True,
-                                    env=dict(os.environ, MPLBACKEND='Agg'))
-                # We need to use a subprocess here because 1. the script uses variable names that could
-                # overwrite local variables otherwise, 2. it ends with a sys.exit() which would stop
-                # the diagnostics otherwise, 3. it writes the output in the execution directory
-                except Exception as e:
-                    print("ArcticSeas: check_masks.py failed -> %s" % e)
-          
-            #
-            # ==> -- Add the Arctic seas plot to the html page
-            # -----------------------------------------------------------------------------------------
-            if os.path.exists(check_masks_arctic_png):
-                index += section("Arctic seas", level=5)
-                index += open_table()
-                index += start_line('Arctic seas')
-                index += cell('Arctic seas', check_masks_arctic_png, thumbnail=thumbN_size, hover=hover,
-                               **alternative_dir)
+            index += section("Arctic seas", level=5)
+            index += open_table()
+            index += start_line('Arctic seas')
+            for maskfile, (gridfile, shared_labels) in available_masks.items():
+                combined_label = ', '.join(shared_labels)
+                png = ensure_check_masks_plot(gridfile, maskfile, combined_label)
+                if png:
+                    index += cell(combined_label, png, thumbnail=thumbN_size, hover=hover,
+                                   **alternative_dir)
                 # Options thumbnail, hover, alternative_dir set globally in C-ESM-EP, check those in
                 # case of issues with the plotting on the html
-                index += close_line() + close_table()
+            index += close_line() + close_table()
 
-            # -- Get the list of seas from the mask file: netcdf variable names (e.g. 'barentse')
-            # -- are used to index the data, their 'long_name' attribute (e.g. 'Barents Sea') to
-            # -- label the html page and the plots
+            # -- Get the list of seas from any one of the mask files: they all describe the same
+            # -- set of named seas (netcdf variable names, e.g. 'barentse'), just discretized on
+            # -- different grids; their 'long_name' attribute (e.g. 'Barents Sea') labels the page
             # -----------------------------------------------------------------------------------------
-            mask_ds = xr.open_dataset(ArcticSeas_maskfile)
+            reference_maskfile = next(iter(available_masks))
+            mask_ds = xr.open_dataset(reference_maskfile)
             available_seas = list(mask_ds.data_vars)
             sea_display_names = {sea: mask_ds[sea].attrs.get('long_name', sea) for sea in available_seas}
             mask_ds.close()
@@ -216,11 +259,6 @@ if do_ArcticSeas_timeseries:
             else:
                 seas = available_seas
                 missing_seas = []
-            #
-            # ==> -- Apply the period_for_diag_manager 
-            # -----------------------------------------------------------------------------------------
-            # WARNING : From MyOwnDiagnostics, check whether we need that
-            Wmodels = copy.deepcopy(models)
 
             # ==> -- For each model/variable, reuse the cached
             # ==> -- per-sea time series from ArcticSeas_cache_dir if it already covers the
@@ -243,16 +281,16 @@ if do_ArcticSeas_timeseries:
                     # -- period included in the wmodel dictionary
                     wmodel = get_period_manager(wmodel, diag='ts')
 
-                    # -- when it finds no file for a variable/simulation, get_period_manager() 
-                    # -- prints 'Error in get_period_manager => No File found for ...' 
-                    # -- and leaves 'period' unset) 
+                    # -- when it finds no file for a variable/simulation, get_period_manager()
+                    # -- prints 'Error in get_period_manager => No File found for ...'
+                    # -- and leaves 'period' unset)
                     if 'period' not in wmodel:
                         model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
                         print("ArcticSeas: no data found for %s / %s, skipping" % (model_label, variable))
                         if model_label not in model_labels:
                             model_labels.append(model_label)
                         continue
-                        # We skip to next model here if period is not available 
+                        # We skip to next model here if period is not available
                         # build_plot_title and other functions would crash without valid period below
 
                     # Build a title for the plots in case customname is not there (C-ESM-EP function)
@@ -263,7 +301,7 @@ if do_ArcticSeas_timeseries:
                     # Build a name for the output files (sea ice volume and sea ice area)
                     cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
                     cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
-                    # Finding the last simulation year both in the input and output files 
+                    # Finding the last simulation year both in the input and output files
                     simulation_latest_year = latest_year_of_wmodel(wmodel)
                     cache_latest_year = latest_year_in_ncfile(cache_file)
                     up_to_date = (cache_latest_year is not None and simulation_latest_year is not None
@@ -274,14 +312,22 @@ if do_ArcticSeas_timeseries:
                         seaindex_files[variable][model_label] = cache_file
                         continue
 
-                    # -- Prefer a per-model grid description file (models may not share the
-                    # -- same grid/resolution) over the global fallback from params_ArcticSeas.py
-                    gridfile = wmodel.get('mesh_hgr', wmodel.get('gridfile', ArcticSeas_gridfile))
+                    # -- Grid and matching sea mask for this simulation specifically (see
+                    # -- resolve_grid_and_mask above: may differ from the defaults)
+                    gridfile, maskfile, label = resolve_grid_and_mask(wmodel)
 
+                    if gridfile is None:
+                        print("ArcticSeas: no ArcticSeas_gridfile/ArcticSeas_maskfile entry for %s, "
+                              "skipping" % model_label)
+                        continue
                     if not os.path.exists(gridfile):
                         print("ArcticSeas: grid file not found for %s -> %s" % (model_label, gridfile))
                         continue
                         # Here we skip to the next model because we do not need to update the diagnostics
+                    if maskfile not in available_masks:
+                        print("ArcticSeas: no sea mask available for %s (grid %s), skipping"
+                              % (model_label, label))
+                        continue
 
                     try:
                         # Gather in dataset dat all informations about model read in datasetup.py and
@@ -300,7 +346,7 @@ if do_ArcticSeas_timeseries:
                         cmd = ['python3', comp_seaiceindex_script,
                                '--data', datafile,
                                '--var', variable,
-                               '--mask', ArcticSeas_maskfile,
+                               '--mask', maskfile,
                                '--grid', gridfile,
                                '--dxvar', ArcticSeas_dxvar,
                                '--dyvar', ArcticSeas_dyvar,
@@ -389,7 +435,7 @@ if do_ArcticSeas_timeseries:
                 index += open_table()
                 index += start_line('Note')
                 index += "Seas requested in ArcticSeas_seas_list but not found in the mask file " \
-                          "%s: %s" % (ArcticSeas_maskfile, ", ".join(missing_seas))
+                          "%s: %s" % (reference_maskfile, ", ".join(missing_seas))
                 index += close_line() + close_table()
 
 # -----------------------------------------------------------------------------------
