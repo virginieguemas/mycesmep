@@ -1,0 +1,38 @@
+debug    : TMPDIR found: /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+debug    : Create temporary dir /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2
+debug    : CDO command init: cdo -O -f nc
+debug    : Alias and variable considered: None -- siconc
+debug    : Region considered: None
+debug    : Units considered: None
+debug    : Missing values considered: None
+debug    : Period considered: 1850-01-01T00:00:00,2099-12-31T23:59:00
+debug    : Operator considered: yearmean
+debug    : Command launched cdo -O -f nc -selname,siconc -seldate,1850-01-01T00:00:00,2099-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/CM67_N4_3_REF3_seaice_monthly_siconc_185001-205912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/tmp_CM67_N4_3_REF3_seaice_monthly_siconc_185001-205912.nc
+debug    : Time at launch 1790677814.6291811
+debug    : cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lat
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lon
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lat!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lon!
+
+debug    : Time at end 1790677823.5047324
+debug    : Command launched cdo -O -f nc -selname,siconc -seldate,1850-01-01T00:00:00,2099-12-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/CM67_N4_3_REF3_seaice_monthly_siconc_185001-209912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/tmp_CM67_N4_3_REF3_seaice_monthly_siconc_185001-209912.nc
+debug    : Time at launch 1790677823.5113485
+debug    : cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lat
+cdi  warning (cdfScanVarAttr): NetCDF: Variable not found - bounds_lon
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lat!
+cdi  warning (cdf_read_xcoord): Unsupported array structure, skipped variable bounds_nav_lon!
+
+debug    : Time at end 1790677834.165994
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/CM67_N4_3_REF3_seaice_monthly_siconc_185001-205912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/CM67_N4_3_REF3_seaice_monthly_siconc_185001-209912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/660a8fcc4732c54b2cf189d3572b040e08c51f0f9730d7f3c5d00c_2501694.nc
+debug    : Time at launch 1790677834.1706111
+debug    : 
+debug    : Time at end 1790677843.4529321
+debug    : Command launched cdo -O -f nc -yearmean /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo7np3uls2/660a8fcc4732c54b2cf189d3572b040e08c51f0f9730d7f3c5d00c_2501694.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/99/660a8fcc4732c54b2cf189d3572b040e08c51f0f9730d7f3c5d00c_2501694.nc
+debug    : Time at launch 1790677843.8215895
+debug    : 
+debug    : Time at end 1790677849.5540378
+
+
+stdout and stderr of script call :
+	 /cnrm/est/COMMON/climaf/climaf_3.0/climaf/../scripts/mcdo.py --operator="yearmean" --output_file="/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/99/660a8fcc4732c54b2cf189d3572b040e08c51f0f9730d7f3c5d00c_2501694.nc" --var="siconc" --period="1850-01-01T00:00:00,2099-12-31T23:59:00" --region="" --alias="" --units="" --vm="" /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR/CM67_N4_3_REF3/CM67_N4_3_REF3_seaice_monthly_siconc_185001-205912.nc /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR/CM67_N4_3_REF3/CM67_N4_3_REF3_seaice_monthly_siconc_185001-209912.nc
+

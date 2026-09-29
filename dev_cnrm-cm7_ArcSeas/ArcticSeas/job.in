@@ -1,5 +1,5 @@
 ( 
-	 cd /cnrm/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas ; 
+	 cd /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas/ArcticSeas ; 
 
 	 sqsub \
 		-e "component=ArcticSeas,comparison=dev_cnrm-cm7_ArcSeas,WD=$(pwd),cesmep_frontpage=../,CESMEP_CLIMAF_CACHE=/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2" \
