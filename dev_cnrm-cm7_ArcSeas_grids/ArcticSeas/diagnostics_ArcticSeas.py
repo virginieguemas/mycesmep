@@ -7,7 +7,7 @@
 # --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
 # --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithick) computed as an                - |
+# --      Time series of sea ice area (siconc) and sea ice volume (sithic) computed as an                - |
 # --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
 #         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
 #         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
@@ -41,9 +41,9 @@ def sanitize(name):
 # -- sic/sit = sea ice concentration/thickness (area-weighted mean)
 CACHE_VARIABLE_LABELS = {
     ('siconc', 'sum'): 'sia',
-    ('sithick', 'sum'): 'siv',
+    ('sithic', 'sum'): 'siv',
     ('siconc', 'mean'): 'sic',
-    ('sithick', 'mean'): 'sit',
+    ('sithic', 'mean'): 'sit',
 }
 
 
@@ -127,8 +127,8 @@ if do_ArcticSeas_timeseries:
     else:
         mask_dir = os.path.dirname(ArcticSeas_maskfile)
 
-        # -- Build the mask file if it is not there yet: create_mask_regions.py now takes
-        # -- explicit --maskfile/--gridfile (land-sea mask + lon/lat, both read from
+        # -- Build the mask file if it is not there yet: create_mask_regions.py takes
+        # -- --maskfile/--gridfile (land-sea mask + lon/lat, both read from
         # -- ArcticSeas_gridfile, a NEMO mesh_mask-like file) and --out (the mask file to
         # -- produce, ArcticSeas_maskfile) ; msk/umsk/vmsk/lon/lat variable names are left
         # -- to the script's own defaults, which already match the CNRM-CM7 NEMO grid.
@@ -157,10 +157,10 @@ if do_ArcticSeas_timeseries:
         # --------------------------------------------------------------------------------------------
         else:
             # -- Use check_masks.py from the sea_ice_diag_tools repository to draw
-            # -- a map colouring each named Arctic sea. It now takes explicit --gridfile
-            # -- (lon/lat, ArcticSeas_gridfile) and --mask (ArcticSeas_maskfile) ; its two
-            # -- output PNGs are still written as relative filenames in its current
-            # -- directory, so it is still run with cwd=mask_dir.
+            # -- a map colouring each named Arctic sea. It takes --gridfile
+            # -- (lon/lat, ArcticSeas_gridfile) and --mask (ArcticSeas_maskfile) ; two
+            # -- output PNGs maps are written as relative filenames in its current
+            # -- directory, so it is run with cwd=mask_dir.
             # -- Only (re-)run it when there is no plot yet or it predates the mask file
             # -- (e.g. the mask was just rebuilt above); MPLBACKEND=Agg avoids the script's
             # -- closing plt.show() blocking/failing headless.
@@ -230,7 +230,7 @@ if do_ArcticSeas_timeseries:
             seaindex_files = dict()
             model_labels = []
             #
-            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithick']
+            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithic']
             for variable in ArcticSeas_variables:
                 seaindex_files[variable] = dict()
                 # Wmodels is a list of dictionaries holding information set in datasetsetup.py
@@ -312,21 +312,21 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: failed to compute %s for %s -> %s" % (variable, model_label, e))
 
             # ==> -- Build one table row per sea; for each sea, one plot for the ice area (siconc) and
-            # ==> -- one for the ice volume (sithick), overlaying all the simulations
+            # ==> -- one for the ice volume (sithic), overlaying all the simulations
             # -----------------------------------------------------------------------------------------
             index += open_table()
             if ArcticSeas_meanORsum == 'sum':
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice area',
                          ylabel='Sea ice area (Millions km2)'),
-                    dict(variable='sithick', title='Sea ice volume',
+                    dict(variable='sithic', title='Sea ice volume',
                          ylabel='Sea ice volume (Thousand km3)'),
                 ]
             else:
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice concentration',
                          ylabel='Area-weighted mean sea ice concentration'),
-                    dict(variable='sithick', title='Sea ice thickness',
+                    dict(variable='sithic', title='Sea ice thickness',
                          ylabel='Area-weighted mean sea ice thickness (m)'),
                 ]
             for sea in seas:

@@ -6,7 +6,7 @@
 # --             - component: ArcticSeas                                                       - |
 # --                                                                                           - |
 # --      Contact : virginie.guemas@meteo.fr                                                   - |
-# --      History : Creating September 2026   -    virginie.guemas@meteo.fr                    - |
+# --      History : Created September 2026   -    virginie.guemas@meteo.fr                    - |
 # --                                                                                           - /
 # --------------------------------------------------------------------------------------------- /
 
@@ -24,6 +24,8 @@ clean_cache = False
 routine_cache_cleaning = [dict(age='+20')]
 # -- Parallel and memory instructions
 do_parallel = False
+# WARNING : The arguments above are copied from other example, not sure they actually
+# have an impact
 
 # -- Set the reference against which we plot the diagnostics 
 # ---------------------------------------------------------------------------- >
@@ -34,6 +36,8 @@ do_parallel = False
 # --       For instance, you can set it to models[0] if you want to see the
 # --       differences relative to the first simulation of the list 'models'
 reference = 'default'
+# WARNING : I put default in case there had been some sea ice data in C-ESM-EP
+# for sea ice but there isn't - need to add something
 
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
@@ -56,7 +60,7 @@ latcutoff =  50.
 # -- netcdf file (one region = one data variable in the mask file), weighting by
 # -- the grid cell area (dxvar*dyvar) taken from a grid file.
 # --   -> applied to 'siconc'  with meanORsum='sum'  => actual sea ice area  per sea
-# --   -> applied to 'sithick' with meanORsum='sum'  => actual sea ice volume per sea
+# --   -> applied to 'sithic' with meanORsum='sum'  => actual sea ice volume per sea
 # -- (meanORsum='mean' instead gives the area-weighted mean concentration/thickness)
 #
 # -- The sea mask file can be computed by create_mask_regions.py from the same
@@ -107,13 +111,13 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/ArcticSeas_cache'
 
 # -- Variables used to compute the per-sea indices
 # --   siconc  -> sea ice area
-# --   sithick -> sea ice volume
-ArcticSeas_variables = ['siconc', 'sithick']
+# --   sithic -> sea ice volume
+ArcticSeas_variables = ['siconc', 'sithic']
 
 # -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice
-# --           area, sithick gives the actual sea ice volume, in each sea
+# --           area, sithic gives the actual sea ice volume, in each sea
 # -- 'mean' -> area-weighted mean: siconc gives the mean sea ice concentration,
-# --           sithick gives the mean sea ice thickness, in each sea
+# --           sithic gives the mean sea ice thickness, in each sea
 ArcticSeas_meanORsum = 'sum'
 
 # -- Restrict to a subset of seas (list of the netcdf variable names found in

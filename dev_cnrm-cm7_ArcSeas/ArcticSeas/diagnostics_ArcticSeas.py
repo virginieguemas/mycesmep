@@ -7,7 +7,7 @@
 # --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
 # --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithick) computed as an                - |
+# --      Time series of sea ice area (siconc) and sea ice volume (sithic) computed as an                - |
 # --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
 #         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
 #         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
@@ -41,9 +41,9 @@ def sanitize(name):
 # -- sic/sit = sea ice concentration/thickness (area-weighted mean)
 CACHE_VARIABLE_LABELS = {
     ('siconc', 'sum'): 'sia',
-    ('sithick', 'sum'): 'siv',
+    ('sithic', 'sum'): 'siv',
     ('siconc', 'mean'): 'sic',
-    ('sithick', 'mean'): 'sit',
+    ('sithic', 'mean'): 'sit',
 }
 
 
@@ -223,7 +223,7 @@ if do_ArcticSeas_timeseries:
             seaindex_files = dict()
             model_labels = []
             #
-            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithick']
+            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithic']
             for variable in ArcticSeas_variables:
                 seaindex_files[variable] = dict()
                 # Wmodels is a list of dictionaries holding information set in datasetsetup.py
@@ -305,21 +305,21 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: failed to compute %s for %s -> %s" % (variable, model_label, e))
 
             # ==> -- Build one table row per sea; for each sea, one plot for the ice area (siconc) and
-            # ==> -- one for the ice volume (sithick), overlaying all the simulations
+            # ==> -- one for the ice volume (sithic), overlaying all the simulations
             # -----------------------------------------------------------------------------------------
             index += open_table()
             if ArcticSeas_meanORsum == 'sum':
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice area',
                          ylabel='Sea ice area (Millions km2)'),
-                    dict(variable='sithick', title='Sea ice volume',
+                    dict(variable='sithic', title='Sea ice volume',
                          ylabel='Sea ice volume (Thousand km3)'),
                 ]
             else:
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice concentration',
                          ylabel='Area-weighted mean sea ice concentration'),
-                    dict(variable='sithick', title='Sea ice thickness',
+                    dict(variable='sithic', title='Sea ice thickness',
                          ylabel='Area-weighted mean sea ice thickness (m)'),
                 ]
             for sea in seas:
