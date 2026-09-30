@@ -37,7 +37,7 @@ do_parallel = False
 # --       For instance, you can set it to models[0] if you want to see the
 # --       differences relative to the first simulation of the list 'models'
 reference = 'default'
-#
+
 # WARNING : I put default in case there had been some sea ice data in C-ESM-EP
 # for sea ice but there isn't - need to add something
 
@@ -79,6 +79,7 @@ do_ArcticSeas_timeseries = True
 # -- git@github.com:virginieguemas/sea_ice_diag_tools.git
 ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 
+
 # -- Grid description file (NEMO mesh_mask-like: land-sea mask, lon/lat, cell sizes
 # -- e1t/e2t) and matching Arctic-seas mask file (one data variable (2D) per sea/region,
 # -- with a 'long_name' attribute giving the sea name ; built on demand by
@@ -98,6 +99,28 @@ ArcticSeas_maskfile = {
 }
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
+# -- Mask netcdf file: one data variable (2D, on the model t-grid) per sea/region,
+# -- with a 'long_name' attribute giving the sea name; built by
+# -- ArcticSeas_tools_dir/masks/create_mask_regions.py (grid='cnrmcm7' case).
+# -- If the mask netcdf file is missing, diagnostics_ArcticSeas.py runs 
+# -- create_mask_regions.py itself to build it before going any further.
+ArcticSeas_maskfile = '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc'
+#
+# WARNING : As coded now, ArcticSeas can only compare simulations with the same grid
+# Need generalization
+
+# -- Grid description netcdf file (NEMO mesh_mask/mesh_hgr-like file) giving the
+# -- size of the grid cells (used to area-weight the mean computed over each sea).
+# -- Used as a fallback only: if the model dictionary (see datasets_setup.py) already
+# -- defines a 'mesh_hgr' (or 'gridfile') key, that per-model file is used instead,
+# -- since different simulations may not share the same grid/resolution.
+ArcticSeas_gridfile = '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc'
+ArcticSeas_dxvar = 'e1t'
+ArcticSeas_dyvar = 'e2t'
+# WARNING : Right now it is not only a fall back - to be improved
+#
+# WARNING : Tested only on comparison of simulations with the same grids
+>>>>>>> Stashed changes
 
 # -- Where the per-sea sea ice area/volume time series computed by comp_seaiceindex.py
 # -- are cached, one sub-directory per simulation (based on its customname), one
@@ -105,9 +128,10 @@ ArcticSeas_dyvar = 'e2t'
 # -- (re-)processed by comp_seaiceindex.py if no cache exists yet, or if the
 # -- simulation now extends further in time than what is cached (i.e. it was
 # -- lengthened since the cache was last built).
-ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/ArcticSeas_cache'
+ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 
 # -- Variables used to compute the per-sea indices
+<<<<<<< Updated upstream
 # --   siconc -> sea ice area
 # --   sithic -> sea ice volume 
 ArcticSeas_variables = ['siconc', 'sithic']
@@ -115,11 +139,16 @@ ArcticSeas_variables = ['siconc', 'sithic']
 # WARNING : Diagnostics will diseappear if those variables names are not those used in
 # the netcdf files. To be generalized with aliases
 # N3CPL variable is sivolu - project_N4cpl.py aliases it under 'sit' not 'sithic'
+=======
+# --   siconc  -> sea ice area
+# --   sithic -> sea ice volume
+ArcticSeas_variables = ['siconc', 'sithic']
+>>>>>>> Stashed changes
 
 # -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice
-# --           area, sithick gives the actual sea ice volume, in each sea
+# --           area, sithic gives the actual sea ice volume, in each sea
 # -- 'mean' -> area-weighted mean: siconc gives the mean sea ice concentration,
-# --           sithick gives the mean sea ice thickness, in each sea
+# --           sithic gives the mean sea ice thickness, in each sea
 ArcticSeas_meanORsum = 'sum'
 
 # -- Restrict to a subset of seas (list of the netcdf variable names found in
