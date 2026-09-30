@@ -72,6 +72,7 @@ latcutoff =  50.
 # -- where the coastline is for a particular grid
 # ---------------------------------------------------------------------------- >
 do_ArcticSeas_timeseries = True
+# Warning, put there to do as other examples do, but why is that useful ?
 
 # -- Path to the sea_ice_diag_tools clone holding :
 # -- comp_seaiceindex.py, create_mask_regions.py and check_masks.py
@@ -113,9 +114,8 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 # --   siconc -> sea ice area
 # --   sithic -> sea ice volume 
 ArcticSeas_variables = ['siconc', 'sithic']
-
-# WARNING : Diagnostics will diseappear if those variables names are not those used in
-# the netcdf files. To be generalized with aliases
+# WARNING : Diagnostics can not be computed if those variables names are not those 
+# used in the netcdf files. To be generalized with aliases
 # N3CPL variable is sivolu - project_N4cpl.py aliases it under 'sit' not 'sithic'
 
 # -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice

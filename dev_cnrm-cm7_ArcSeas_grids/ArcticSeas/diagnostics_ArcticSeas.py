@@ -56,8 +56,9 @@ CACHE_VARIABLE_LABELS = {
 def latest_year_of_wmodel(wmodel):
     """Latest year covered by a period-managed model dict, from build_period_str()."""
     # build_period_str return a chain of characters holding the first and last years
-    # then the number with 4 digits of more but keep the first 4
-    # the function returns the last of those 4 digit numbers (last year) if it exists
+    # then re.findall(r'\d{4}' finds the groups of 4 consecutive digits, months are dropped
+    # at this stage because there are only 2 digits.
+    # the first and last simulation years are stored in years
     years = re.findall(r'\d{4}', str(build_period_str(wmodel)))
     return int(years[-1]) if years else None
 
@@ -130,20 +131,35 @@ if do_ArcticSeas_timeseries:
         # -- configurations, resolutions...). ArcticSeas_gridfile and ArcticSeas_maskfile
         # -- (params_ArcticSeas.py) are dictionaries giving, for each simulation (keyed by
         # -- its 'customname', or its 'experiment' if it has none), the grid description file
-        # -- to use and the matching Arctic-seas mask file (built on demand if missing).
+        # -- to use and the matching Arctic-seas mask file (built on demand if missing). A
+        # -- simulation with a grid file but no mask file entry gets one derived automatically
+        # -- from its grid file's name, under ArcticSeas_cache_dir.
         # -- Simulations sharing the same grid should repeat the same paths: the mask itself is
-        # -- then only built once, but the "Arctic seas" check plot
-        # -- further down is still shown once per simulation, each with its own label.
+        # -- then only built once.
         # -----------------------------------------------------------------------------------------
         def resolve_grid_and_mask(wmodel):
-            """Returns the complete path for the gridfile and the maskfile if they are defined in
-               param_ArcticSeas.py, None if not, and the model_label for the plots"""
+            """Returns the complete path for the gridfile if defined in params_ArcticSeas.py (None
+               if not), the matching maskfile (declared, or derived from the gridfile name if not),
+               and the model_label to use for the plots"""
             # model_label is customname is defined, else experiment if defined else unknow ...
             model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
-            if model_label not in ArcticSeas_gridfile or model_label not in ArcticSeas_maskfile:
+            if model_label not in ArcticSeas_gridfile:
                 return None, None, model_label
             gridfile = ArcticSeas_gridfile[model_label]
-            maskfile = ArcticSeas_maskfile[model_label]
+            if model_label in ArcticSeas_maskfile:
+                maskfile = ArcticSeas_maskfile[model_label]
+            else:
+                # -- No mask file declared for this simulation in ArcticSeas_maskfile: derive
+                # -- one automatically from its grid file's name, under ArcticSeas_cache_dir.
+                # -- It does not need to exist yet -- ensure_mask() below builds it on demand,
+                # -- exactly like any explicitly declared mask file.
+                grid_name = os.path.splitext(os.path.basename(gridfile))[0]
+                # -- Drop 'mesh_mask'/'meshmask' if present: the grid name is typically
+                # -- provided before or after it (e.g. 'mesh_mask.cnrmcm7')
+                for token in ('mesh_mask', 'meshmask'):
+                    grid_name = grid_name.replace(token, '')
+                grid_name = grid_name.strip('._-')
+                maskfile = os.path.join(ArcticSeas_cache_dir, 'masks', 'mask.ArcticSeas.%s.nc' % grid_name)
             return gridfile, maskfile, model_label
 
         def ensure_mask(gridfile, maskfile):
@@ -275,9 +291,10 @@ if do_ArcticSeas_timeseries:
                 for model in Wmodels:
                     wmodel = model.copy()
                     # Climaf needs the variable to find the input netcdf files
+                    # Hence, we add to the model dictionary : variable = "siconc" or "sithic"
                     wmodel.update(dict(variable=variable))
                     # -- get_period_manager() with diag='ts' is what actually
-                    # -- resolves ts_period into a concrete 'period' usable by ds()
+                    # -- resolves ts_period into a concrete 'period' (date1-date2) usable by ds()
                     # -- period included in the wmodel dictionary
                     wmodel = get_period_manager(wmodel, diag='ts')
 
@@ -290,12 +307,11 @@ if do_ArcticSeas_timeseries:
                         if model_label not in model_labels:
                             model_labels.append(model_label)
                         continue
-                        # We skip to next model here if period is not available
-                        # build_plot_title and other functions would crash without valid period below
+                        # We skip to next model here if period is not available = no input data found
 
                     # Build a title for the plots in case customname is not there (C-ESM-EP function)
                     model_label = wmodel.get('customname', build_plot_title(wmodel, None))
-                                                           # No reference simulation, hence None
+                    # No reference simulation, hence None as argument ; name built on experiment/project
                     if model_label not in model_labels:
                         model_labels.append(model_label)
                     # Build a name for the output files (sea ice volume and sea ice area)
@@ -325,8 +341,8 @@ if do_ArcticSeas_timeseries:
                         continue
                         # Here we skip to the next model because we do not need to update the diagnostics
                     if maskfile not in available_masks:
-                        print("ArcticSeas: no sea mask available for %s (grid %s), skipping"
-                              % (model_label, label))
+                        print("ArcticSeas: no sea mask available for %s (mask %s), skipping"
+                              % (model_label, maskfile))
                         continue
 
                     try:
@@ -335,7 +351,8 @@ if do_ArcticSeas_timeseries:
                         dat = ds(**wmodel)
                         if ArcticSeas_annual_mean:
                             dat = ccdo(dat, operator='yearmean')
-                            # Determine which command line to run if needed
+                            # Determine which command line to run if needed and store it in dat together
+                            # with all the information about input files for this model
                         datafile = cfile(dat)
                         # Actual computation of annual means if needed
 
@@ -371,7 +388,7 @@ if do_ArcticSeas_timeseries:
             else:
                 variable_plot_specs = [
                     dict(variable='siconc', title='Sea ice concentration',
-                         ylabel='Area-weighted mean sea ice concentration'),
+                         ylabel='Area-weighted mean sea ice concentration (%)'),
                     dict(variable='sithic', title='Sea ice thickness',
                          ylabel='Area-weighted mean sea ice thickness (m)'),
                 ]
