@@ -99,28 +99,7 @@ ArcticSeas_maskfile = {
 }
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
-# -- Mask netcdf file: one data variable (2D, on the model t-grid) per sea/region,
-# -- with a 'long_name' attribute giving the sea name; built by
-# -- ArcticSeas_tools_dir/masks/create_mask_regions.py (grid='cnrmcm7' case).
-# -- If the mask netcdf file is missing, diagnostics_ArcticSeas.py runs 
-# -- create_mask_regions.py itself to build it before going any further.
-ArcticSeas_maskfile = '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc'
-#
-# WARNING : As coded now, ArcticSeas can only compare simulations with the same grid
-# Need generalization
-
-# -- Grid description netcdf file (NEMO mesh_mask/mesh_hgr-like file) giving the
-# -- size of the grid cells (used to area-weight the mean computed over each sea).
-# -- Used as a fallback only: if the model dictionary (see datasets_setup.py) already
-# -- defines a 'mesh_hgr' (or 'gridfile') key, that per-model file is used instead,
-# -- since different simulations may not share the same grid/resolution.
-ArcticSeas_gridfile = '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc'
-ArcticSeas_dxvar = 'e1t'
-ArcticSeas_dyvar = 'e2t'
-# WARNING : Right now it is not only a fall back - to be improved
-#
 # WARNING : Tested only on comparison of simulations with the same grids
->>>>>>> Stashed changes
 
 # -- Where the per-sea sea ice area/volume time series computed by comp_seaiceindex.py
 # -- are cached, one sub-directory per simulation (based on its customname), one
