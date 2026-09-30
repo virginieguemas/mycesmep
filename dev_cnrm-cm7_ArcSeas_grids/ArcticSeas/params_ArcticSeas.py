@@ -131,7 +131,6 @@ ArcticSeas_dyvar = 'e2t'
 ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 
 # -- Variables used to compute the per-sea indices
-<<<<<<< Updated upstream
 # --   siconc -> sea ice area
 # --   sithic -> sea ice volume 
 ArcticSeas_variables = ['siconc', 'sithic']
@@ -139,11 +138,6 @@ ArcticSeas_variables = ['siconc', 'sithic']
 # WARNING : Diagnostics will diseappear if those variables names are not those used in
 # the netcdf files. To be generalized with aliases
 # N3CPL variable is sivolu - project_N4cpl.py aliases it under 'sit' not 'sithic'
-=======
-# --   siconc  -> sea ice area
-# --   sithic -> sea ice volume
-ArcticSeas_variables = ['siconc', 'sithic']
->>>>>>> Stashed changes
 
 # -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice
 # --           area, sithic gives the actual sea ice volume, in each sea
