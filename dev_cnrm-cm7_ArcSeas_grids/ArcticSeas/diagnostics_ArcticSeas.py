@@ -378,6 +378,23 @@ if do_ArcticSeas_timeseries:
                         datafile = cfile(dat)
                         # Actual computation of annual means if needed
 
+                        # -- in case sea ice concentration is published as a percentage (0-100) 
+                        # -- turn it into a fraction (0-1). Detect and write the corrected copy
+                        # -- to our own workdir rather than overwriting CliMAF's cache file.
+                        if variable == 'sic':
+                            with xr.open_dataset(datafile) as check_ds:
+                            # datafile is opened only in this loop, closed automatically when loop closes
+                                is_percent = float(check_ds[real_variable].max()) > 1.5
+                            if is_percent:
+                                fraction_file = os.path.join(
+                                    workdir, 'sic_fraction_%s.nc' % sanitize(model_label))
+                                with xr.open_dataset(datafile) as check_ds:
+                                # idem datafile opened only in this loop
+                                    fraction_ds = check_ds.copy()
+                                    fraction_ds[real_variable] = fraction_ds[real_variable] / 100.
+                                    fraction_ds.to_netcdf(fraction_file)
+                                datafile = fraction_file
+
                         # Create a cache directory to hold the sea ice index output files if not there
                         if not os.path.isdir(os.path.dirname(cache_file)):
                             os.makedirs(os.path.dirname(cache_file))
@@ -419,9 +436,9 @@ if do_ArcticSeas_timeseries:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
                 index += start_line(sea_name)
-                for spec in variable_plot_specs:
-                    # variable_plot_specs is a list of dicitionaries holding plot titles and ylabels
-                    variable = spec['variable']
+                for plot_var in variable_plot_specs:
+                    # variable_plot_specs is a list of dictionaries holding plot titles and ylabels
+                    variable = plot_var['variable']
 
                     # -- Gather the data available for this sea/variable first, so we know
                     # -- which simulations (if any) are missing before deciding whether to
@@ -436,7 +453,13 @@ if do_ArcticSeas_timeseries:
                         if sea in out_ds.data_vars:
                             da = out_ds[sea]
                             time_dim = da.dims[0]
-                            curves.append((model_label, out_ds[time_dim].values, da.values))
+                            data_values = da.values
+                            if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
+                                # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
+                                # -- thousand km^3), to match the plot's ylabel; purely local
+                                # -- to this plot, the cache file on disk is left untouched
+                                data_values = data_values / 1e12
+                            curves.append((model_label, out_ds[time_dim].values, data_values))
                             present_labels.append(model_label)
                         out_ds.close()
                     # model_labels holds every simulation ArcticSeas attempted (see the compute
@@ -444,7 +467,7 @@ if do_ArcticSeas_timeseries:
                     missing_labels = [m for m in model_labels if m not in present_labels]
 
                     fig, ax = plt.subplots(figsize=(6, 4))
-                    # New figure created for each sea, each variable, each diagnostics
+                    # New figure created for each sea, each variable and associated diagnostics
                     if not curves:
                         # -- Always an error message here, regardless of ArcticSeas_on_missing_simulations
                         ax.text(0.5, 0.5, 'No data available for any simulation',
@@ -459,16 +482,16 @@ if do_ArcticSeas_timeseries:
                             ax.plot(time_values, data_values, lw=1.5, label=model_label)
                         ax.legend(fontsize=8)
 
-                    ax.set_title("%s - %s" % (sea_name, spec['title']))
+                    ax.set_title("%s - %s" % (sea_name, plot_var['title']))
                     ax.set_xlabel('Time')
-                    ax.set_ylabel(spec['ylabel'])
+                    ax.set_ylabel(plot_var['ylabel'])
                     fig.tight_layout()
 
                     png_path = os.path.join(workdir, 'ts_%s_%s.png' % (sanitize(sea), variable))
                     fig.savefig(png_path, dpi=100)
                     plt.close(fig)
 
-                    index += cell(spec['title'], png_path, thumbnail=thumbN_size, hover=hover, **alternative_dir)
+                    index += cell(plot_var['title'], png_path, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 index += close_line()
             index += close_table()
 
