@@ -38,7 +38,8 @@ def sanitize(name):
     """Turn a sea/model name into a safe token for file names."""
     # Replace every character other than letter or number by _ (/-:) and join
     # together in a safe name all the initial and replaced characters
-    return "".join(c if c.isalnum() else "_" for c in name)
+    cleaned = "".join(c if c.isalnum() else "_" for c in name)
+    return re.sub(r"_+", "_", cleaned).strip("_")
 
 
 def model_label_of(wmodel):
