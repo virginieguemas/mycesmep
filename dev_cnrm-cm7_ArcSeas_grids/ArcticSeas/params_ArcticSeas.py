@@ -62,8 +62,8 @@ latcutoff =  50.
 # -- the area-weighted sum (area-integral) over each region described in a mask
 # -- netcdf file (one region = one data variable in the mask file), weighting by
 # -- the grid cell area (dxvar*dyvar) taken from a grid file.
-# --   -> applied to 'siconc' with meanORsum='sum'  => actual sea ice area  per sea
-# --   -> applied to 'sithic' with meanORsum='sum'  => actual sea ice volume per sea
+# --   -> applied to 'sic' with meanORsum='sum'  => actual sea ice area  per sea
+# --   -> applied to 'sit' with meanORsum='sum'  => actual sea ice volume per sea
 # -- (meanORsum='mean' instead gives the area-weighted mean concentration/thickness)
 #
 # -- The sea mask file can be computed by create_mask_regions.py from the same
@@ -72,7 +72,7 @@ latcutoff =  50.
 # -- where the coastline is for a particular grid
 # ---------------------------------------------------------------------------- >
 do_ArcticSeas_timeseries = True
-# Warning, put there to do as other examples do, but why is that useful ?
+# WARNING : put there to do as other examples do, but why is that useful ?
 
 # -- Path to the sea_ice_diag_tools clone holding :
 # -- comp_seaiceindex.py, create_mask_regions.py and check_masks.py
@@ -91,16 +91,18 @@ ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 # -- A simulation without a 'customname' is instead keyed by its 'experiment'.
 # -- A simulation missing from these dictionaries is skipped, with a message in the log.
 ArcticSeas_gridfile = {
+    'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc',
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
     'REF3': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
 }
+
 ArcticSeas_maskfile = {
+    'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm6.nc',
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
     'REF3': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
 }
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
-# WARNING : Tested only on comparison of simulations with the same grids
 
 # -- Where the per-sea sea ice area/volume time series computed by comp_seaiceindex.py
 # -- are cached, one sub-directory per simulation (based on its customname), one
@@ -110,18 +112,22 @@ ArcticSeas_dyvar = 'e2t'
 # -- lengthened since the cache was last built).
 ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 
-# -- Variables used to compute the per-sea indices
-# --   siconc -> sea ice area
-# --   sithic -> sea ice volume 
-ArcticSeas_variables = ['siconc', 'sithic']
-# WARNING : Diagnostics can not be computed if those variables names are not those 
-# used in the netcdf files. To be generalized with aliases
-# N3CPL variable is sivolu - project_N4cpl.py aliases it under 'sit' not 'sithic'
+# -- Variable name to find the sea ice concentration (sic) and the sea ice tickness (sit)
+# -- in the output files, one entry per simulation (keyed by its 'customname',
+# -- or its 'experiment' if it has none -- same key as ArcticSeas_gridfile/
+# -- ArcticSeas_maskfile). A simulation missing from this dictionary is skipped, 
+# -- with a message in the log. Ex : N4CPL's volume variable is 'sithic', but
+# -- N3CPL's is 'sivolu' 
+ArcticSeas_variable_names = {
+    'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},  
+    'REF1': {'sic': 'siconc', 'sit': 'sithic'}, 
+    'REF3': {'sic': 'siconc', 'sit': 'sithic'}, 
+}
 
-# -- 'sum'  -> area-weighted sum (area-integral): siconc gives the actual sea ice
-# --           area, sithic gives the actual sea ice volume, in each sea
-# -- 'mean' -> area-weighted mean: siconc gives the mean sea ice concentration,
-# --           sithic gives the mean sea ice thickness, in each sea
+# -- 'sum'  -> area-weighted sum (area-integral): sic gives the actual sea ice
+# --           area, sit gives the actual sea ice volume, in each sea
+# -- 'mean' -> area-weighted mean: sic gives the mean sea ice concentration,
+# --           sit gives the mean sea ice thickness, in each sea
 ArcticSeas_meanORsum = 'sum'
 
 # -- Restrict to a subset of seas (list of the netcdf variable names found in

@@ -7,7 +7,7 @@
 # --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
 # --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (siconc) and sea ice volume (sithic) computed as an                 - |
+# --      Time series of sea ice area (sic) and sea ice volume (sit) computed as an                       - |
 # --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
 #         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
 #         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
@@ -36,22 +36,34 @@ index = header(atlas_head_title, style_file=style_file)
 
 def sanitize(name):
     """Turn a sea/model name into a safe token for file names."""
-    # Replace every character other than letter or number by _ (/-:) and join 
+    # Replace every character other than letter or number by _ (/-:) and join
     # together in a safe name all the initial and replaced characters
     return "".join(c if c.isalnum() else "_" for c in name)
 
 
+def model_label_of(wmodel):
+    """Identifier for a simulation, used to look it up in the ArcticSeas_*
+    per-simulation dictionaries (params_ArcticSeas.py) and in log/error messages: its
+    customname if defined, else experiment if defined, else unknown simulation ."""
+    return wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
+
+
+# -- Generic name for the variables on which the average or sum should be
+# -- computed : 'sic' -> sea ice area, 'sit' -> sea ice volume.
+# -- Fixed names (not a user parameter). A correspondance is set in 
+# -- params_ArcticSeas.py to find actual netcdf variable for a given
+# -- simulation through ArcticSeas_variable_names.
+ARCTIC_SEAS_VARIABLES = ['sic', 'sit']
+
 # -- sia/siv = sea ice area/volume (area-weighted sum)
 # -- sic/sit = sea ice concentration/thickness (area-weighted mean)
 CACHE_VARIABLE_LABELS = {
-    ('siconc', 'sum'): 'sia',
-    ('sithic', 'sum'): 'siv',
-    ('siconc', 'mean'): 'sic',
-    ('sithic', 'mean'): 'sit',
+    ('sic', 'sum'): 'sia',
+    ('sit', 'sum'): 'siv',
+    ('sic', 'mean'): 'sic',
+    ('sit', 'mean'): 'sit',
 }
 
-# Warning : Those might not be the variables names in netcdf files 
-# To be generalized with aliases
 
 def latest_year_of_wmodel(wmodel):
     """Latest year covered by a period-managed model dict, from build_period_str()."""
@@ -141,8 +153,7 @@ if do_ArcticSeas_timeseries:
             """Returns the complete path for the gridfile if defined in params_ArcticSeas.py (None
                if not), the matching maskfile (declared, or derived from the gridfile name if not),
                and the model_label to use for the plots"""
-            # model_label is customname is defined, else experiment if defined else unknow ...
-            model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
+            model_label = model_label_of(wmodel)
             if model_label not in ArcticSeas_gridfile:
                 return None, None, model_label
             gridfile = ArcticSeas_gridfile[model_label]
@@ -282,17 +293,34 @@ if do_ArcticSeas_timeseries:
             # ==> -- comp_seaiceindex.py and update the cache
             # -----------------------------------------------------------------------------------------
             seaindex_files = dict()
+            # seaindex_files is set to contain the file names holding the sea ice area / volume  
+            # organized by simulation and variable
             model_labels = []
             #
-            # in param_ArcticSeas.py, ArcticSeas_variables = ['siconc', 'sithic']
-            for variable in ArcticSeas_variables:
+            # ARCTIC_SEAS_VARIABLES = ['sic', 'sit'] -- these are not necessarily the actual
+            # netcdf variable name in the netcdf files that varies by simulation (e.g. N3CPL's volume
+            # variable is 'sivolu', not 'sit') and is looked up below in ArcticSeas_variable_names
+            # (params_ArcticSeas.py), a dict-of-dicts keyed by simulation then by ('sit'/'sic').
+            for variable in ARCTIC_SEAS_VARIABLES:
                 seaindex_files[variable] = dict()
                 # Wmodels is a list of dictionaries holding information set in datasetsetup.py
                 for model in Wmodels:
                     wmodel = model.copy()
+                    model_label = model_label_of(wmodel)
+                    if model_label not in model_labels:
+                        model_labels.append(model_label)
+
+                    # -- Netcdf variable name to find in output files for this simulation/variable
+                    # -----------------------------------------------------------------------------------------
+                    real_variable = ArcticSeas_variable_names.get(model_label, dict()).get(variable)
+                    if real_variable is None:
+                        print("ArcticSeas: no ArcticSeas_variable_names entry for %s / %s, skipping"
+                              % (model_label, variable))
+                        continue
+                        # We skip to next model here if variable not declared in param_ArcticSeas.py
+
                     # Climaf needs the variable to find the input netcdf files
-                    # Hence, we add to the model dictionary : variable = "siconc" or "sithic"
-                    wmodel.update(dict(variable=variable))
+                    wmodel.update(dict(variable=real_variable))
                     # -- get_period_manager() with diag='ts' is what actually
                     # -- resolves ts_period into a concrete 'period' (date1-date2) usable by ds()
                     # -- period included in the wmodel dictionary
@@ -302,18 +330,11 @@ if do_ArcticSeas_timeseries:
                     # -- prints 'Error in get_period_manager => No File found for ...'
                     # -- and leaves 'period' unset)
                     if 'period' not in wmodel:
-                        model_label = wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
-                        print("ArcticSeas: no data found for %s / %s, skipping" % (model_label, variable))
-                        if model_label not in model_labels:
-                            model_labels.append(model_label)
+                        print("ArcticSeas: no data found for %s / %s (variable %s), skipping"
+                              % (model_label, variable, real_variable))
                         continue
                         # We skip to next model here if period is not available = no input data found
 
-                    # Build a title for the plots in case customname is not there (C-ESM-EP function)
-                    model_label = wmodel.get('customname', build_plot_title(wmodel, None))
-                    # No reference simulation, hence None as argument ; name built on experiment/project
-                    if model_label not in model_labels:
-                        model_labels.append(model_label)
                     # Build a name for the output files (sea ice volume and sea ice area)
                     cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
                     cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
@@ -327,6 +348,7 @@ if do_ArcticSeas_timeseries:
                     if up_to_date:
                         seaindex_files[variable][model_label] = cache_file
                         continue
+                        # We do not need to compute this diagnostic so we skip to next model
 
                     # -- Grid and matching sea mask for this simulation specifically (see
                     # -- resolve_grid_and_mask above: may differ from the defaults)
@@ -362,7 +384,7 @@ if do_ArcticSeas_timeseries:
 
                         cmd = ['python3', comp_seaiceindex_script,
                                '--data', datafile,
-                               '--var', variable,
+                               '--var', real_variable,
                                '--mask', maskfile,
                                '--grid', gridfile,
                                '--dxvar', ArcticSeas_dxvar,
@@ -372,24 +394,25 @@ if do_ArcticSeas_timeseries:
                         subprocess.run(cmd, check=True)
                         seaindex_files[variable][model_label] = cache_file
                     except Exception as e:
-                        print("ArcticSeas: failed to compute %s for %s -> %s" % (variable, model_label, e))
+                        print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
+                              % (variable, real_variable, model_label, e))
 
-            # ==> -- Build one table row per sea; for each sea, one plot for the ice area (siconc) and
-            # ==> -- one for the ice volume (sithic), overlaying all the simulations
+            # ==> -- Build one table row per sea; for each sea, one plot for the ice area (sic) and
+            # ==> -- one for the ice volume (sit), overlaying all the simulations
             # -----------------------------------------------------------------------------------------
             index += open_table()
             if ArcticSeas_meanORsum == 'sum':
                 variable_plot_specs = [
-                    dict(variable='siconc', title='Sea ice area',
+                    dict(variable='sic', title='Sea ice area',
                          ylabel='Sea ice area (Millions km2)'),
-                    dict(variable='sithic', title='Sea ice volume',
+                    dict(variable='sit', title='Sea ice volume',
                          ylabel='Sea ice volume (Thousand km3)'),
                 ]
             else:
                 variable_plot_specs = [
-                    dict(variable='siconc', title='Sea ice concentration',
+                    dict(variable='sic', title='Sea ice concentration',
                          ylabel='Area-weighted mean sea ice concentration (%)'),
-                    dict(variable='sithic', title='Sea ice thickness',
+                    dict(variable='sit', title='Sea ice thickness',
                          ylabel='Area-weighted mean sea ice thickness (m)'),
                 ]
             for sea in seas:
@@ -397,6 +420,7 @@ if do_ArcticSeas_timeseries:
                 # If sea_display_names is not defined for sea, sea_name is sea
                 index += start_line(sea_name)
                 for spec in variable_plot_specs:
+                    # variable_plot_specs is a list of dicitionaries holding plot titles and ylabels
                     variable = spec['variable']
 
                     # -- Gather the data available for this sea/variable first, so we know
