@@ -1,0 +1,147 @@
+netcdf sic_psn25_202608_am2_v06r00 {
+dimensions:
+	time = UNLIMITED ; // (1 currently)
+	y = 448 ;
+	x = 304 ;
+variables:
+	ubyte cdr_seaice_conc_monthly(time, y, x) ;
+		cdr_seaice_conc_monthly:_FillValue = 255UB ;
+		cdr_seaice_conc_monthly:long_name = "NOAA/NSIDC CDR of Passive Microwave Monthly Northern Hemisphere Sea Ice Concentration" ;
+		cdr_seaice_conc_monthly:standard_name = "sea_ice_area_fraction" ;
+		cdr_seaice_conc_monthly:coverage_content_type = "image" ;
+		cdr_seaice_conc_monthly:units = "1" ;
+		cdr_seaice_conc_monthly:valid_range = 0UB, 100UB ;
+		cdr_seaice_conc_monthly:grid_mapping = "crs" ;
+		cdr_seaice_conc_monthly:coordinates = "time y x" ;
+		cdr_seaice_conc_monthly:add_offset = 0.f ;
+		cdr_seaice_conc_monthly:scale_factor = 0.01f ;
+	double cdr_seaice_conc_monthly_stdev(time, y, x) ;
+		cdr_seaice_conc_monthly_stdev:_FillValue = -1. ;
+		cdr_seaice_conc_monthly_stdev:long_name = "NOAA/NSIDC CDR of Passive Microwave Monthly Northern Hemisphere Sea Ice Concentration Source Estimated Standard Deviation" ;
+		cdr_seaice_conc_monthly_stdev:valid_range = 0.f, 1.f ;
+		cdr_seaice_conc_monthly_stdev:grid_mapping = "crs" ;
+		cdr_seaice_conc_monthly_stdev:units = "1" ;
+		cdr_seaice_conc_monthly_stdev:coordinates = "time y x" ;
+	ubyte cdr_seaice_conc_monthly_qa_flag(time, y, x) ;
+		cdr_seaice_conc_monthly_qa_flag:long_name = "NOAA/NSIDC CDR of Passive Microwave Monthly Northern Hemisphere Sea Ice Concentration QA flags" ;
+		cdr_seaice_conc_monthly_qa_flag:standard_name = "status_flag" ;
+		cdr_seaice_conc_monthly_qa_flag:coverage_content_type = "image" ;
+		cdr_seaice_conc_monthly_qa_flag:units = "1" ;
+		cdr_seaice_conc_monthly_qa_flag:valid_range = 0UB, 255UB ;
+		cdr_seaice_conc_monthly_qa_flag:grid_mapping = "crs" ;
+		cdr_seaice_conc_monthly_qa_flag:flag_meanings = "average_concentration_exceeds_0.15 average_concentration_exceeds_0.30 at_least_half_the_days_have_sea_ice_conc_exceeds_0.15 at_least_half_the_days_have_sea_ice_conc_exceeds_0.30 invalid_ice_mask_applied at_least_one_day_during_month_has_spatial_interpolation at_least_one_day_during_month_has_temporal_interpolation at_least_one_day_during_month_has_melt_detected" ;
+		cdr_seaice_conc_monthly_qa_flag:flag_masks = 1UB, 2UB, 4UB, 8UB, 16UB, 32UB, 64UB, 128UB ;
+		cdr_seaice_conc_monthly_qa_flag:coordinates = "time y x" ;
+	int crs ;
+		crs:grid_mapping_name = "polar_stereographic" ;
+		crs:straight_vertical_longitude_from_pole = -45. ;
+		crs:false_easting = 0. ;
+		crs:false_northing = 0. ;
+		crs:latitude_of_projection_origin = 90. ;
+		crs:standard_parallel = 70. ;
+		crs:long_name = "NSIDC_NH_PolarStereo_25km" ;
+		crs:longitude_of_prime_meridian = 0. ;
+		crs:semi_major_axis = 6378273. ;
+		crs:inverse_flattening = 298.279411123064 ;
+		crs:proj4text = "+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +a=6378273 +b=6356889.449 +units=m +no_defs" ;
+		crs:crs_wkt = "PROJCS[\"NSIDC Sea Ice Polar Stereographic North\",GEOGCS[\"Unspecified datum based upon the Hughes 1980 ellipsoid\",DATUM[\"Not_specified_based_on_Hughes_1980_ellipsoid\",SPHEROID[\"Hughes 1980\",6378273,298.279411123061,AUTHORITY[\"EPSG\",\"7058\"]],AUTHORITY[\"EPSG\",\"6054\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4054\"]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",70],PARAMETER[\"central_meridian\",-45],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3411\"]]" ;
+		crs:spatial_ref = "PROJCS[\"NSIDC Sea Ice Polar Stereographic North\",GEOGCS[\"Unspecified datum based upon the Hughes 1980 ellipsoid\",DATUM[\"Not_specified_based_on_Hughes_1980_ellipsoid\",SPHEROID[\"Hughes 1980\",6378273,298.279411123061,AUTHORITY[\"EPSG\",\"7058\"]],AUTHORITY[\"EPSG\",\"6054\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4054\"]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",70],PARAMETER[\"central_meridian\",-45],PARAMETER[\"scale_factor\",1],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3411\"]]" ;
+		crs:srid = "urn:ogc:def:crs:EPSG::3411" ;
+		crs:GeoTransform = "-3850000 25000 0 5850000 0 -25000" ;
+		crs:units = "meters" ;
+	int64 time(time) ;
+		time:long_name = "ANSI date" ;
+		time:axis = "T" ;
+		time:coverage_content_type = "coordinate" ;
+		time:standard_name = "time" ;
+		time:units = "days since 1970-01-01" ;
+		time:calendar = "standard" ;
+	double x(x) ;
+		x:_FillValue = NaN ;
+		x:standard_name = "projection_x_coordinate" ;
+		x:long_name = "x coordinate of projection" ;
+		x:units = "meters" ;
+		x:axis = "X" ;
+		x:valid_range = -3850000., 3750000. ;
+		x:coverage_content_type = "coordinate" ;
+	double y(y) ;
+		y:_FillValue = NaN ;
+		y:standard_name = "projection_y_coordinate" ;
+		y:long_name = "y coordinate of projection" ;
+		y:units = "meters" ;
+		y:axis = "Y" ;
+		y:valid_range = -5350000., 5850000. ;
+		y:coverage_content_type = "coordinate" ;
+
+// global attributes:
+		:Conventions = "CF-1.11, ACDD-1.3" ;
+		:date_created = "2026-09-06T11:52:09Z" ;
+		:time_coverage_start = "2026-08-01T00:00:00Z" ;
+		:time_coverage_end = "2026-08-31T23:59:59Z" ;
+		:time_coverage_resolution = "P1M" ;
+		:time_coverage_duration = "P1M" ;
+		:title = "NOAA-NSIDC Climate Data Record of Passive Microwave Sea Ice Concentration Version 6" ;
+		:program = "NOAA Climate Data Record Program" ;
+		:software_version_id = "git@github.com:nsidc/seaice_ecdr.git@1c7ff6d5ef56b305d9183d77686eefdbef43ae57" ;
+		:metadata_link = "https://nsidc.org/data/g02202/versions/6" ;
+		:product_version = "v06r00" ;
+		:spatial_resolution = "25km" ;
+		:standard_name_vocabulary = "CF Standard Name Table (v83, 17 October 2023)" ;
+		:id = "https://doi.org/10.7265/b18j-z797" ;
+		:naming_authority = "org.doi.dx" ;
+		:license = "No constraints on data access or use" ;
+		:summary = "This data set provides a passive microwave sea ice concentration climate data record (CDR) based on gridded brightness temperatures (TBs) from the Nimbus-7 Scanning Multichannel Microwave Radiometer (SMMR) and the Defense Meteorological Satellite Program (DMSP) series of passive microwave radiometers: the Special Sensor Microwave Imager (SSM/I) and the Special Sensor Microwave Imager/Sounder (SSMIS). The sea ice concentration CDR is an estimate of sea ice concentration that is produced by combining concentration estimates from two algorithms developed at the NASA Goddard Space Flight Center (GSFC): the NASA Team (NT) algorithm and the Bootstrap (BT) algorithm. The individual algorithms are used to process and combine brightness temperature data at NSIDC. This product is designed to provide a consistent time series of sea ice concentrations (the fraction, or percentage, of ocean area covered by sea ice) from November 1978 to the present, which spans the coverage of several passive microwave instruments. The data are gridded on the NSIDC polar stereographic grid with 25 km x 25 km grid cells and are available in NetCDF file format. Each file contains a variable with the CDR concentration values as well as variables that hold the raw NT and BT processed concentrations for reference. Variables containing standard deviation, quality flags, and projection information are also included. Files that are from 2013 to the present also contain a prototype CDR sea ice concentration based on gridded TBs from the Advanced Microwave Scanning Radiometer 2 (AMSR2) onboard the GCOM-W1 satellite." ;
+		:keywords = "EARTH SCIENCE > CRYOSPHERE > SEA ICE > SEA ICE CONCENTRATION, Continent > North America > Canada > Hudson Bay, Geographic Region > Arctic, Geographic Region > Polar, Geographic Region > Northern Hemisphere, Ocean > Arctic Ocean, Ocean > Arctic Ocean > Barents Sea, Ocean > Arctic Ocean > Beaufort Sea, Ocean > Arctic Ocean > Chukchi Sea, CONTINENT > NORTH AMERICA > CANADA > HUDSON BAY, Ocean > Atlantic Ocean > North Atlantic Ocean > Davis Straight, OCEAN > ATLANTIC OCEAN > NORTH ATLANTIC OCEAN > GULF OF ST LAWRENCE, Ocean > Atlantic Ocean > North Atlantic Ocean > North Sea, Ocean > Atlantic Ocean > North Atlantic Ocean > Norwegian Sea, OCEAN > ATLANTIC OCEAN > NORTH ATLANTIC OCEAN > SVALBARD AND JAN MAYEN, Ocean > Pacific Ocean, Ocean > Pacific Ocean > North Pacific Ocean > Bering Sea, Ocean > Pacific Ocean > North Pacific Ocean > Sea Of Okhotsk" ;
+		:keywords_vocabulary = "NASA Global Change Master Directory (GCMD) Keywords, Version 17.1" ;
+		:cdm_data_type = "Grid" ;
+		:project = "NOAA/NSIDC passive microwave sea ice concentration climate data record" ;
+		:creator_name = "NSIDC/NOAA" ;
+		:creator_url = "http://nsidc.org/" ;
+		:creator_email = "nsidc@nsidc.org" ;
+		:institution = "NSIDC > National Snow and Ice Data Center" ;
+		:processing_level = "NOAA Level 3" ;
+		:contributor_name = "Walter N. Meier, Florence Fetterer, Ann Windnagel, J. Scott Stewart, Trey Stafford" ;
+		:contributor_role = "principal investigator, author, author, software developer, software developer" ;
+		:acknowledgment = "This project was supported in part by a grant from the NOAA Climate Data Record Program. The NASA Team and Bootstrap sea ice concentration algorithms were developed by Donald J. Cavalieri, Josefino C. Comiso, Claire L. Parkinson, and others at the NASA Goddard Space Flight Center in Greenbelt, MD." ;
+		string :references = "Comiso, J. C., and F. Nishio. 2008. Trends in the Sea Ice Cover Using Enhanced and Compatible AMSR-E, SSM/I, and SMMR Data. Journal of Geophysical Research 113, C02S07, doi:10.1029/2007JC0043257. ; Comiso, J. C., D. Cavalieri, C. Parkinson, and P. Gloersen. 1997. Passive Microwave Algorithms for Sea Ice Concentrations: A Comparison of Two Techniques. Remote Sensing of the Environment 60(3):357-84. ; Comiso, J. C. 1984. Characteristics of Winter Sea Ice from Satellite Multispectral Microwave Observations. Journal of Geophysical Research 91(C1):975-94. ; Cavalieri, D. J., P. Gloersen, and W. J. Campbell. 1984. Determination of Sea Ice Parameters with the NIMBUS-7 SMMR. Journal of Geophysical Research 89(D4):5355-5369. ; Cavalieri, D. J., C. l. Parkinson, P. Gloersen, J. C. Comiso, and H. J. Zwally. 1999. Deriving Long-term Time Series of Sea Ice Cover from Satellite Passive-Microwave Multisensor Data Sets. Journal of Geophysical Research 104(7): 15,803-15,814 ; Comiso, J.C., R.A. Gersten, L.V. Stock, J. Turner, G.J. Perez, and K. Cho. 2017. Positive Trend in the Antarctic Sea Ice Cover and Associated Changes in Surface Temperature. J. Climate, 30, 2251–2267, doi:10.1175/JCLI-D-16-0408.1" ;
+		:source = "Generated from https://nsidc.org/data/nsidc-0001" ;
+		:platform = "GCOM-W1 > Global Change Observation Mission 1st-Water" ;
+		:sensor = "AMSR2 > Advanced Microwave Scanning Radiometer 2" ;
+		:cdr_data_type = "grid" ;
+		:geospatial_bounds = "POLYGON ((-3850000 5850000, 3750000 5850000, 3750000 -5350000, -3850000 -5350000, -3850000 5850000))" ;
+		:geospatial_bounds_crs = "EPSG:3411" ;
+		:geospatial_x_units = "meters" ;
+		:geospatial_y_units = "meters" ;
+		:geospatial_x_resolution = "25000 meters" ;
+		:geospatial_y_resolution = "25000 meters" ;
+		:geospatial_lat_min = 30.980564 ;
+		:geospatial_lat_max = 90. ;
+		:geospatial_lon_min = -180. ;
+		:geospatial_lon_max = 180. ;
+		:geospatial_lat_units = "degrees_north" ;
+		:geospatial_lon_units = "degrees_east" ;
+
+group: cdr_supplementary {
+  dimensions:
+  	time = UNLIMITED ; // (1 currently)
+  	y = 448 ;
+  	x = 304 ;
+  variables:
+  	ubyte surface_type_mask(time, y, x) ;
+  		surface_type_mask:long_name = "Mask for ocean, lake, polehole, coast, and land areas" ;
+  		surface_type_mask:flag_meanings = "ocean lake polehole_mask coast land" ;
+  		surface_type_mask:flag_values = 50UB, 75UB, 100UB, 200UB, 250UB ;
+  		surface_type_mask:standard_name = "area_type" ;
+  		surface_type_mask:comment = "Note: Not all of the flag meanings derive from the current list of acceptable labels for area_type because there are area types in this field that are not present in that list." ;
+  		surface_type_mask:grid_mapping = "crs" ;
+  		surface_type_mask:coordinates = "time y x" ;
+  	ubyte cdr_melt_onset_day_monthly(time, y, x) ;
+  		cdr_melt_onset_day_monthly:long_name = "NOAA/NSIDC CDR Monthly Day of Snow Melt Onset Over Sea Ice" ;
+  		cdr_melt_onset_day_monthly:standard_name = "status_flag" ;
+  		cdr_melt_onset_day_monthly:comment = "Value of 0 indicates sea ice concentration less than 50% at start of melt season; values of 60-244 indicate day of year of snow melt onset on sea ice detected during melt season; value of 255 indicates no melt detected during melt season, including non-ocean grid cells." ;
+  		cdr_melt_onset_day_monthly:units = "1" ;
+  		cdr_melt_onset_day_monthly:grid_mapping = "crs" ;
+  		cdr_melt_onset_day_monthly:coordinates = "time y x" ;
+  		cdr_melt_onset_day_monthly:valid_range = 0UB, 255UB ;
+  } // group cdr_supplementary
+}
