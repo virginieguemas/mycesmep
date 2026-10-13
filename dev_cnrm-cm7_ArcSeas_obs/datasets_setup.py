@@ -153,6 +153,16 @@ from my_projects import *
 period='2000-2049'
 if atCNRM:
     models = [
+           dict(project = 'N3CPL',
+           model = 'CNRM-CM62-LR',
+           clim_period = '1870-1899',
+           ts_period = 'full',
+           mip = 'CMIP',
+           frequency = 'monthly',
+           experiment = 'piC-LR_633_oas5_x2553_trip_t0d',
+           customname = 'CNRM-CM6.2 (runoffs corr)',
+           root = '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4')
+   ,
            dict(project = 'N4CPL',
            model = 'CNRM-CM62-LR',  
            clim_period = '1920-1949', 
