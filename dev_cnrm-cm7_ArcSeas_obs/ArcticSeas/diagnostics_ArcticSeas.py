@@ -24,6 +24,7 @@ import os
 import re
 import copy
 import subprocess
+import numpy as np
 import xarray as xr
 import matplotlib
 matplotlib.use('Agg')
@@ -56,6 +57,7 @@ def model_label_of(wmodel):
 # -- simulation through ArcticSeas_variable_names.
 ARCTIC_SEAS_VARIABLES = ['sic', 'sit']
 
+# -- File names for the cache files (stored in one directory per experiment)
 # -- sia/siv = sea ice area/volume (area-weighted sum)
 # -- sic/sit = sea ice concentration/thickness (area-weighted mean)
 CACHE_VARIABLE_LABELS = {
@@ -64,6 +66,11 @@ CACHE_VARIABLE_LABELS = {
     ('sic', 'mean'): 'sic',
     ('sit', 'mean'): 'sit',
 }
+
+# -- (color, linestyle) for the observations (ArcticSeas_obs), so that
+# -- they stand out from the simulations (default matplotlib color cycle, solid lines)
+OBS_STYLES = [('black', '-'), ('black', '--'), ('black', ':'), ('black', '-.'),
+              ('grey', '-'), ('grey', '--'), ('grey', ':'), ('grey', '-.')]
 
 
 def latest_year_of_wmodel(wmodel):
@@ -98,6 +105,116 @@ def latest_year_in_ncfile(ncfile):
     except Exception:
         return None
     # If for any reason the last year of the file can not be computed, this function returns None
+
+
+# -- Message issued by comp_seaiceindex.py when the field has missing values within a sea
+SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+)' where mask == 1")
+# [^']+ means one or more character that are not '
+# WARNING : if the comp_seaiceindex message were to change, the change should be reflected in the
+# line above otherwise the ArcticSeas option could not detect it
+
+def warnings_file_of(cache_file):
+    """Text file, next to a per-sea cache file, holding the 'missing values' warnings
+    issued by comp_seaiceindex.py when it computed that cache file (one per line, may be empty)."""
+    return cache_file + '.warnings'
+
+
+def write_sea_warnings(cache_file, stderr):
+    """Keep the 'missing values' warnings found in the stderr of comp_seaiceindex.py."""
+    with open(warnings_file_of(cache_file), 'w') as f:
+    # A cach_file_name.warnings text file is opened, overwritten if there was one before
+        for match in SEA_WARNING_PATTERN.finditer(stderr):
+        # We find all occurrences (finditer) of the warning message about missing values 
+        # (SEA_WARNING_PATTERN) in a sea in the standard error output of comp_seaiceindex.py
+            f.write(match.group(0) + '\n')
+            # match.group(0) is the full error message output by comp_seaiceindex.py without
+            # the path of the script nor the warnings.warn added by python
+
+
+def read_sea_warnings(cache_file):
+    """Builds a dictionary holding for each sea name as a key : the 'missing values' warning 
+    message, as kept by write_sea_warnings."""
+    sea_warnings = dict()
+    if os.path.exists(warnings_file_of(cache_file)):
+    # If the cache_file_name.warnings file exist, we read it
+        with open(warnings_file_of(cache_file)) as f:
+            for line in f:
+                # Each line in this file should correspond with a sea with missing values
+                match = SEA_WARNING_PATTERN.search(line)
+                # SEA_WARNING_PATTERN is the generic error message from comp_seaiceindex
+                # match is a Match object holding the full error message with the actual sea 
+                # name in match.group(0) and the sea name in match.group(1) because a set of 
+                # parenthesis was included in SEA_WARNING_PATTERN to be able to isolate that
+                # sea name
+                if match:
+                    sea_warnings[match.group(1)] = match.group(0)
+                    # If we find an occurrence with add an element to the dictionary
+    return sea_warnings
+
+
+def sea_areas_text(sea, labels, seaindex_files, area_attr, area_divisor):
+    """ From an input sea (ex: centrarc), and for a list of experiment and observation
+    labels (typically customname), this function will print a line listing the area
+    of that sea in each of the experiment and observation dataset (it is not necessarily the
+    same area because of the land/sea mask). It needs a dictionary containing for each label
+    and each variable, its cache file : seaindex_files.
+
+    One line listing, for each simulation/observation of labels, the area attribute
+    area_attr (written by comp_seaiceindex.py) of sea in its cached per-sea file, divided by
+    area_divisor. 'n/a' if not found (no data, or cache computed by an older version of
+    comp_seaiceindex.py)."""
+    parts = []
+    # We define a list which will hold the parts of the final line to print
+    for label in labels:
+        # We loop on the experiment and observation labels
+        area = None
+        for variable in ARCTIC_SEAS_VARIABLES:
+            # We loop on the Arctic variables just in case some are missing because it is the
+            # same land/sea mask for all variables of a given experiment but observation often
+            # have only of the variables
+            outfile = seaindex_files.get(variable, dict()).get(label)
+            # We get the cache file corresponding to that label and that variable, NONE if there
+            # isn't any cache. We need to use get to avoid a crash when a variable isn't there.
+            if outfile is None or not os.path.exists(outfile):
+                continue # If we don't have any cache file, we go to next variable
+            with xr.open_dataset(outfile) as out_ds:
+                if sea in out_ds.data_vars and area_attr in out_ds[sea].attrs:
+                # We look for the area_attr attribute in the cache file we found
+                # It should contain the area of the sea in that experiment/observation
+                    area = float(out_ds[sea].attrs[area_attr]) / area_divisor
+                # area_divisor is to convert to Thousand km3 or Millons km2
+            if area is not None:
+                break
+            # If we found the area of the sea for one variable, we skip the next variable
+            # and go directly to next label
+        parts.append('%s %s' % (label, 'n/a' if area is None else '%.0f' % area))
+        # We add to parts a label followed by the area if found None if not
+    return ', '.join(parts)
+
+
+def obs_climatology_curve(da, clim_period, annual, sim_times):
+    """Climatology of an observed per-sea series da (time as first dimension) over
+    clim_period ('full' or 'YYYY-YYYY'), repeated along sim_times (the time values of the
+    simulations): a single mean value if the series are annual means, otherwise the mean
+    of each calendar month. Returns (values along sim_times, first year, last year of the
+    climatology), or None if no observation falls within clim_period."""
+    time_dim = da.dims[0]
+    years = da[time_dim].dt.year
+    if clim_period != 'full':
+        first, last = [int(year) for year in clim_period.split('-')]
+        da = da.where((years >= first) & (years <= last), drop=True)
+        if da.sizes[time_dim] == 0:
+            return None
+        years = da[time_dim].dt.year
+    if annual:
+        values = np.full(len(sim_times), float(da.mean()))
+    else:
+        # -- Mean of each calendar month (NaN for a month never observed, e.g. summer
+        # -- for a winter-only product), then picked for the month of each simulation date
+        monthly_clim = da.groupby(time_dim + '.month').mean().reindex(month=range(1, 13))
+        sim_months = xr.DataArray(sim_times, dims='simtime').dt.month
+        values = monthly_clim.sel(month=sim_months).values
+    return values, int(years.min()), int(years.max())
 
 
 if do_ArcticSeas_timeseries:
@@ -223,9 +340,37 @@ if do_ArcticSeas_timeseries:
         # -----------------------------------------------------------------------------------------
         # From MyOwnDiagnostics, not sure we need to copy those
         Wmodels = copy.deepcopy(models)
+        # -- Observational references (params_ArcticSeas.py) go through exactly the same
+        # -- processing as the simulations; they are only told apart (obs_labels) when
+        # -- checking for missing simulations and when plotting
+        Wobs = copy.deepcopy(ArcticSeas_obs) if 'ArcticSeas_obs' in dir() and ArcticSeas_obs else []
+        # -- How each observation is plotted (see ArcticSeas_obs_dates/ArcticSeas_obs_clim_period
+        # -- in params_ArcticSeas.py, overridden by 'obs_dates'/'obs_clim_period' in its own
+        # -- entry). These keys are removed from the entry so that they never reach ds()
+        default_obs_dates = ArcticSeas_obs_dates if 'ArcticSeas_obs_dates' in dir() else 'climato'
+        default_obs_clim_period = ArcticSeas_obs_clim_period if 'ArcticSeas_obs_clim_period' in dir() else 'full'
+        obs_settings = dict()  # obs label -> (obs_dates, obs_clim_period)
+        for obs in Wobs:
+            obs_dates = obs.pop('obs_dates', default_obs_dates)
+            obs_clim_period = str(obs.pop('obs_clim_period', default_obs_clim_period))
+            if obs_dates not in ('climato', 'real'):
+                print("ArcticSeas: obs_dates '%s' for %s should be 'climato' or 'real', using 'climato'"
+                      % (obs_dates, model_label_of(obs)))
+                obs_dates = 'climato'
+            if obs_clim_period != 'full' and not re.match(r'^\d{4}-\d{4}$', obs_clim_period):
+                print("ArcticSeas: obs_clim_period '%s' for %s should be 'full' or 'YYYY-YYYY', using 'full'"
+                      % (obs_clim_period, model_label_of(obs)))
+                obs_clim_period = 'full'
+            obs_settings[model_label_of(obs)] = (obs_dates, obs_clim_period)
+        obs_labels = [model_label_of(obs) for obs in Wobs]
+        for label in obs_labels:
+            if label in [model_label_of(model) for model in Wmodels]:
+                print("ArcticSeas: observation %s has the same customname as a simulation; "
+                      "their per-simulation settings and cache will be mixed up" % label)
+        Wdatasets = Wmodels + Wobs
         grids_needed = dict()  # maskfile -> (gridfile, [label, ...]) -- one label per simulation
-        # sharing this maskfile, in the order they are encountered in Wmodels
-        for model in Wmodels:
+        # sharing this maskfile, in the order they are encountered in Wdatasets
+        for model in Wdatasets:
             gridfile, maskfile, label = resolve_grid_and_mask(model)
             if gridfile is None:
                 print("ArcticSeas: no ArcticSeas_gridfile/ArcticSeas_maskfile entry for %s, skipping"
@@ -304,8 +449,9 @@ if do_ArcticSeas_timeseries:
             # (params_ArcticSeas.py), a dict-of-dicts keyed by simulation then by ('sit'/'sic').
             for variable in ARCTIC_SEAS_VARIABLES:
                 seaindex_files[variable] = dict()
-                # Wmodels is a list of dictionaries holding information set in datasetsetup.py
-                for model in Wmodels:
+                # Wdatasets is a list of dictionaries holding information set in datasetsetup.py
+                # (simulations) followed by those set in ArcticSeas_obs (observations)
+                for model in Wdatasets:
                     wmodel = model.copy()
                     model_label = model_label_of(wmodel)
                     if model_label not in model_labels:
@@ -409,7 +555,13 @@ if do_ArcticSeas_timeseries:
                                '--dyvar', ArcticSeas_dyvar,
                                '--meanORsum', ArcticSeas_meanORsum,
                                '--out', cache_file]
-                        subprocess.run(cmd, check=True)
+                        # -- Output captured (and echoed to the log) to keep its 'missing values'
+                        # -- warnings next to the cache file, so that they are shown on the atlas
+                        # -- page also when the cache is reused later
+                        result = subprocess.run(cmd, capture_output=True, text=True)
+                        print(result.stdout + result.stderr)
+                        result.check_returncode()
+                        write_sea_warnings(cache_file, result.stderr)
                         seaindex_files[variable][model_label] = cache_file
                     except Exception as e:
                         print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
@@ -433,10 +585,31 @@ if do_ArcticSeas_timeseries:
                     dict(variable='sit', title='Sea ice thickness',
                          ylabel='Area-weighted mean sea ice thickness (m)'),
                 ]
+            # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file, the
+            # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
+            # -- on the grid of that simulation/observation
+            if ArcticSeas_meanORsum == 'sum':
+                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (thousand km2)'
+            else:
+                area_attr, area_divisor, area_title = 'mean_cell_area_m2', 1e6, 'Mean grid cell area (km2)'
+            # -- 'Missing values' warnings of comp_seaiceindex.py, per sea, for every
+            # -- simulation/observation and variable plotted
+            variable_titles = dict((spec['variable'], spec['title']) for spec in variable_plot_specs)
+            warnings_per_sea = dict()  # sea -> ['label (variable title): message', ...]
+            for variable, files in seaindex_files.items():
+                for model_label, cache_file in files.items():
+                    for warned_sea, message in read_sea_warnings(cache_file).items():
+                        warnings_per_sea.setdefault(warned_sea, []).append(
+                            '%s (%s): %s' % (model_label, variable_titles.get(variable, variable), message))
             for sea in seas:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
-                index += start_line(sea_name)
+                title = sea_name + '<br><small>' + area_title + ': ' + \
+                    sea_areas_text(sea, model_labels, seaindex_files, area_attr, area_divisor) + '</small>'
+                if sea in warnings_per_sea:
+                    title += '<br><small><font color="red">Warning - ' + \
+                             '<br>Warning - '.join(warnings_per_sea[sea]) + '</font></small>'
+                index += start_line(title)
                 for plot_var in variable_plot_specs:
                     # variable_plot_specs is a list of dictionaries holding plot titles and ylabels
                     variable = plot_var['variable']
@@ -446,30 +619,58 @@ if do_ArcticSeas_timeseries:
                     # -- plot the available ones or to report an error instead
                     # -----------------------------------------------------------------------------------------
                     curves = []  # (model_label, time_values, data_values) for simulations with data
+                    obs_series = dict()  # obs label -> per-sea DataArray, for observations with data
                     present_labels = []
                     for model_label, outfile in seaindex_files.get(variable, dict()).items():
                         if not os.path.exists(outfile):
                             continue
                         out_ds = xr.open_dataset(outfile)
                         if sea in out_ds.data_vars:
-                            da = out_ds[sea]
+                            da = out_ds[sea].load()
                             time_dim = da.dims[0]
-                            data_values = da.values
                             if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
                                 # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
                                 # -- thousand km^3), to match the plot's ylabel; purely local
                                 # -- to this plot, the cache file on disk is left untouched
-                                data_values = data_values / 1e12
-                            curves.append((model_label, out_ds[time_dim].values, data_values))
+                                da = da / 1e12
+                            if model_label in obs_labels:
+                                obs_series[model_label] = da
+                            else:
+                                curves.append((model_label, da[time_dim].values, da.values))
                             present_labels.append(model_label)
                         out_ds.close()
+
+                    # -- Observations: either their actual dates ('real'), or their climatology
+                    # -- over obs_clim_period repeated along the simulation dates ('climato').
+                    # -- Without any simulation to follow, a climatology falls back to real dates
+                    # -----------------------------------------------------------------------------------------
+                    obs_curves = []  # (obs label, legend label, time_values, data_values)
+                    sim_times = None
+                    if curves:
+                        sim_times = np.unique(np.concatenate([time_values for _, time_values, _ in curves]))
+                    for obs_label, da in obs_series.items():
+                        obs_dates, obs_clim_period = obs_settings[obs_label]
+                        time_dim = da.dims[0]
+                        if obs_dates == 'real' or sim_times is None:
+                            obs_curves.append((obs_label, obs_label, da[time_dim].values, da.values))
+                            continue
+                        clim = obs_climatology_curve(da, obs_clim_period, ArcticSeas_annual_mean, sim_times)
+                        if clim is None:
+                            print("ArcticSeas: no %s data within obs_clim_period %s for %s, not plotted"
+                                  % (obs_label, obs_clim_period, sea))
+                            continue
+                        values, first_year, last_year = clim
+                        obs_curves.append((obs_label, '%s (clim %d-%d)' % (obs_label, first_year, last_year),
+                                           sim_times, values))
                     # model_labels holds every simulation ArcticSeas attempted (see the compute
-                    # loop above); any of them missing from present_labels has no data here
-                    missing_labels = [m for m in model_labels if m not in present_labels]
+                    # loop above); any of them missing from present_labels has no data here.
+                    # Observations are left out: a missing observation is just not plotted
+                    missing_labels = [m for m in model_labels
+                                      if m not in present_labels and m not in obs_labels]
 
                     fig, ax = plt.subplots(figsize=(6, 4))
                     # New figure created for each sea, each variable and associated diagnostics
-                    if not curves:
+                    if not curves and not obs_curves:
                         # -- Always an error message here, regardless of ArcticSeas_on_missing_simulations
                         ax.text(0.5, 0.5, 'No data available for any simulation',
                                 ha='center', va='center', wrap=True, transform=ax.transAxes)
@@ -479,8 +680,15 @@ if do_ArcticSeas_timeseries:
                     else:
                         # -- ArcticSeas_on_missing_simulations == 'partial' (or nothing missing):
                         # -- plot the simulations that do have data, silently skipping the rest
+                        # -- Simulations first (default color cycle), then observations on top
+                        # -- with their own fixed style (same style for a given observation
+                        # -- on every plot, from its rank in ArcticSeas_obs)
                         for model_label, time_values, data_values in curves:
                             ax.plot(time_values, data_values, lw=1.5, label=model_label)
+                        for obs_label, legend_label, time_values, data_values in obs_curves:
+                            color, linestyle = OBS_STYLES[obs_labels.index(obs_label) % len(OBS_STYLES)]
+                            ax.plot(time_values, data_values, lw=2, color=color, linestyle=linestyle,
+                                    label=legend_label, zorder=3)
                         ax.legend(fontsize=8)
 
                     ax.set_title("%s - %s" % (sea_name, plot_var['title']))

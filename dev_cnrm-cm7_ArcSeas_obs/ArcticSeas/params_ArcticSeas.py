@@ -80,6 +80,34 @@ do_ArcticSeas_timeseries = True
 # -- git@github.com:virginieguemas/sea_ice_diag_tools.git
 ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 
+# -- Observational references, declared here rather than in `models` (datasets_setup.py)
+# -- so that the other components do not try to process them as simulations.
+# -- Same syntax as an entry of `models`: a CliMAF dataset description (the project is
+# -- declared in my_projects.py), with 'frequency' and 'ts_period' ('full' = every
+# -- available date). Each observation is then looked up by its 'customname' in
+# -- ArcticSeas_gridfile, ArcticSeas_maskfile and ArcticSeas_variable_names exactly like
+# -- a simulation; it only needs an ArcticSeas_variable_names entry for the variables
+# -- it provides (e.g. no 'sit' for a sea ice concentration product).
+# -- Observations are plotted in black/grey with distinct line styles, and a missing
+# -- observation never counts as a missing simulation (see ArcticSeas_on_missing_simulations).
+ArcticSeas_obs = [
+    dict(project='NSIDC_CDR_V6', customname='nsidc_cdr_v6', frequency='monthly', ts_period='full'),
+]
+
+# -- How the observations are plotted, since their dates generally do not match those of
+# -- the simulations:
+# --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
+# --                repeated every year along the dates of the simulations (a single mean
+# --                value if ArcticSeas_annual_mean, otherwise the mean of each calendar month)
+# --   'real'    -> observations plotted at their actual dates
+# -- ArcticSeas_obs_clim_period : 'full' (every available year) or 'YYYY-YYYY' (only used
+# -- with 'climato').
+# -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_clim_period'
+# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='real') or
+# -- dict(..., obs_clim_period='1991-2020').
+ArcticSeas_obs_dates = 'climato'
+ArcticSeas_obs_clim_period = 'full'
+
 
 # -- Grid description file (NEMO mesh_mask-like: land-sea mask, lon/lat, cell sizes
 # -- e1t/e2t) and matching Arctic-seas mask file (one data variable (2D) per sea/region,
@@ -94,12 +122,16 @@ ArcticSeas_gridfile = {
     'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc',
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
     'REF3': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
+    # -- NSIDC polar stereographic 25 km grid (psn25, shared with CryoSat-2 RDEFT4),
+    # -- built by sea_ice_diag_tools/masks/create_grid_psn25.py
+    'nsidc_cdr_v6': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.psn25.nc',
 }
 
 ArcticSeas_maskfile = {
     'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm6.nc',
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
     'REF3': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
+    'nsidc_cdr_v6': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.psn25.nc',
 }
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
@@ -121,7 +153,8 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 ArcticSeas_variable_names = {
     'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},  
     'REF1': {'sic': 'siconc', 'sit': 'sithic'}, 
-    'REF3': {'sic': 'siconc', 'sit': 'sithic'}, 
+    'REF3': {'sic': 'siconc', 'sit': 'sithic'},
+    'nsidc_cdr_v6': {'sic': 'cdr_seaice_conc_monthly'},
 }
 
 # -- 'sum'  -> area-weighted sum (area-integral): sic gives the actual sea ice
@@ -171,6 +204,8 @@ ArcticSeas_annual_mean = True
 # --                leaving out the missing ones
 # -- Regardless of this setting, if NO simulation has data at all for a given
 # -- sea/variable, an error message is always shown instead of an (empty) figure.
+# -- Observations (ArcticSeas_obs) are not concerned: a missing observation is simply
+# -- not plotted.
 ArcticSeas_on_missing_simulations = 'error'
 
 # -- Thumbnail size for the time series plots
