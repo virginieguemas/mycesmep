@@ -28,3 +28,15 @@ derive("N3CPL", 'hfds','plus','tohfls','hflx_rnf_cea')
 calias("N3CPL", 'hurs','hurs',scale=100.) #
 
 
+# -- Observations: NOAA/NSIDC CDR of passive microwave sea ice concentration, V6,
+# -- monthly, Northern Hemisphere, 25 km polar stereographic grid (psn25).
+# -- The sensor in the file name changes with time (n07, F08, F11, F13, F17, am2),
+# -- but there is never more than one file per month.
+# -- Variable: 'cdr_seaice_conc_monthly' (fraction 0-1 once scale_factor is applied).
+file_patterns = []
+file_patterns.append('/cnrm/ioga/Data/Climate-data-Records/passive_microwave-sea-ice-concentration/'
+                     'NOAA/G02202_V6/north/monthly/sic_psn25_YYYYMM_*_v06r00.nc')
+cproject('NSIDC_CDR_V6', 'variable')
+dataloc(project = 'NSIDC_CDR_V6', organization = 'generic', url = file_patterns)
+
+
