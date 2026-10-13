@@ -60,6 +60,8 @@ ARCTIC_SEAS_VARIABLES = ['sic', 'sit']
 # -- File names for the cache files (stored in one directory per experiment)
 # -- sia/siv = sea ice area/volume (area-weighted sum)
 # -- sic/sit = sea ice concentration/thickness (area-weighted mean)
+# -- The cached series are always monthly (seasonal means are computed when plotting,
+# -- see seasonal_mean_complete_years)
 CACHE_VARIABLE_LABELS = {
     ('sic', 'sum'): 'sia',
     ('sit', 'sum'): 'siv',
@@ -79,6 +81,7 @@ def latest_year_of_wmodel(wmodel):
     # then re.findall(r'\d{4}' finds the groups of 4 consecutive digits, months are dropped
     # at this stage because there are only 2 digits.
     # the first and last simulation years are stored in years
+    # WARNING : this function would not work if CLIMAF starts handling daily data
     years = re.findall(r'\d{4}', str(build_period_str(wmodel)))
     return int(years[-1]) if years else None
 
@@ -92,7 +95,7 @@ def latest_year_in_ncfile(ncfile):
         cached = xr.open_dataset(ncfile)
         first_var = next(iter(cached.data_vars), None)
         # iter iterates on the keys of cached.data_vars dictionary and next takes the
-        # first, if there is none, fist_var becomes None (very unlikely but in case ...)
+        # first, if there is none, first_var becomes None (very unlikely but in case ...)
         if first_var is None:
             cached.close()
             return None
@@ -114,15 +117,18 @@ SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+
 # line above otherwise the ArcticSeas option could not detect it
 
 def warnings_file_of(cache_file):
-    """Text file, next to a per-sea cache file, holding the 'missing values' warnings
-    issued by comp_seaiceindex.py when it computed that cache file (one per line, may be empty)."""
+    """Defines a filename for the text file, next to a per-sea cache file, holding the 
+    'missing values' warnings issued by comp_seaiceindex.py when it computed that cache 
+    file (one per line, may be empty).
+    This file allows to store information that will be printed on the Atlas html page later."""
     return cache_file + '.warnings'
 
 
 def write_sea_warnings(cache_file, stderr):
-    """Keep the 'missing values' warnings found in the stderr of comp_seaiceindex.py."""
+    """From the standard error of comp_seaiceindex.py, all the 'missing values' warnings 
+    related to a cache_file are stored into a text file named cache_file.warnings."""
     with open(warnings_file_of(cache_file), 'w') as f:
-    # A cach_file_name.warnings text file is opened, overwritten if there was one before
+    # A cache_file_name.warnings text file is opened, overwritten if there was one before
         for match in SEA_WARNING_PATTERN.finditer(stderr):
         # We find all occurrences (finditer) of the warning message about missing values 
         # (SEA_WARNING_PATTERN) in a sea in the standard error output of comp_seaiceindex.py
@@ -136,7 +142,7 @@ def read_sea_warnings(cache_file):
     message, as kept by write_sea_warnings."""
     sea_warnings = dict()
     if os.path.exists(warnings_file_of(cache_file)):
-    # If the cache_file_name.warnings file exist, we read it
+    # If the cache_file_name.warnings file exists, we read it
         with open(warnings_file_of(cache_file)) as f:
             for line in f:
                 # Each line in this file should correspond with a sea with missing values
@@ -148,21 +154,19 @@ def read_sea_warnings(cache_file):
                 # sea name
                 if match:
                     sea_warnings[match.group(1)] = match.group(0)
-                    # If we find an occurrence with add an element to the dictionary
+                    # If we find an occurrence, we add an element to the dictionary
     return sea_warnings
 
 
 def sea_areas_text(sea, labels, seaindex_files, area_attr, area_divisor):
     """ From an input sea (ex: centrarc), and for a list of experiment and observation
-    labels (typically customname), this function will print a line listing the area
-    of that sea in each of the experiment and observation dataset (it is not necessarily the
-    same area because of the land/sea mask). It needs a dictionary containing for each label
-    and each variable, its cache file : seaindex_files.
-
-    One line listing, for each simulation/observation of labels, the area attribute
-    area_attr (written by comp_seaiceindex.py) of sea in its cached per-sea file, divided by
-    area_divisor. 'n/a' if not found (no data, or cache computed by an older version of
-    comp_seaiceindex.py)."""
+    labels (typically customname), this function returns a line to be printed later on the html
+    atlas page, listing the area of that sea in each of the experiment and observation dataset 
+    (it is not necessarily the same area because of the land/sea mask). It needs a dictionary 
+    containing for each variable and each label, its cache file : seaindex_files. It also
+    needs the name of the attribute in the cache file in which the sea area is stored : 
+    'total_area_m2' or 'mean_cell_area_m2' in the outputs from comp_seaiceindex.py at the
+    time of writing. area_divisor allows to convert to a printable unit. """
     parts = []
     # We define a list which will hold the parts of the final line to print
     for label in labels:
@@ -170,10 +174,10 @@ def sea_areas_text(sea, labels, seaindex_files, area_attr, area_divisor):
         area = None
         for variable in ARCTIC_SEAS_VARIABLES:
             # We loop on the Arctic variables just in case some are missing because it is the
-            # same land/sea mask for all variables of a given experiment but observation often
-            # have only of the variables
+            # same land/sea mask for all variables of a given experiment but observations often
+            # have only one of the variables
             outfile = seaindex_files.get(variable, dict()).get(label)
-            # We get the cache file corresponding to that label and that variable, NONE if there
+            # We get the cache file corresponding to that label and that variable, None if there
             # isn't any cache. We need to use get to avoid a crash when a variable isn't there.
             if outfile is None or not os.path.exists(outfile):
                 continue # If we don't have any cache file, we go to next variable
@@ -182,31 +186,119 @@ def sea_areas_text(sea, labels, seaindex_files, area_attr, area_divisor):
                 # We look for the area_attr attribute in the cache file we found
                 # It should contain the area of the sea in that experiment/observation
                     area = float(out_ds[sea].attrs[area_attr]) / area_divisor
-                # area_divisor is to convert to Thousand km3 or Millons km2
+                # area_divisor is to convert to Thousand km2 or km2
             if area is not None:
                 break
             # If we found the area of the sea for one variable, we skip the next variable
             # and go directly to next label
-        parts.append('%s %s' % (label, 'n/a' if area is None else '%.0f' % area))
-        # We add to parts a label followed by the area if found None if not
+        parts.append('%s %s' % (label, 'unknown' if area is None else '%.0f' % area))
+        # We add to parts a label followed by the area if found, unknown if not
     return ', '.join(parts)
 
 
-def obs_climatology_curve(da, clim_period, annual, sim_times):
-    """Climatology of an observed per-sea series da (time as first dimension) over
-    clim_period ('full' or 'YYYY-YYYY'), repeated along sim_times (the time values of the
-    simulations): a single mean value if the series are annual means, otherwise the mean
-    of each calendar month. Returns (values along sim_times, first year, last year of the
-    climatology), or None if no observation falls within clim_period."""
+def chunked_in_time(da, chunk_time):
+    """da read by pieces of chunk_time time steps along its first dimension (time) with dask,
+    so that operations on it never load the whole field in memory; da unchanged if
+    chunk_time is None/0, if da has no time dimension (2 dimensions or less, e.g. a single
+    (y, x) field) or if dask is not available."""
+    if not chunk_time or da.ndim <= 2:
+    # da.ndim provides the number of dimensions: with 2 dimensions or less, da is at most a
+    # single (y, x) field without any time dimension to split along (and with 0 dimension,
+    # da.dims[0] after try would crash)
+        return da
+    try:
+        return da.chunk({da.dims[0]: chunk_time})
+    except (ImportError, ValueError) as e:
+        print("ArcticSeas: data could not be chunked (is dask installed ?), read at once -> %s" % e)
+        return da
+
+
+# -- Initials of the 12 calendar months, January first
+MONTH_INITIALS = 'JFMAMJJASOND'
+
+
+def season_months(season):
+    """Calendar months (1-12, in season order) of a season given either as 'ANM' (annual
+    mean, January to December) or as the initials of consecutive months, possibly across the
+    end of the year: 'DJF' -> [12, 1, 2], 'JJA' -> [6, 7, 8], 'NDJFMA' -> [11, 12, 1, 2, 3, 4],
+    'JASONDJFMAMJ' -> July to June. The initials must match one single run of consecutive
+    months: 'J', 'M', 'A' alone are ambiguous. Raises ValueError otherwise."""
+    season = season.upper()
+    if season == 'ANM':
+        return list(range(1, 13))
+    if not 1 <= len(season) <= 12:
+        raise ValueError("season '%s' should be 'ANM' or 1 to 12 month initials" % season)
+    # -- Every starting month from which the initials of len(season) consecutive months
+    # -- spell season (going on from December to January if needed)
+    starts = [start for start in range(12)
+              if ''.join(MONTH_INITIALS[(start + i) % 12] for i in range(len(season))) == season]
+    if len(starts) != 1:
+        raise ValueError("season '%s' is %s" % (season, 'ambiguous' if starts else
+                                                 'not a list of consecutive month initials'))
+    return [(starts[0] + i) % 12 + 1 for i in range(len(season))]
+
+
+def seasonal_mean_complete_years(da, months):
+    """Means over the months of the season (list of calendar months in season order, see
+    season_months) of a monthly per-sea series da (time as first dimension), only for the
+    seasons holding a valid value for each of their months: a season with missing months
+    (start/end of a series, data gap) is dropped rather than giving a mean skewed towards
+    the months present. A season across the end of the year (e.g. DJF) is assigned to the
+    year of its last month (DJF 1980 = December 1979 to February 1980). Returns a series
+    along a 'year' dimension (integer years)."""
     time_dim = da.dims[0]
-    years = da[time_dim].dt.year
+    da = da.where(da[time_dim].dt.month.isin(months), drop=True)
+    if da.sizes[time_dim] == 0:
+        return xr.DataArray(np.array([]), dims='year', coords=dict(year=np.array([], dtype=int)))
+    # -- Months coming before January in the season (e.g. December in DJF) belong to the
+    # -- season of the next year
+    next_year_months = months[:months.index(1)] if 1 in months else []
+    season_year = (da[time_dim].dt.year + da[time_dim].dt.month.isin(next_year_months)).rename('year')
+    valid_months = da.notnull().groupby(season_year).sum()
+    seasonal = da.groupby(season_year).mean()
+    return seasonal.where(valid_months == len(months), drop=True)
+
+
+def plotted_series(da, months):
+    """(x values, y values) of a monthly per-sea series da as plotted: seasonal means of the
+    complete seasons (x = integer years) for the calendar months listed in months, or the
+    monthly values (x = dates) if months is None."""
+    if months:
+        da = seasonal_mean_complete_years(da, months)
+        return da['year'].values, da.values
+    return da[da.dims[0]].values, da.values
+
+
+def obs_climatology_curve(da, clim_period, months, sim_times):
+    """Computes a climatology of an observed time series da (time as first dimension) over
+    clim_period ('full' or 'YYYY-YYYY'), repeated along sim_times (the time values of the
+    simulations): a single mean value if the series are seasonal means, otherwise the mean
+    of each calendar month. months is the list of calendar months of the season (see
+    season_months), or None for monthly values (season = 'all'). The output is a list : (values along
+    sim_times, first year, last year of the climatology), or None if no observation falls
+    within clim_period.
+    da is a monthly series: if months is given, its seasonal means are first computed from
+    complete seasons only (see seasonal_mean_complete_years)."""
+    seasonal = bool(months)
+    if seasonal:
+        da = seasonal_mean_complete_years(da, months)
+        # da now holds one value per complete season, along a 'year' dimension of integer years
+    time_dim = da.dims[0]
+    # time_dim is the name of the time dimension from the input da file (sea ice area/volume)
+    years = da[time_dim] if seasonal else da[time_dim].dt.year
+    # years holds only the years of each time step (repeated 12 times per year for monthly data)
     if clim_period != 'full':
         first, last = [int(year) for year in clim_period.split('-')]
+        # We get the first and last year of the period on which to compute the climatology
         da = da.where((years >= first) & (years <= last), drop=True)
-        if da.sizes[time_dim] == 0:
-            return None
-        years = da[time_dim].dt.year
-    if annual:
+        # We select the data within this period
+        years = da[time_dim] if seasonal else da[time_dim].dt.year
+        # years is updated to become the years of each time step within the selected period
+    if da.sizes[time_dim] == 0:
+        return None
+    # The output of this function is None if no data was found inside the clim_period
+    # (or, for seasonal means, if no complete season was found)
+    if seasonal:
         values = np.full(len(sim_times), float(da.mean()))
     else:
         # -- Mean of each calendar month (NaN for a month never observed, e.g. summer
@@ -234,7 +326,28 @@ if do_ArcticSeas_timeseries:
         thumbN_size = ArcticSeas_thumbnail_size
     else:
         thumbN_size = thumbnail_size_global
-    # 
+    #
+    # ==> -- Months over which the time series are averaged (season in params_ArcticSeas.py):
+    # ==> -- 'ANM', month initials such as 'DJF' or 'NDJFMA', or 'all' for monthly values
+    # ==> -- (season_month_list is then None)
+    # -----------------------------------------------------------------------------------------
+    ArcticSeas_season = str(season) if 'season' in dir() else 'ANM'
+    try:
+        season_month_list = None if ArcticSeas_season.lower() == 'all' else season_months(ArcticSeas_season)
+    except ValueError as e:
+        print("ArcticSeas: %s, using 'ANM' (annual means) instead" % e)
+        ArcticSeas_season, season_month_list = 'ANM', season_months('ANM')
+    season_label = 'monthly' if season_month_list is None else ArcticSeas_season.upper()
+    #
+    # ==> -- Southernmost latitude shown on the polar maps of the Arctic seas (latcutoff in
+    # ==> -- params_ArcticSeas.py; 45 by default, as in check_masks.py)
+    # -----------------------------------------------------------------------------------------
+    map_latcutoff = float(latcutoff) if 'latcutoff' in dir() and latcutoff is not None else 45.
+    #
+    # ==> -- Number of time steps read at once when processing the data (None: all at once)
+    # -----------------------------------------------------------------------------------------
+    chunk_time = ArcticSeas_chunk_time if 'ArcticSeas_chunk_time' in dir() else None
+    #
     # Create a working directory under the execution directory if non-existant already
     # -----------------------------------------------------------------------------------------
     workdir = os.path.join(getcwd(), 'ArcticSeas_workfiles')
@@ -304,8 +417,9 @@ if do_ArcticSeas_timeseries:
                 os.makedirs(mask_dir)
             try:
                 # We need to use a subprocess here because 1. the script uses variable names that
-                # could overwrite local variables otherwise, 2. it ends with a sys.exit() which
-                # would stop the diagnostics otherwise
+                # could overwrite local variables otherwise, 2. it reads its arguments from the
+                # command line and stops with sys.exit() on any error, which would stop the
+                # diagnostics otherwise
                 subprocess.run(['python3', create_mask_regions_script,
                                  '--maskfile', gridfile, '--gridfile', gridfile,
                                  '--out', maskfile], check=True)
@@ -317,15 +431,18 @@ if do_ArcticSeas_timeseries:
             """(Re-)run check_masks.py for this grid if its plot is missing or predates maskfile.
             check_masks.py always writes fixed relative filenames ('check_masks_arctic.png',
             'check_masks_antarctic.png') in its current directory -- run it in workdir and
-            immediately rename the Arctic one to <mask file name without .nc>.png, so every
-            distinct grid ends up with its own plot name. MPLBACKEND=Agg avoids the script's
-            closing plt.show() blocking/failing headless."""
-            png = os.path.join(workdir, os.path.splitext(os.path.basename(maskfile))[0] + '.png')
+            immediately rename the Arctic one to <mask file name without .nc>_lat<latcutoff>.png,
+            so every distinct grid ends up with its own plot name, and a new latcutoff gives a new
+            plot. MPLBACKEND=Agg avoids the script's closing plt.show() blocking/failing headless."""
+            png = os.path.join(workdir, '%s_lat%g.png' % (os.path.splitext(os.path.basename(maskfile))[0],
+                                                          map_latcutoff))
             need = not os.path.exists(png) or os.path.getmtime(png) < os.path.getmtime(maskfile)
             if need and os.path.exists(check_masks_script):
                 try:
+                    # -- --latcutoff: southernmost latitude shown on the polar map
                     subprocess.run(['python3', check_masks_script,
-                                     '--gridfile', gridfile, '--mask', maskfile, '--label', label],
+                                     '--gridfile', gridfile, '--mask', maskfile, '--label', label,
+                                     '--latcutoff', str(map_latcutoff)],
                                     cwd=workdir, check=True, env=dict(os.environ, MPLBACKEND='Agg'))
                     generated = os.path.join(workdir, 'check_masks_arctic.png')
                     if os.path.exists(generated):
@@ -518,27 +635,31 @@ if do_ArcticSeas_timeseries:
                         # Gather in dataset dat all informations about model read in datasetup.py and
                         # the period of the netcdf files computed by get_period_manager
                         dat = ds(**wmodel)
-                        if ArcticSeas_annual_mean:
-                            dat = ccdo(dat, operator='yearmean')
-                            # Determine which command line to run if needed and store it in dat together
-                            # with all the information about input files for this model
+                        # -- No time averaging here (e.g. ccdo yearmean), which would average
+                        # -- whatever months are present in each year: comp_seaiceindex.py works
+                        # -- on the monthly fields, and seasonal means are computed when plotting,
+                        # -- from complete seasons only (see seasonal_mean_complete_years)
                         datafile = cfile(dat)
-                        # Actual computation of annual means if needed
+                        # Path to the netcdf file(s) of the dataset
 
                         # -- in case sea ice concentration is published as a percentage (0-100) 
                         # -- turn it into a fraction (0-1). Detect and write the corrected copy
                         # -- to our own workdir rather than overwriting CliMAF's cache file.
+                        # -- The field is read by pieces of ArcticSeas_chunk_time time steps (see
+                        # -- chunked_in_time) to limit the memory used by long model series
                         if variable == 'sic':
                             with xr.open_dataset(datafile) as check_ds:
-                            # datafile is opened only in this loop, closed automatically when loop closes
-                                is_percent = float(check_ds[real_variable].max()) > 1.5
+                            # datafile is opened only in this block, closed automatically at the end of the block
+                                sic_field = chunked_in_time(check_ds[real_variable], chunk_time)
+                                is_percent = float(sic_field.max()) > 1.5
                             if is_percent:
                                 fraction_file = os.path.join(
                                     workdir, 'sic_fraction_%s.nc' % sanitize(model_label))
                                 with xr.open_dataset(datafile) as check_ds:
-                                # idem datafile opened only in this loop
+                                # idem datafile opened only in this block
                                     fraction_ds = check_ds.copy()
-                                    fraction_ds[real_variable] = fraction_ds[real_variable] / 100.
+                                    fraction_ds[real_variable] = \
+                                        chunked_in_time(fraction_ds[real_variable], chunk_time) / 100.
                                     fraction_ds.to_netcdf(fraction_file)
                                 datafile = fraction_file
 
@@ -555,6 +676,8 @@ if do_ArcticSeas_timeseries:
                                '--dyvar', ArcticSeas_dyvar,
                                '--meanORsum', ArcticSeas_meanORsum,
                                '--out', cache_file]
+                        if chunk_time:
+                            cmd += ['--chunk_time', str(chunk_time)]
                         # -- Output captured (and echoed to the log) to keep its 'missing values'
                         # -- warnings next to the cache file, so that they are shown on the atlas
                         # -- page also when the cache is reused later
@@ -636,7 +759,9 @@ if do_ArcticSeas_timeseries:
                             if model_label in obs_labels:
                                 obs_series[model_label] = da
                             else:
-                                curves.append((model_label, da[time_dim].values, da.values))
+                                # -- Seasonal means of complete seasons only (season in params_ArcticSeas.py)
+                                time_values, data_values = plotted_series(da, season_month_list)
+                                curves.append((model_label, time_values, data_values))
                             present_labels.append(model_label)
                         out_ds.close()
 
@@ -652,9 +777,10 @@ if do_ArcticSeas_timeseries:
                         obs_dates, obs_clim_period = obs_settings[obs_label]
                         time_dim = da.dims[0]
                         if obs_dates == 'real' or sim_times is None:
-                            obs_curves.append((obs_label, obs_label, da[time_dim].values, da.values))
+                            time_values, data_values = plotted_series(da, season_month_list)
+                            obs_curves.append((obs_label, obs_label, time_values, data_values))
                             continue
-                        clim = obs_climatology_curve(da, obs_clim_period, ArcticSeas_annual_mean, sim_times)
+                        clim = obs_climatology_curve(da, obs_clim_period, season_month_list, sim_times)
                         if clim is None:
                             print("ArcticSeas: no %s data within obs_clim_period %s for %s, not plotted"
                                   % (obs_label, obs_clim_period, sea))
@@ -691,7 +817,7 @@ if do_ArcticSeas_timeseries:
                                     label=legend_label, zorder=3)
                         ax.legend(fontsize=8)
 
-                    ax.set_title("%s - %s" % (sea_name, plot_var['title']))
+                    ax.set_title("%s - %s (%s)" % (sea_name, plot_var['title'], season_label))
                     ax.set_xlabel('Time')
                     ax.set_ylabel(plot_var['ylabel'])
                     fig.tight_layout()

@@ -28,32 +28,29 @@ do_parallel = False
 # WARNING : The arguments above are copied from other example, not sure they actually
 # have an impact
 
-# -- Set the reference against which we plot the diagnostics 
-# ---------------------------------------------------------------------------- >
-# --    -> 'default' uses variable2reference to point to a default
-# --       reference dataset (obs and reanalyses)
-# --    -> you can set reference to a dictionary that will point any other
-# --       climaf dataset
-# --       For instance, you can set it to models[0] if you want to see the
-# --       differences relative to the first simulation of the list 'models'
-reference = 'default'
-
-# WARNING : I put default in case there had been some sea ice data in C-ESM-EP
-# for sea ice but there isn't - need to add something
-
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
 atlas_head_title = "Arctic Seas - Sea Ice Area and Volume"
 
 
-# -- Set the overall season
+# -- Choose the season over which the time series are averaged
 # ---------------------------------------------------------------------------- >
-# -> Choose among all the possible values taken by clim_average (see help(clim_average)) like JFM, December,...
+# -> 'ANM' for annual means (January to December), or the initials of consecutive months,
+#    possibly across the end of the year: 'DJF' (December to February), 'JJA' (June to
+#    August), 'NDJFMA', 'MJJASO', 'JASONDJFMAMJ' (July to June)... The initials must match
+#    one single run of months ('J', 'M' or 'A' alone are ambiguous).
+#    A season across the end of the year is assigned to the year of its last month
+#    (DJF 1980 = December 1979 to February 1980).
+# -> 'all' to plot the native monthly values.
+# comp_seaiceindex.py always works on the monthly fields; seasonal means are computed when
+# plotting, from complete seasons only (all their months available): a season with missing
+# months is left out rather than giving a mean skewed towards the months present. No
+# recomputation is needed when the season is changed.
+# When using CryoSat-2, set season = 'NDJFMA' otherwise you'll end up with missing observations
+# (because the ice thickness is not observed in summer)
 season    = 'ANM'
 # -- Minimum latitude for stereographic projection
-latcutoff =  50. 
-#
-# WARNING : For now the arguments season and latcutoff are not used, to be improved
+latcutoff =  50.
 
 # ---------------------------------------------------------------------------- >
 # -- Arctic Seas : per-sea sea ice area / volume time series
@@ -80,9 +77,9 @@ do_ArcticSeas_timeseries = True
 # -- git@github.com:virginieguemas/sea_ice_diag_tools.git
 ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 
-# -- Observational references, declared here rather than in `models` (datasets_setup.py)
-# -- so that the other components do not try to process them as simulations.
-# -- Same syntax as an entry of `models`: a CliMAF dataset description (the project is
+# -- Observational references, declared here rather than in datasets_setup.py
+# -- to avoid interactions with other diagnostics.
+# -- Same syntax as an entry of models in datasets_setup.py: a CliMAF dataset description (the project is
 # -- declared in my_projects.py), with 'frequency' and 'ts_period' ('full' = every
 # -- available date). Each observation is then looked up by its 'customname' in
 # -- ArcticSeas_gridfile, ArcticSeas_maskfile and ArcticSeas_variable_names exactly like
@@ -98,7 +95,9 @@ ArcticSeas_obs = [
 # -- the simulations:
 # --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
 # --                repeated every year along the dates of the simulations (a single mean
-# --                value if ArcticSeas_annual_mean, otherwise the mean of each calendar month)
+# --                value -- mean of the seasonal means of the complete seasons -- for a
+# --                season such as 'ANM' or 'DJF', otherwise, with season = 'all', the mean
+# --                of each calendar month)
 # --   'real'    -> observations plotted at their actual dates
 # -- ArcticSeas_obs_clim_period : 'full' (every available year) or 'YYYY-YYYY' (only used
 # -- with 'climato').
@@ -163,6 +162,12 @@ ArcticSeas_variable_names = {
 # --           sit gives the mean sea ice thickness, in each sea
 ArcticSeas_meanORsum = 'sum'
 
+# -- Number of time steps read at once when processing the data (comp_seaiceindex.py and
+# -- the percentage check on sic), to avoid filling the memory with long model series:
+# -- e.g. 120 = 10 years of monthly data at a time. Requires dask; set to None to read
+# -- each field entirely at once.
+ArcticSeas_chunk_time = 120
+
 # -- Restrict to a subset of seas (list of the netcdf variable names found in
 # -- ArcticSeas_maskfile); set to None (or an empty list) to use every region found
 # -- in the mask file.
@@ -189,11 +194,6 @@ ArcticSeas_seas_list = [
     'wcentarc',  # Western Central Arctic
     'ecentarc',  # Eastern Central Arctic
 ]
-
-# -- Compute annual means before calling comp_seaiceindex.py (recommended: shorter,
-# -- more readable multi-decadal time series). Set to False to keep the native
-# -- (monthly) frequency.
-ArcticSeas_annual_mean = True
 
 # -- What to do, for a given sea/variable plot, when data is available for only
 # -- some of the simulations (the others failed: no file found, missing grid file,
