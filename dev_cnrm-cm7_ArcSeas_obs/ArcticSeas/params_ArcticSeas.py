@@ -79,9 +79,10 @@ ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 
 # -- Observational references, declared here rather than in datasets_setup.py
 # -- to avoid interactions with other diagnostics.
-# -- Same syntax as an entry of models in datasets_setup.py: a CliMAF dataset description (the project is
-# -- declared in my_projects.py), with 'frequency' and 'ts_period' ('full' = every
-# -- available date). Each observation is then looked up by its 'customname' in
+# -- Same syntax as an entry of models in datasets_setup.py: 
+# -- a CliMAF dataset description (the project is declared in my_projects.py), 
+# -- with 'frequency' and 'ts_period' ('full' = every available date). 
+# -- Each observation is then looked up by its 'customname' in
 # -- ArcticSeas_gridfile, ArcticSeas_maskfile and ArcticSeas_variable_names exactly like
 # -- a simulation; it only needs an ArcticSeas_variable_names entry for the variables
 # -- it provides (e.g. no 'sit' for a sea ice concentration product).
@@ -91,16 +92,16 @@ ArcticSeas_obs = [
     dict(project='NSIDC_CDR_V6', customname='nsidc_cdr_v6', frequency='monthly', ts_period='full'),
 ]
 
-# -- How the observations are plotted, since their dates generally do not match those of
-# -- the simulations:
+# -- How the observations are plotted, since their dates sometimes do not match those of
+# -- the simulations like in PICTL:
 # --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
 # --                repeated every year along the dates of the simulations (a single mean
 # --                value -- mean of the seasonal means of the complete seasons -- for a
 # --                season such as 'ANM' or 'DJF', otherwise, with season = 'all', the mean
 # --                of each calendar month)
 # --   'real'    -> observations plotted at their actual dates
-# -- ArcticSeas_obs_clim_period : 'full' (every available year) or 'YYYY-YYYY' (only used
-# -- with 'climato').
+# -- ArcticSeas_obs_clim_period : (only used with 'climato') 
+# --                             'full' (every available year) or 'YYYY-YYYY' 
 # -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_clim_period'
 # -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='real') or
 # -- dict(..., obs_clim_period='1991-2020').
@@ -122,7 +123,6 @@ ArcticSeas_gridfile = {
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
     'REF3': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
     # -- NSIDC polar stereographic 25 km grid (psn25, shared with CryoSat-2 RDEFT4),
-    # -- built by sea_ice_diag_tools/masks/create_grid_psn25.py
     'nsidc_cdr_v6': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.psn25.nc',
 }
 
@@ -147,12 +147,15 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 # -- in the output files, one entry per simulation (keyed by its 'customname',
 # -- or its 'experiment' if it has none -- same key as ArcticSeas_gridfile/
 # -- ArcticSeas_maskfile). A simulation missing from this dictionary is skipped, 
-# -- with a message in the log. Ex : N4CPL's volume variable is 'sithic', but
-# -- N3CPL's is 'sivolu' 
+# -- with a message in the log.
+# -- WARNING : 'sit' must be the sea ice volume per grid cell area (e.g. NEMO/SI3 'sivolu',
+# -- "Sea-ice volume per area"), so that its area-weighted sum is the sea ice volume; NOT
+# -- the thickness of the ice-covered part only (e.g. 'sithic', "Sea-ice thickness"),
+# -- whose sum would count every grid cell as fully ice-covered and overestimate the volume
 ArcticSeas_variable_names = {
-    'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},  
-    'REF1': {'sic': 'siconc', 'sit': 'sithic'}, 
-    'REF3': {'sic': 'siconc', 'sit': 'sithic'},
+    'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},
+    'REF1': {'sic': 'siconc', 'sit': 'sivolu'},
+    'REF3': {'sic': 'siconc', 'sit': 'sivolu'},
     'nsidc_cdr_v6': {'sic': 'cdr_seaice_conc_monthly'},
 }
 
@@ -162,8 +165,9 @@ ArcticSeas_variable_names = {
 # --           sit gives the mean sea ice thickness, in each sea
 ArcticSeas_meanORsum = 'sum'
 
-# -- Number of time steps read at once when processing the data (comp_seaiceindex.py and
-# -- the percentage check on sic), to avoid filling the memory with long model series:
+# -- Number of time steps read at once when processing the data (in comp_seaiceindex.py and
+# -- when checking whether sic is in % and converting it into a fraction), to avoid filling
+# -- the memory with long model series:
 # -- e.g. 120 = 10 years of monthly data at a time. Requires dask; set to None to read
 # -- each field entirely at once.
 ArcticSeas_chunk_time = 120
