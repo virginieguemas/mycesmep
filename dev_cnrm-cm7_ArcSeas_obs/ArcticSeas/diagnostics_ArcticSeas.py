@@ -218,51 +218,101 @@ MONTH_INITIALS = 'JFMAMJJASOND'
 
 
 def season_months(season):
-    """Calendar months (1-12, in season order) of a season given either as 'ANM' (annual
-    mean, January to December) or as the initials of consecutive months, possibly across the
+    """Returns a list of numbers from 1 to 12 indicating the position in the year of each month 
+    in the argument season, in the order they appear in the argument season, except for
+    'ANM' which returns [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] (ANM = annual means for 
+    consistency with the other diagnostics of CESMEP). season can be across the
     end of the year: 'DJF' -> [12, 1, 2], 'JJA' -> [6, 7, 8], 'NDJFMA' -> [11, 12, 1, 2, 3, 4],
     'JASONDJFMAMJ' -> July to June. The initials must match one single run of consecutive
     months: 'J', 'M', 'A' alone are ambiguous. Raises ValueError otherwise."""
-    season = season.upper()
-    if season == 'ANM':
+    season = season.upper() # Turn to upper cases if not already
+    if season == 'ANM': # Treated first because it is the only valid season which is not
+        # passed through initials of months
         return list(range(1, 13))
     if not 1 <= len(season) <= 12:
         raise ValueError("season '%s' should be 'ANM' or 1 to 12 month initials" % season)
-    # -- Every starting month from which the initials of len(season) consecutive months
-    # -- spell season (going on from December to January if needed)
-    starts = [start for start in range(12)
-              if ''.join(MONTH_INITIALS[(start + i) % 12] for i in range(len(season))) == season]
+        # The raise ValueError allows to send an error message to the main script which will
+        # capture it and print in the log that the season requested by the user was not
+        # understood and annual means will be used instead
+    # starts holds all possible starting months of 'season' from O for January to 11 for 
+    # December (0 to 11 to be python positions in MONTH_INITIALS - different from the
+    # months that will be output and range between 1 and 12)
+    # Initially, every month is a possible start; then, letter by letter of 'season', we 
+    # only keep those whose i-th following month has the i-th letter
+    # of season as initial ((start + i) % 12 goes on from December to January).
+    # At the end, starts should hold a single value, but it can hold several ('J', 'M' or 'A'
+    # alone: ambiguous) or none (initials not following each other in the calendar)
+    #
+    starts = list(range(12))              
+         # initially every month from J to D could be the beginning of 'season'                                        
+    for i in range(len(season)):          # i-th letter of season
+        kept = []
+        for start in starts:              # possible starting months still left
+            if MONTH_INITIALS[(start + i) % 12] == season[i]:
+            # We find all occurrences of letter 0 of 'season' in MONTH_INITIALS
+            # We only keep those positions in starts
+            # Then we find all occurrences of letter 1 of 'season' right after
+            # an occurrence of letter 0 of 'season' within MONTH_INTIALS and so on
+            # Crossing the end of the year is allowed thanks to % 12
+                kept.append(start)        
+        starts = kept
     if len(starts) != 1:
+        # We should end up with only one possibility as a first month for 'season'
+        # within MONTH_INITIALS
         raise ValueError("season '%s' is %s" % (season, 'ambiguous' if starts else
                                                  'not a list of consecutive month initials'))
+        # Otherwise, we will send an error message to the main script to be printed
+        # in the log together with the information that annual means will be used
     return [(starts[0] + i) % 12 + 1 for i in range(len(season))]
-
+    # Once we know for sure which is the number (from 1 to 12) of the first month
+    # of 'season', we can list the numbers of all months of the season
+    # +1 is because we list the months as 1 to 12 whereas position in python are indexed
+    # from 0 (in MONTH_INITIALS)
 
 def seasonal_mean_complete_years(da, months):
-    """Means over the months of the season (list of calendar months in season order, see
-    season_months) of a monthly per-sea series da (time as first dimension), only for the
-    seasons holding a valid value for each of their months: a season with missing months
+    """From a monthly time series data array da (time as first dimension), and a
+    list of calendar months (between 1 and 12) within the season, this function computes
+    seasonal averages and returns a time series in which the time dimension holds one 
+    value per year, along a 'year' dimension (integer years). A season with missing months
     (start/end of a series, data gap) is dropped rather than giving a mean skewed towards
     the months present. A season across the end of the year (e.g. DJF) is assigned to the
-    year of its last month (DJF 1980 = December 1979 to February 1980). Returns a series
-    along a 'year' dimension (integer years)."""
-    time_dim = da.dims[0]
+    year of its last month (DJF 1980 = December 1979 to February 1980)."""
+    time_dim = da.dims[0] # time should be the first dimension
     da = da.where(da[time_dim].dt.month.isin(months), drop=True)
     if da.sizes[time_dim] == 0:
         return xr.DataArray(np.array([]), dims='year', coords=dict(year=np.array([], dtype=int)))
-    # -- Months coming before January in the season (e.g. December in DJF) belong to the
-    # -- season of the next year
+        # If there is no occurrence of the months requested by the user in the input da,
+        # we return an empty xarray of seasonal means
+    # Months coming before January in the season (e.g. December in DJF) should be associated and
+    # averaged within the season of the next year
     next_year_months = months[:months.index(1)] if 1 in months else []
-    season_year = (da[time_dim].dt.year + da[time_dim].dt.month.isin(next_year_months)).rename('year')
+    # 'if 1 in months' checks whether January is part of the season, in that case, the season might
+    # cross the end of the year and we need to reattribute some months before January to next year
+    # [:months.index(1)] takes all the values before the one having value 1 (January)
+    date_year = da[time_dim].dt.year
+    in_next_year = da[time_dim].dt.month.isin(next_year_months)
+    # True/False : if a month is before January in the season, its year will be shifted to next
+    # so as to be averaged in the correct season
+    season_year = xr.where(in_next_year, date_year + 1, date_year).rename('year')
+    # Year of the season of each da value: year + 1 for the months coming before January 
     valid_months = da.notnull().groupby(season_year).sum()
+    # season_year is the key to gather data to be averaged together : same season_year, same average 
     seasonal = da.groupby(season_year).mean()
     return seasonal.where(valid_months == len(months), drop=True)
+    # We drop all seasonal means which were computed from less months than the total number of months 
+    # in the input argument months
 
 
 def plotted_series(da, months):
-    """(x values, y values) of a monthly per-sea series da as plotted: seasonal means of the
-    complete seasons (x = integer years) for the calendar months listed in months, or the
-    monthly values (x = dates) if months is None."""
+    """Returns a tuple (x values, y values) to be plotted from a monthly time series
+    da which already holds at this stage the data in the units to be plotted (e.g. /1e12)
+    months can be None or a list of numbers between 1 and 12 computed by
+    season_months from the string 'season' provided in params_ArcticSeas.py,
+    If months is None, the function returns the original da monthly values together with 
+    its original monthly time axis.
+    If months is a list of months, this functions computes seasonal averages through
+    the seasonal_mean_complete_years function with the list of months provided as argument
+    months, together with the list of years those seasons are associated with."""
     if months:
         da = seasonal_mean_complete_years(da, months)
         return da['year'].values, da.values
