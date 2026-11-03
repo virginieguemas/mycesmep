@@ -556,8 +556,8 @@ if do_ArcticSeas_timeseries:
                 print("ArcticSeas: obs_dates '%s' for %s should be 'climato' or 'real', using 'climato'"
                       % (obs_dates, model_label_of(obs)))
                 obs_dates = 'climato'
-            if obs_period != 'full' and not re.match(r'^\d{4}-\d{4}$', obs_period):
-                print("ArcticSeas: obs_period '%s' for %s should be 'full' or 'YYYY-YYYY', using 'full'"
+            if obs_period not in ('full', 'sim') and not re.match(r'^\d{4}-\d{4}$', obs_period):
+                print("ArcticSeas: obs_period '%s' for %s should be 'full', 'sim' or 'YYYY-YYYY', using 'full'"
                       % (obs_period, model_label_of(obs)))
                 obs_period = 'full'
             obs_settings[model_label_of(obs)] = (obs_dates, obs_period)
@@ -897,6 +897,15 @@ if do_ArcticSeas_timeseries:
                     for obs_label, da in obs_series.items():
                         obs_dates, obs_period = obs_settings[obs_label]
                         time_dim = da.dims[0]
+                        if obs_period == 'sim':
+                            # -- From the first to the last year of the simulations of this figure
+                            # -- ('full' if there is no simulation to follow)
+                            if sim_times is None:
+                                obs_period = 'full'
+                            else:
+                                sim_years = sim_times if season_month_list \
+                                    else xr.DataArray(sim_times, dims='simtime').dt.year.values
+                                obs_period = '%d-%d' % (sim_years.min(), sim_years.max())
                         if obs_dates == 'real' or sim_times is None:
                             # -- Only the points within obs_period (every point if 'full')
                             time_values, data_values = plotted_series(da, season_month_list, obs_period)

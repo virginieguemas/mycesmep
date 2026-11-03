@@ -95,9 +95,10 @@ ArcticSeas_obs = [
 # --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly',
 # --                the mean of each calendar month)
 # --   'real'    -> observations plotted at their actual dates, over ArcticSeas_obs_period
-# -- ArcticSeas_obs_period : 'full' (every available year) or 'YYYY-YYYY' (years of the
-# --                period, included), used with 'climato' (period of the climatology) and
-# --                with 'real' (period plotted)
+# -- ArcticSeas_obs_period : 'full' (every available year), 'sim' (from the first to the last
+# --                year of the simulations of each figure; 'full' if a figure has no
+# --                simulation) or 'YYYY-YYYY' (years of the period, included), used with
+# --                'climato' (period of the climatology) and with 'real' (period plotted)
 # -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_period'
 # -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='real') or
 # -- dict(..., obs_period='1991-2020').
