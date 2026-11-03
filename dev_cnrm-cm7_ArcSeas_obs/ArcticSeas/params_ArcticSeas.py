@@ -89,22 +89,20 @@ ArcticSeas_obs = [
 
 # -- How the observations are plotted, since their dates sometimes do not match those of
 # -- the simulations like in PICTL:
-# --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
+# --   'climato' -> climatology of the observations over ArcticSeas_obs_period,
 # --                repeated every year along the dates of the simulations (a single mean
 # --                value -- mean of the seasonal means of the complete seasons -- for a
-# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly', 
+# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly',
 # --                the mean of each calendar month)
-# --   'real'    -> observations plotted at their actual dates, over their whole period
-# --   'sim_period' -> observations plotted at their actual dates, but only within the
-# --                period covered by the simulations of the figure (from the first to the
-# --                last date or year of the simulations)
-# -- ArcticSeas_obs_clim_period : (only used with 'climato') 
-# --                             'full' (every available year) or 'YYYY-YYYY' 
-# -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_clim_period'
-# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='sim_period') or
-# -- dict(..., obs_clim_period='1991-2020').
+# --   'real'    -> observations plotted at their actual dates, over ArcticSeas_obs_period
+# -- ArcticSeas_obs_period : 'full' (every available year) or 'YYYY-YYYY' (years of the
+# --                period, included), used with 'climato' (period of the climatology) and
+# --                with 'real' (period plotted)
+# -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_period'
+# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='real') or
+# -- dict(..., obs_period='1991-2020').
 ArcticSeas_obs_dates = 'climato'
-ArcticSeas_obs_clim_period = 'full'
+ArcticSeas_obs_period = 'full'
 
 
 # -- Grid description file (NEMO mesh_mask-like: land-sea mask, lon/lat, cell sizes
