@@ -212,8 +212,9 @@ ArcticSeas_seas_list = [
 # -- not plotted.
 ArcticSeas_on_missing_simulations = 'error'
 
-# -- Thumbnail size for the time series plots
-ArcticSeas_thumbnail_size = '450*300'
+# -- Thumbnail size for the plots of this component (C-ESM-EP setting, only read for
+# -- ArcticSeas when set here)
+thumbnail_size = '450*300'
 
 # -- Some settings -- customization
 # ---------------------------------------------------------------------------- >

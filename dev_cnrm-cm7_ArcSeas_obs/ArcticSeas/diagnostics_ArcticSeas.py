@@ -317,19 +317,22 @@ def plotted_series(da, months):
         da = seasonal_mean_complete_years(da, months)
         return da['year'].values, da.values
     return da[da.dims[0]].values, da.values
-
+    # In case of annual/seasonal means, the x values look like [YYYY, YYYY .... YYYY]
+    # In case of monthly time series, they look like [YYYY-MM-DD, YYYY-MM-DD,  .... ]
+    # It is a numpy array of datetime64 for monthly time series, integers for seasonal.
 
 def obs_climatology_curve(da, clim_period, months, sim_times):
     """Computes a climatology of an observed time series da (time as first dimension) over
-    clim_period ('full' or 'YYYY-YYYY'), repeated along sim_times (the time values of the
-    simulations): a single mean value if the series are seasonal means, otherwise the mean
-    of each calendar month. months is the list of calendar months of the season (see
-    season_months), or None for monthly values (season = 'all'). The output is a list : (values along
-    sim_times, first year, last year of the climatology), or None if no observation falls
-    within clim_period.
+    clim_period ('full' or 'YYYY-YYYY') and repeats it along the time dimension sim_times 
+    of the experiments. For annual or seasonal means, a single mean value is repeated each
+    year. For monthly climatologies, the mean of each calendar month is repeated in cycles.
+    The input argument months is the list of calendar months of the season (obtained by
+    season_months), or None for monthly values (for season = 'all'). The output is a tupple : 
+    (values along sim_times, first year, last year of the climatology), or None if no 
+    observation falls within clim_period.
     da is a monthly series: if months is given, its seasonal means are first computed from
-    complete seasons only (see seasonal_mean_complete_years)."""
-    seasonal = bool(months)
+    complete seasons only (using seasonal_mean_complete_years)."""
+    seasonal = bool(months) # True if months is a list of numbers / False if it is None
     if seasonal:
         da = seasonal_mean_complete_years(da, months)
         # da now holds one value per complete season, along a 'year' dimension of integer years
@@ -342,20 +345,28 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
         # We get the first and last year of the period on which to compute the climatology
         da = da.where((years >= first) & (years <= last), drop=True)
         # We select the data within this period
-        years = da[time_dim] if seasonal else da[time_dim].dt.year
+        years = years[(years >= first) & (years <= last)]
         # years is updated to become the years of each time step within the selected period
     if da.sizes[time_dim] == 0:
         return None
     # The output of this function is None if no data was found inside the clim_period
     # (or, for seasonal means, if no complete season was found)
     if seasonal:
+        # If we have seasonal or annual means, we repeat those for as long as the experiment
         values = np.full(len(sim_times), float(da.mean()))
     else:
-        # -- Mean of each calendar month (NaN for a month never observed, e.g. summer
-        # -- for a winter-only product), then picked for the month of each simulation date
         monthly_clim = da.groupby(time_dim + '.month').mean().reindex(month=range(1, 13))
+        # time_dim.month is the key to gather data by month for groupby to average
+        # if some months are never observed (ex: summer months for CryoSat), 
+        # reindex adds those missing months with a NaN
         sim_months = xr.DataArray(sim_times, dims='simtime').dt.month
+        # sim_times is a numpy array of datetime64 values that needs to be converted
+        # to an Xarray so that we can use .dt.month to pick the month of each point
+        # on the time axis to build sim_months
         values = monthly_clim.sel(month=sim_months).values
+        # Knowing the month of each point on the time axis (in sim_months), we can 
+        # select the correct monthly value from the monthly climatology monthly_clim
+        # so that values is a monthly climatology repeated in cycle
     return values, int(years.min()), int(years.max())
 
 
@@ -366,18 +377,15 @@ if do_ArcticSeas_timeseries:
     index += section("Sea ice area and volume per Arctic sea", level=4)
     #
     # ==> -- Control the size of the thumbnail -> thumbN_size
-    # Note: ArcticSeas_thumbnail_size defined in params_ArcticSeas.py
-    # Different from what is done in other diagnostics to avoid overwriting plot parameters
-    # for all diagnostics running in parallel
+    # Note: thumbnail_size is None in share/default/default_atlas_settings.py, and can be set
+    # in params_ArcticSeas.py (only read for this component); thumbnail_size_global otherwise
     # -----------------------------------------------------------------------------------------
     if thumbnail_size:
         thumbN_size = thumbnail_size
-    elif 'ArcticSeas_thumbnail_size' in dir() and ArcticSeas_thumbnail_size:
-        thumbN_size = ArcticSeas_thumbnail_size
     else:
         thumbN_size = thumbnail_size_global
     #
-    # ==> -- Months over which the time series are averaged (season in params_ArcticSeas.py):
+    # ==> -- If season is available in params_ArcticSeas.py):
     # ==> -- 'ANM', month initials such as 'DJF' or 'NDJFMA', or 'all' for monthly values
     # ==> -- (season_month_list is then None)
     # -----------------------------------------------------------------------------------------
@@ -739,6 +747,39 @@ if do_ArcticSeas_timeseries:
                     except Exception as e:
                         print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
                               % (variable, real_variable, model_label, e))
+
+            # ==> -- Monthly plots (season = 'all') use the dates of the files as x values: dates in a
+            # ==> -- non-standard calendar (e.g. noleap, 360_day) are cftime objects, which matplotlib
+            # ==> -- only plots with the nc-time-axis package, and cannot mix with standard dates
+            # ==> -- (another simulation, an observation with obs_dates = 'real'). Warn in the log and
+            # ==> -- on the page if any dataset uses such a calendar (seasonal means use integer years
+            # ==> -- and are not concerned)
+            # -----------------------------------------------------------------------------------------
+            if season_month_list is None:
+                non_standard_calendars = dict()  # label -> calendar
+                for variable, files in seaindex_files.items():
+                    for model_label, cache_file in files.items():
+                        if model_label in non_standard_calendars or not os.path.exists(cache_file):
+                            continue
+                        with xr.open_dataset(cache_file) as cached:
+                            first_var = next(iter(cached.data_vars), None)
+                            if first_var is None:
+                                continue
+                            dates = cached[cached[first_var].dims[0]]
+                            # Standard calendars are decoded as numpy datetime64, the others as cftime
+                            if not np.issubdtype(dates.dtype, np.datetime64):
+                                non_standard_calendars[model_label] = dates.encoding.get('calendar', 'non-standard')
+                if non_standard_calendars:
+                    calendars_text = ', '.join('%s (%s)' % (label, calendar)
+                                               for label, calendar in non_standard_calendars.items())
+                    message = "Monthly plots (season = 'all') with a non-standard calendar: " + \
+                              calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
+                              "and fails if they are mixed with standard dates (other simulations, " \
+                              "observations with obs_dates = 'real'): use a season such as 'ANM' instead."
+                    print("ArcticSeas: WARNING - " + message)
+                    index += open_table()
+                    index += start_line('<font color="red">Warning - ' + message + '</font>')
+                    index += close_line() + close_table()
 
             # ==> -- Build one table row per sea; for each sea, one plot for the ice area (sic) and
             # ==> -- one for the ice volume (sit), overlaying all the simulations
