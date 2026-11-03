@@ -570,7 +570,7 @@ if do_ArcticSeas_timeseries:
                       "their per-simulation settings and cache will be mixed up" % label)
         Wdatasets = Wmodels + Wobs
 
-        # -- Find every distinct grid/mask actually needed by the configured simulations and
+        # -- Find every distinct grid/mask actually needed by the simulations and
         # -- observations, then build/locate each of them (deduplicated by mask file)
         # -----------------------------------------------------------------------------------------
         grids_needed = dict()  # maskfile -> (gridfile, [label, ...]) -- one label per simulation
@@ -596,14 +596,14 @@ if do_ArcticSeas_timeseries:
         if not available_masks:
             index += open_table()
             index += start_line('Error')
-            index += "No Arctic seas mask file could be found or built for any of the configured " \
-                      "simulations (see the job log for details)."
+            index += "No Arctic seas mask file could be found or built for any of the " \
+                      "simulations or observations (see the job log for details)."
             index += close_line() + close_table()
 
         # Finally !!! We have everything we need to run the actual diagnostics
         # --------------------------------------------------------------------------------------------
         else:
-            # -- Sanity-check plot of the mask geometry, one per distinct grid (not one per
+            # -- Plot of the Arctic seas geometry, one per distinct grid (not one per
             # -- simulation: the label already lists every simulation sharing that grid) 
             # -----------------------------------------------------------------------------------------
             index += section("Arctic seas", level=5)
@@ -620,8 +620,8 @@ if do_ArcticSeas_timeseries:
             index += close_line() + close_table()
 
             # -- Get the list of seas from any one of the mask files: they all describe the same
-            # -- set of named seas (netcdf variable names, e.g. 'barentse'), just discretized on
-            # -- different grids; their 'long_name' attribute (e.g. 'Barents Sea') labels the page
+            # -- set of named seas (netcdf variable names, e.g. 'barentse'), discretized on
+            # -- different grids; their 'long_name' attribute (e.g. 'Barents Sea') labels the sections
             # -----------------------------------------------------------------------------------------
             reference_maskfile = next(iter(available_masks))
             mask_ds = xr.open_dataset(reference_maskfile)
@@ -669,7 +669,7 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: no ArcticSeas_variable_names entry for %s / %s, skipping"
                               % (model_label, variable))
                         continue
-                        # We skip to next model here if variable not declared in param_ArcticSeas.py
+                        # We skip to next model/obs here if variable not declared in param_ArcticSeas.py
 
                     # Climaf needs the variable to find the input netcdf files
                     wmodel.update(dict(variable=real_variable))
@@ -685,12 +685,12 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: no data found for %s / %s (variable %s), skipping"
                               % (model_label, variable, real_variable))
                         continue
-                        # We skip to next model here if period is not available = no input data found
+                        # We skip to next model/obs here if period is not available = no input data found
 
                     # Build a name for the output files (sea ice volume and sea ice area)
                     cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
                     cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
-                    # Finding the last simulation year both in the input and output files
+                    # Finding the last simulation/observation year both in the input and output files
                     simulation_latest_year = latest_year_of_wmodel(wmodel)
                     cache_latest_year = latest_year_in_ncfile(cache_file)
                     up_to_date = (cache_latest_year is not None and simulation_latest_year is not None
@@ -700,10 +700,9 @@ if do_ArcticSeas_timeseries:
                     if up_to_date:
                         seaindex_files[variable][model_label] = cache_file
                         continue
-                        # We do not need to compute this diagnostic so we skip to next model
+                        # Here we skip to the next model because we do not need to update the diagnostics
 
-                    # -- Grid and matching sea mask for this simulation specifically (see
-                    # -- resolve_grid_and_mask above: may differ from the defaults)
+                    # -- Grid and matching sea mask for this simulation or observation 
                     gridfile, maskfile, label = resolve_grid_and_mask(wmodel)
 
                     if gridfile is None:
@@ -713,7 +712,6 @@ if do_ArcticSeas_timeseries:
                     if not os.path.exists(gridfile):
                         print("ArcticSeas: grid file not found for %s -> %s" % (model_label, gridfile))
                         continue
-                        # Here we skip to the next model because we do not need to update the diagnostics
                     if maskfile not in available_masks:
                         print("ArcticSeas: no sea mask available for %s (mask %s), skipping"
                               % (model_label, maskfile))
@@ -721,6 +719,7 @@ if do_ArcticSeas_timeseries:
 
                     try:
                         # Gather in dataset dat all informations about model read in datasetup.py and
+                        # or in ArcticSeas_obs for the observations together with
                         # the period of the netcdf files computed by get_period_manager
                         dat = ds(**wmodel)
                         # -- No time averaging here (e.g. ccdo yearmean), which would average
