@@ -299,37 +299,43 @@ def seasonal_mean_complete_years(da, months):
     # Year of the season of each da value: year + 1 for the months coming before January 
     valid_months = da.notnull().groupby(season_year).sum()
     # season_year is the key to gather data to be averaged together : same season_year, same average 
+    # valid_months is the number of months in a season which are not NaN/Inf/None - a time series
+    # as long as the seasonal time series computed below and which discard the NaN/Ind/None in its average
     seasonal = da.groupby(season_year).mean()
     return seasonal.where(valid_months == len(months), drop=True)
     # We drop all seasonal means which were computed from less months than the total number of months 
     # in the input argument months
 
 
-def plotted_series(da, months):
+def plotted_series(da, months, period='full'):
     """Returns a tuple (x values, y values) to be plotted from a monthly time series
     da which already holds at this stage the data in the units to be plotted (e.g. /1e12)
     months can be None or a list of numbers between 1 and 12 computed by
     season_months from the string ArcticSeas_season provided in params_ArcticSeas.py,
-    If months is None, the function returns the original da monthly values together with 
+    If months is None, the function returns the original da monthly values together with
     its original monthly time axis.
     If months is a list of months, this functions computes seasonal averages through
     the seasonal_mean_complete_years function using the list of months provided as argument
-    months and returns the list of years those seasons are associated with."""
-    if months:
+    months and returns the list of years those seasons are associated with.
+    If period = 'full', we keep all the entire time series (default). If period = 'YYYY-YYYY',
+    we only keep the dates falling inside this year interval (empty arrays if there is none)."""
+    seasonal = bool(months) # True if months is a list of numbers / False if it is None
+    if seasonal:
         da = seasonal_mean_complete_years(da, months)
-        return da['year'].values, da.values
-    return da[da.dims[0]].values, da.values
+        # da now holds one value per complete season, along a 'year' dimension of integer years
+    time_dim = da.dims[0]
+    # da has only one dimension : a time dimension
+    if period != 'full':
+        first, last = [int(year) for year in period.split('-')]
+        # We get the first and last year of the period to be plotted
+        years = da[time_dim] if seasonal else da[time_dim].dt.year
+        # Year of each value (repeated 12 times per year for monthly data) 
+        da = da.where((years >= first) & (years <= last), drop=True)
+        # We select the data within this period
+    return da[time_dim].values, da.values
     # In case of annual/seasonal means, the x values look like [YYYY, YYYY .... YYYY]
     # In case of monthly time series, they look like [YYYY-MM-DD, YYYY-MM-DD,  .... ]
     # It is a numpy array of datetime64 for monthly time series, integers for seasonal.
-
-def years_of(x_values):
-    """Year of each x value of a plotted series (see plotted_series): x itself for integer
-    years (seasonal means), the year of each date for monthly dates (datetime64 or cftime)."""
-    x_values = np.asarray(x_values)
-    if np.issubdtype(x_values.dtype, np.integer):
-        return x_values
-    return xr.DataArray(x_values, dims='x').dt.year.values
 
 
 def obs_climatology_curve(da, clim_period, months, sim_times):
@@ -338,7 +344,8 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
     of the experiments. For annual or seasonal means, a single mean value is repeated each
     year. For monthly climatologies, the mean of each calendar month is repeated in cycles.
     The input argument months is the list of calendar months of the season (obtained by
-    season_months), or None for monthly values (for ArcticSeas_season = 'monthly'). The output is a tupple : 
+    season_months), or None for monthly values (for ArcticSeas_season = 'monthly'). 
+    The output is a tupple : 
     (values along sim_times, first year, last year of the climatology), or None if no 
     observation falls within clim_period.
     da is a monthly series: if months is given, its seasonal means are first computed from
@@ -891,18 +898,12 @@ if do_ArcticSeas_timeseries:
                         obs_dates, obs_period = obs_settings[obs_label]
                         time_dim = da.dims[0]
                         if obs_dates == 'real' or sim_times is None:
-                            time_values, data_values = plotted_series(da, season_month_list)
-                            if obs_period != 'full':
-                                # -- Only the points within obs_period (years 'YYYY-YYYY')
-                                first, last = [int(year) for year in obs_period.split('-')]
-                                years = years_of(time_values)
-                                in_obs_period = (years >= first) & (years <= last)
-                                if not in_obs_period.any():
-                                    print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
-                                          % (obs_label, obs_period, sea))
-                                    continue
-                                time_values = time_values[in_obs_period]
-                                data_values = data_values[in_obs_period]
+                            # -- Only the points within obs_period (every point if 'full')
+                            time_values, data_values = plotted_series(da, season_month_list, obs_period)
+                            if len(time_values) == 0:
+                                print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
+                                      % (obs_label, obs_period, sea))
+                                continue
                             obs_curves.append((obs_label, obs_label, time_values, data_values))
                             continue
                         clim = obs_climatology_curve(da, obs_period, season_month_list, sim_times)
