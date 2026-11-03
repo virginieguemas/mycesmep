@@ -543,26 +543,26 @@ if do_ArcticSeas_timeseries:
         # -- processing as the simulations; their treatment is different only when checking for
         # -- missing observations, when computing their climatologies and when plotting
         Wobs = copy.deepcopy(ArcticSeas_obs) if 'ArcticSeas_obs' in dir() and ArcticSeas_obs else []
-        # -- How each observation is plotted (see ArcticSeas_obs_dates/ArcticSeas_obs_period
-        # -- in params_ArcticSeas.py, overridden by 'obs_dates'/'obs_period' in each obs
+        # -- How each observation is plotted (see ArcticSeas_obs_display/ArcticSeas_obs_period
+        # -- in params_ArcticSeas.py, overridden by 'obs_display'/'obs_period' in each obs
         # -- dictionary of ArcticSeas_obs)
-        default_obs_dates = ArcticSeas_obs_dates if 'ArcticSeas_obs_dates' in dir() else 'real'
+        default_obs_display = ArcticSeas_obs_display if 'ArcticSeas_obs_display' in dir() else 'real'
         default_obs_period = ArcticSeas_obs_period if 'ArcticSeas_obs_period' in dir() else 'sim'
-        obs_settings = dict()  # obs label -> (obs_dates, obs_period)
+        obs_settings = dict()  # obs label -> (obs_display, obs_period)
         for obs in Wobs:
-            obs_dates = obs.pop('obs_dates', default_obs_dates)
+            obs_display = obs.pop('obs_display', default_obs_display)
             obs_period = str(obs.pop('obs_period', default_obs_period))
-            # obs_dates and obs_period are stored in the obs_dates and obs_period standalone variables 
+            # obs_display and obs_period are stored in the obs_display and obs_period standalone variables 
             # and simultaneously those keys are removed from the obs dictionary to be sent to CLIMAF
-            if obs_dates not in ('climato', 'real'):
-                print("ArcticSeas: obs_dates '%s' for %s should be 'climato' or 'real', using 'climato'"
-                      % (obs_dates, model_label_of(obs)))
-                obs_dates = 'climato'
+            if obs_display not in ('climato', 'real'):
+                print("ArcticSeas: obs_display '%s' for %s should be 'climato' or 'real', using 'real'"
+                      % (obs_display, model_label_of(obs)))
+                obs_display = 'real'
             if obs_period not in ('full', 'sim') and not re.match(r'^\d{4}-\d{4}$', obs_period):
-                print("ArcticSeas: obs_period '%s' for %s should be 'full', 'sim' or 'YYYY-YYYY', using 'full'"
+                print("ArcticSeas: obs_period '%s' for %s should be 'full', 'sim' or 'YYYY-YYYY', using 'sim'"
                       % (obs_period, model_label_of(obs)))
-                obs_period = 'full'
-            obs_settings[model_label_of(obs)] = (obs_dates, obs_period)
+                obs_period = 'sim'
+            obs_settings[model_label_of(obs)] = (obs_display, obs_period)
         obs_labels = [model_label_of(obs) for obs in Wobs]
         for label in obs_labels:
             if label in [model_label_of(model) for model in Wmodels]:
@@ -781,7 +781,7 @@ if do_ArcticSeas_timeseries:
             # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x values: dates in a
             # ==> -- non-standard calendar (e.g. noleap, 360_day) are cftime objects, which matplotlib
             # ==> -- only plots with the nc-time-axis package, and cannot mix with standard dates
-            # ==> -- (another simulation, an observation with obs_dates = 'real'). Warn in the log and
+            # ==> -- (another simulation, an observation with obs_display = 'real'). Warn in the log and
             # ==> -- on the page if any dataset uses such a calendar (seasonal means use integer years
             # ==> -- and are not concerned)
             # -----------------------------------------------------------------------------------------
@@ -805,7 +805,7 @@ if do_ArcticSeas_timeseries:
                     message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
                               "and fails if they are mixed with standard dates (other simulations, " \
-                              "observations with obs_dates = 'real'): use a season such " \
+                              "observations with obs_display = 'real'): use a season such " \
                               "as 'ANM' instead."
                     print("ArcticSeas: WARNING - " + message)
                     index += open_table()
@@ -897,7 +897,7 @@ if do_ArcticSeas_timeseries:
                     if curves:
                         sim_times = np.unique(np.concatenate([time_values for _, time_values, _ in curves]))
                     for obs_label, da in obs_series.items():
-                        obs_dates, obs_period = obs_settings[obs_label]
+                        obs_display, obs_period = obs_settings[obs_label]
                         time_dim = da.dims[0]
                         if obs_period == 'sim':
                             # -- From the first to the last year of the simulations of this figure
@@ -908,7 +908,7 @@ if do_ArcticSeas_timeseries:
                                 sim_years = sim_times if season_month_list \
                                     else xr.DataArray(sim_times, dims='simtime').dt.year.values
                                 obs_period = '%d-%d' % (sim_years.min(), sim_years.max())
-                        if obs_dates == 'real' or sim_times is None:
+                        if obs_display == 'real' or sim_times is None:
                             # -- Only the points within obs_period (every point if 'full')
                             time_values, data_values = plotted_series(da, season_month_list, obs_period)
                             if len(time_values) == 0:
