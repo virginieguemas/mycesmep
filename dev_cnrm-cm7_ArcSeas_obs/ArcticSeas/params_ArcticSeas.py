@@ -10,23 +10,17 @@
 # --                                                                                           - /
 # --------------------------------------------------------------------------------------------- /
 
-# -- Preliminary settings: import module, set the verbosity and the 'safe mode'
+# -- Preliminary settings: import module, set the verbosity and the CliMAF cache cleaning
+# -- (read by main_C-ESM-EP.py)
 # ---------------------------------------------------------------------------- >
 from os import getcwd
 
 # -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug', intermediate -> 'warning')
 verbose = 'debug'
-# -- Safe Mode (set to False and verbose='debug' if you want to debug)
-safe_mode = False
 # -- Set to True to clean the CliMAF cache
 clean_cache = False
 # -- Patterns to clean the cache at the end of the execution of the atlas
 routine_cache_cleaning = [dict(age='+20')]
-# -- Parallel and memory instructions
-do_parallel = False
-#
-# WARNING : The arguments above are copied from other example, not sure they actually
-# have an impact
 
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
@@ -41,16 +35,17 @@ atlas_head_title = "Arctic Seas - Sea Ice Area and Volume"
 #    one single run of months ('J', 'M' or 'A' alone are ambiguous).
 #    A season across the end of the year is assigned to the year of its last month
 #    (DJF 1980 = December 1979 to February 1980).
-# -> 'all' to plot the native monthly values.
+# -> 'monthly' to plot the native monthly values.
 # comp_seaiceindex.py always works on the monthly fields; seasonal means are computed when
 # plotting, from complete seasons only (all their months available): a season with missing
 # months is left out rather than giving a mean skewed towards the months present. No
 # recomputation is needed when the season is changed.
-# When using CryoSat-2, set season = 'NDJFMA' otherwise you'll end up with missing observations
+# When using CryoSat-2, set ArcticSeas_season = 'NDJFMA' otherwise you'll end up with missing observations
 # (because the ice thickness is not observed in summer)
-season    = 'ANM'
-# -- Minimum latitude for stereographic projection
-latcutoff =  50.
+ArcticSeas_season = 'ANM'
+# -- Minimum latitude for stereographic projection: southernmost latitude shown on the
+# -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
+ArcticSeas_latcutoff =  50.
 
 # ---------------------------------------------------------------------------- >
 # -- Arctic Seas : per-sea sea ice area / volume time series
@@ -97,7 +92,7 @@ ArcticSeas_obs = [
 # --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
 # --                repeated every year along the dates of the simulations (a single mean
 # --                value -- mean of the seasonal means of the complete seasons -- for a
-# --                season such as 'ANM' or 'DJF', otherwise, with season = 'all', the mean
+# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly', the mean
 # --                of each calendar month)
 # --   'real'    -> observations plotted at their actual dates
 # -- ArcticSeas_obs_clim_period : (only used with 'climato') 
@@ -212,8 +207,8 @@ ArcticSeas_seas_list = [
 # -- not plotted.
 ArcticSeas_on_missing_simulations = 'error'
 
-# -- Thumbnail size for the plots of this component (C-ESM-EP setting, only read for
-# -- ArcticSeas when set here)
+# -- Thumbnail size for the plots of this component, i.e. size of the individual plots
+# -- inserted in the html page (by default C-ESM-EP setting)
 thumbnail_size = '450*300'
 
 # -- Some settings -- customization
@@ -227,4 +222,4 @@ index_name = None
 
 # ---------------------------------------------------------------------------------------- #
 # -- END                                                                                -- #
-# ---------------------------------------------------------------------------------------------- #
+# ---------------------------------------------------------------------------------------- #

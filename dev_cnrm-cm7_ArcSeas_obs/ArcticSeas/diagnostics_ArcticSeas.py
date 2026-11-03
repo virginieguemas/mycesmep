@@ -76,19 +76,20 @@ OBS_STYLES = [('black', '-'), ('black', '--'), ('black', ':'), ('black', '-.'),
 
 
 def latest_year_of_wmodel(wmodel):
-    """Latest year covered by an experiment described in wmodel dictionary after its 
+    """Latest year covered by an experiment or observation described in wmodel dictionary after its 
     period has been detected by get_period_manager. This function relies on build_period_str()."""
-    # build_period_str return a chain of characters holding the first and last years
+    # build_period_str return a chain of characters holding the first and last dates
     # then re.findall(r'\d{4}' finds the groups of 4 consecutive digits, months are dropped
     # at this stage because there are only 2 digits.
-    # the first and last simulation years are stored in years
     # WARNING : this function would not work if CLIMAF starts handling daily data
     years = re.findall(r'\d{4}', str(build_period_str(wmodel)))
     return int(years[-1]) if years else None
 
 
 def latest_year_in_ncfile(ncfile):
-    """Latest year found in the (single) time-like dimension of a netcdf file."""
+    """Latest year of a netcdf file whose variables have time as first dimension (e.g. the
+    per-sea cache files written by comp_seaiceindex.py): last value of the first dimension
+    of its first variable."""
     if not os.path.exists(ncfile):
         return None
     # If there is no netcdf file yet, this function returns None
@@ -308,12 +309,12 @@ def plotted_series(da, months):
     """Returns a tuple (x values, y values) to be plotted from a monthly time series
     da which already holds at this stage the data in the units to be plotted (e.g. /1e12)
     months can be None or a list of numbers between 1 and 12 computed by
-    season_months from the string 'season' provided in params_ArcticSeas.py,
+    season_months from the string ArcticSeas_season provided in params_ArcticSeas.py,
     If months is None, the function returns the original da monthly values together with 
     its original monthly time axis.
     If months is a list of months, this functions computes seasonal averages through
-    the seasonal_mean_complete_years function with the list of months provided as argument
-    months, together with the list of years those seasons are associated with."""
+    the seasonal_mean_complete_years function using the list of months provided as argument
+    months and returns the list of years those seasons are associated with."""
     if months:
         da = seasonal_mean_complete_years(da, months)
         return da['year'].values, da.values
@@ -328,7 +329,7 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
     of the experiments. For annual or seasonal means, a single mean value is repeated each
     year. For monthly climatologies, the mean of each calendar month is repeated in cycles.
     The input argument months is the list of calendar months of the season (obtained by
-    season_months), or None for monthly values (for season = 'all'). The output is a tupple : 
+    season_months), or None for monthly values (for ArcticSeas_season = 'monthly'). The output is a tupple : 
     (values along sim_times, first year, last year of the climatology), or None if no 
     observation falls within clim_period.
     da is a monthly series: if months is given, its seasonal means are first computed from
@@ -357,8 +358,8 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
         values = np.full(len(sim_times), float(da.mean()))
     else:
         monthly_clim = da.groupby(time_dim + '.month').mean().reindex(month=range(1, 13))
-        # time_dim.month is the key to gather data by month for groupby to average
-        # if some months are never observed (ex: summer months for CryoSat), 
+        # time_dim.month is the key to gather data by month for groupby to average.
+        # If some months are never observed (ex: summer months for CryoSat), 
         # reindex adds those missing months with a NaN
         sim_months = xr.DataArray(sim_times, dims='simtime').dt.month
         # sim_times is a numpy array of datetime64 values that needs to be converted
@@ -386,22 +387,23 @@ if do_ArcticSeas_timeseries:
     else:
         thumbN_size = thumbnail_size_global
     #
-    # ==> -- If season is available in params_ArcticSeas.py):
-    # ==> -- 'ANM', month initials such as 'DJF' or 'NDJFMA', or 'all' for monthly values
-    # ==> -- (season_month_list is then None)
+    # ==> -- If ArcticSeas_season is available in params_ArcticSeas.py:
+    # ==> -- 'ANM', month initials such as 'DJF' or 'NDJFMA', or 'monthly' for monthly values
+    # ==> -- (season_month_list is then None in that last case). season is the working copy
     # -----------------------------------------------------------------------------------------
-    ArcticSeas_season = str(season) if 'season' in dir() else 'ANM'
+    season = str(ArcticSeas_season) if 'ArcticSeas_season' in dir() else 'ANM'
     try:
-        season_month_list = None if ArcticSeas_season.lower() == 'all' else season_months(ArcticSeas_season)
+        season_month_list = None if season.lower() == 'monthly' else season_months(season)
     except ValueError as e:
         print("ArcticSeas: %s, using 'ANM' (annual means) instead" % e)
-        ArcticSeas_season, season_month_list = 'ANM', season_months('ANM')
-    season_label = 'monthly' if season_month_list is None else ArcticSeas_season.upper()
+        season, season_month_list = 'ANM', season_months('ANM')
+    season_label = 'monthly' if season_month_list is None else season.upper()
     #
-    # ==> -- Southernmost latitude shown on the polar maps of the Arctic seas (latcutoff in
-    # ==> -- params_ArcticSeas.py; 45 by default, as in check_masks.py)
+    # ==> -- Southernmost latitude shown on the polar maps of the Arctic seas (ArcticSeas_latcutoff
+    # ==> -- in params_ArcticSeas.py; 45 by default, as in check_masks.py)
     # -----------------------------------------------------------------------------------------
-    map_latcutoff = float(latcutoff) if 'latcutoff' in dir() and latcutoff is not None else 45.
+    map_latcutoff = float(ArcticSeas_latcutoff) \
+        if 'ArcticSeas_latcutoff' in dir() and ArcticSeas_latcutoff is not None else 45.
     #
     # ==> -- Number of time steps read at once when processing the data (None: all at once)
     # -----------------------------------------------------------------------------------------
@@ -749,7 +751,7 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
                               % (variable, real_variable, model_label, e))
 
-            # ==> -- Monthly plots (season = 'all') use the dates of the files as x values: dates in a
+            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x values: dates in a
             # ==> -- non-standard calendar (e.g. noleap, 360_day) are cftime objects, which matplotlib
             # ==> -- only plots with the nc-time-axis package, and cannot mix with standard dates
             # ==> -- (another simulation, an observation with obs_dates = 'real'). Warn in the log and
@@ -773,7 +775,7 @@ if do_ArcticSeas_timeseries:
                 if non_standard_calendars:
                     calendars_text = ', '.join('%s (%s)' % (label, calendar)
                                                for label, calendar in non_standard_calendars.items())
-                    message = "Monthly plots (season = 'all') with a non-standard calendar: " + \
+                    message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
                               "and fails if they are mixed with standard dates (other simulations, " \
                               "observations with obs_dates = 'real'): use a season such as 'ANM' instead."
@@ -851,7 +853,7 @@ if do_ArcticSeas_timeseries:
                             if model_label in obs_labels:
                                 obs_series[model_label] = da
                             else:
-                                # -- Seasonal means of complete seasons only (season in params_ArcticSeas.py)
+                                # -- Seasonal means of complete seasons only (ArcticSeas_season in params_ArcticSeas.py)
                                 time_values, data_values = plotted_series(da, season_month_list)
                                 curves.append((model_label, time_values, data_values))
                             present_labels.append(model_label)
