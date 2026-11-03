@@ -92,13 +92,16 @@ ArcticSeas_obs = [
 # --   'climato' -> climatology of the observations over ArcticSeas_obs_clim_period,
 # --                repeated every year along the dates of the simulations (a single mean
 # --                value -- mean of the seasonal means of the complete seasons -- for a
-# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly', the mean
-# --                of each calendar month)
-# --   'real'    -> observations plotted at their actual dates
+# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly', 
+# --                the mean of each calendar month)
+# --   'real'    -> observations plotted at their actual dates, over their whole period
+# --   'sim_period' -> observations plotted at their actual dates, but only within the
+# --                period covered by the simulations of the figure (from the first to the
+# --                last date or year of the simulations)
 # -- ArcticSeas_obs_clim_period : (only used with 'climato') 
 # --                             'full' (every available year) or 'YYYY-YYYY' 
 # -- Both can be set for one observation only with the keys 'obs_dates' and 'obs_clim_period'
-# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='real') or
+# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_dates='sim_period') or
 # -- dict(..., obs_clim_period='1991-2020').
 ArcticSeas_obs_dates = 'climato'
 ArcticSeas_obs_clim_period = 'full'
@@ -137,6 +140,12 @@ ArcticSeas_dyvar = 'e2t'
 # -- simulation now extends further in time than what is cached (i.e. it was
 # -- lengthened since the cache was last built).
 ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
+
+# -- Working directory for the files produced at each atlas run: figures (time series,
+# -- polar maps of the Arctic seas) and copies of sic converted from % into a fraction.
+# -- Created if it does not exist. None (default) : ArcticSeas_workfiles under the
+# -- directory where the atlas is run.
+ArcticSeas_workdir = None
 
 # -- Variable name to find the sea ice concentration (sic) and the sea ice tickness (sit)
 # -- in the output files, one entry per simulation (keyed by its 'customname',

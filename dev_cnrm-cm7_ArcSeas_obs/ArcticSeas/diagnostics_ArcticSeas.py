@@ -409,9 +409,13 @@ if do_ArcticSeas_timeseries:
     # -----------------------------------------------------------------------------------------
     chunk_time = ArcticSeas_chunk_time if 'ArcticSeas_chunk_time' in dir() else None
     #
-    # Create a working directory under the execution directory if non-existant already
+    # Working directory (ArcticSeas_workdir in params_ArcticSeas.py, or ArcticSeas_workfiles
+    # under the execution directory by default), created if non-existant already
     # -----------------------------------------------------------------------------------------
-    workdir = os.path.join(getcwd(), 'ArcticSeas_workfiles')
+    if 'ArcticSeas_workdir' in dir() and ArcticSeas_workdir:
+        workdir = ArcticSeas_workdir
+    else:
+        workdir = os.path.join(getcwd(), 'ArcticSeas_workfiles')
     if not os.path.isdir(workdir):
         os.makedirs(workdir)
     #
@@ -453,9 +457,10 @@ if do_ArcticSeas_timeseries:
                 maskfile = ArcticSeas_maskfile[model_label]
             else:
                 # -- No mask file declared for this simulation in ArcticSeas_maskfile: derive
-                # -- one automatically from its grid file's name, under ArcticSeas_cache_dir.
+                # -- automatically a name from its grid file's name, under ArcticSeas_cache_dir.
                 # -- It does not need to exist yet -- ensure_mask() below builds it on demand,
                 # -- exactly like any explicitly declared mask file.
+                # -- We start from the name of the gridfile without the path and the extension
                 grid_name = os.path.splitext(os.path.basename(gridfile))[0]
                 # -- Drop 'mesh_mask'/'meshmask' if present: the grid name is typically
                 # -- provided before or after it (e.g. 'mesh_mask.cnrmcm7')
@@ -513,14 +518,14 @@ if do_ArcticSeas_timeseries:
             return png if os.path.exists(png) else None
             # WARNING : Remove plot for missing seas
 
-        # -- Find every distinct grid/mask actually needed by the configured simulations,
-        # -- then build/locate each of them (deduplicated by mask file)
+        # -- Datasets to process: the simulations of `models` (datasets_setup.py) followed by the
+        # -- observations of ArcticSeas_obs (params_ArcticSeas.py)
         # -----------------------------------------------------------------------------------------
-        # From MyOwnDiagnostics, not sure we need to copy those
+        # -- We do not change models so we do not really need that copy but for safety
         Wmodels = copy.deepcopy(models)
         # -- Observational references (params_ArcticSeas.py) go through exactly the same
-        # -- processing as the simulations; they are only told apart (obs_labels) when
-        # -- checking for missing simulations and when plotting
+        # -- processing as the simulations; their treatment is different only when checking for
+        # -- missing observations, when computing their climatologies and when plotting
         Wobs = copy.deepcopy(ArcticSeas_obs) if 'ArcticSeas_obs' in dir() and ArcticSeas_obs else []
         # -- How each observation is plotted (see ArcticSeas_obs_dates/ArcticSeas_obs_clim_period
         # -- in params_ArcticSeas.py, overridden by 'obs_dates'/'obs_clim_period' in its own
@@ -531,8 +536,8 @@ if do_ArcticSeas_timeseries:
         for obs in Wobs:
             obs_dates = obs.pop('obs_dates', default_obs_dates)
             obs_clim_period = str(obs.pop('obs_clim_period', default_obs_clim_period))
-            if obs_dates not in ('climato', 'real'):
-                print("ArcticSeas: obs_dates '%s' for %s should be 'climato' or 'real', using 'climato'"
+            if obs_dates not in ('climato', 'real', 'sim_period'):
+                print("ArcticSeas: obs_dates '%s' for %s should be 'climato', 'real' or 'sim_period', using 'climato'"
                       % (obs_dates, model_label_of(obs)))
                 obs_dates = 'climato'
             if obs_clim_period != 'full' and not re.match(r'^\d{4}-\d{4}$', obs_clim_period):
@@ -546,6 +551,10 @@ if do_ArcticSeas_timeseries:
                 print("ArcticSeas: observation %s has the same customname as a simulation; "
                       "their per-simulation settings and cache will be mixed up" % label)
         Wdatasets = Wmodels + Wobs
+
+        # -- Find every distinct grid/mask actually needed by the configured simulations and
+        # -- observations, then build/locate each of them (deduplicated by mask file)
+        # -----------------------------------------------------------------------------------------
         grids_needed = dict()  # maskfile -> (gridfile, [label, ...]) -- one label per simulation
         # sharing this maskfile, in the order they are encountered in Wdatasets
         for model in Wdatasets:
@@ -754,7 +763,7 @@ if do_ArcticSeas_timeseries:
             # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x values: dates in a
             # ==> -- non-standard calendar (e.g. noleap, 360_day) are cftime objects, which matplotlib
             # ==> -- only plots with the nc-time-axis package, and cannot mix with standard dates
-            # ==> -- (another simulation, an observation with obs_dates = 'real'). Warn in the log and
+            # ==> -- (another simulation, an observation with obs_dates = 'real' or 'sim_period'). Warn in the log and
             # ==> -- on the page if any dataset uses such a calendar (seasonal means use integer years
             # ==> -- and are not concerned)
             # -----------------------------------------------------------------------------------------
@@ -778,7 +787,8 @@ if do_ArcticSeas_timeseries:
                     message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
                               "and fails if they are mixed with standard dates (other simulations, " \
-                              "observations with obs_dates = 'real'): use a season such as 'ANM' instead."
+                              "observations with obs_dates = 'real' or 'sim_period'): use a season such " \
+                              "as 'ANM' instead."
                     print("ArcticSeas: WARNING - " + message)
                     index += open_table()
                     index += start_line('<font color="red">Warning - ' + message + '</font>')
@@ -859,9 +869,10 @@ if do_ArcticSeas_timeseries:
                             present_labels.append(model_label)
                         out_ds.close()
 
-                    # -- Observations: either their actual dates ('real'), or their climatology
-                    # -- over obs_clim_period repeated along the simulation dates ('climato').
-                    # -- Without any simulation to follow, a climatology falls back to real dates
+                    # -- Observations: either their actual dates ('real'), their actual dates within
+                    # -- the period covered by the simulations of the figure ('sim_period'), or their
+                    # -- climatology over obs_clim_period repeated along the simulation dates ('climato').
+                    # -- Without any simulation to follow, all modes fall back to the whole real dates
                     # -----------------------------------------------------------------------------------------
                     obs_curves = []  # (obs label, legend label, time_values, data_values)
                     sim_times = None
@@ -873,6 +884,22 @@ if do_ArcticSeas_timeseries:
                         if obs_dates == 'real' or sim_times is None:
                             time_values, data_values = plotted_series(da, season_month_list)
                             obs_curves.append((obs_label, obs_label, time_values, data_values))
+                            continue
+                        if obs_dates == 'sim_period':
+                            # -- Only the points between the first and last x values of the simulations
+                            time_values, data_values = plotted_series(da, season_month_list)
+                            obs_x, sim_x = time_values, sim_times
+                            if np.issubdtype(obs_x.dtype, np.datetime64) and np.issubdtype(sim_x.dtype, np.datetime64):
+                                # -- Monthly dates compared by month only: the date of a given month
+                                # -- may differ between products (e.g. the 1st vs the 16th)
+                                obs_x, sim_x = obs_x.astype('datetime64[M]'), sim_x.astype('datetime64[M]')
+                            in_sim_period = (obs_x >= sim_x[0]) & (obs_x <= sim_x[-1])
+                            if not in_sim_period.any():
+                                print("ArcticSeas: no %s data within the simulation period for %s, not plotted"
+                                      % (obs_label, sea))
+                                continue
+                            obs_curves.append((obs_label, obs_label, time_values[in_sim_period],
+                                               data_values[in_sim_period]))
                             continue
                         clim = obs_climatology_curve(da, obs_clim_period, season_month_list, sim_times)
                         if clim is None:
