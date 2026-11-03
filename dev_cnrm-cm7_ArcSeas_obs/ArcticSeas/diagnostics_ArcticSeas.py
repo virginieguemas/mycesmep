@@ -735,19 +735,19 @@ if do_ArcticSeas_timeseries:
                         # -- The field is read by pieces of ArcticSeas_chunk_time time steps (see
                         # -- chunked_in_time) to limit the memory used by long model series
                         if variable == 'sic':
-                            with xr.open_dataset(datafile) as check_ds:
+                            with xr.open_dataset(datafile) as sic_unit:
                             # datafile is opened only in this block, closed automatically at the end of the block
-                                sic_field = chunked_in_time(check_ds[real_variable], chunk_time)
+                            # (it must stay open while the corrected copy is written, since the values
+                            # are only read, piece by piece, at that time)
+                                sic_field = chunked_in_time(sic_unit[real_variable], chunk_time)
                                 is_percent = float(sic_field.max()) > 1.5
-                            if is_percent:
-                                fraction_file = os.path.join(
-                                    workdir, 'sic_fraction_%s.nc' % sanitize(model_label))
-                                with xr.open_dataset(datafile) as check_ds:
-                                # idem datafile opened only in this block
-                                    fraction_ds = check_ds.copy()
-                                    fraction_ds[real_variable] = \
-                                        chunked_in_time(fraction_ds[real_variable], chunk_time) / 100.
+                                if is_percent:
+                                    fraction_file = os.path.join(
+                                        workdir, 'sic_fraction_%s.nc' % sanitize(model_label))
+                                    fraction_ds = sic_unit.copy()
+                                    fraction_ds[real_variable] = sic_field / 100.
                                     fraction_ds.to_netcdf(fraction_file)
+                            if is_percent:
                                 datafile = fraction_file
 
                         # Create a cache directory to hold the sea ice index output files if not there
