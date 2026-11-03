@@ -76,7 +76,8 @@ OBS_STYLES = [('black', '-'), ('black', '--'), ('black', ':'), ('black', '-.'),
 
 
 def latest_year_of_wmodel(wmodel):
-    """Latest year covered by a period-managed model dict, from build_period_str()."""
+    """Latest year covered by an experiment described in wmodel dictionary after its 
+    period has been detected by get_period_manager. This function relies on build_period_str()."""
     # build_period_str return a chain of characters holding the first and last years
     # then re.findall(r'\d{4}' finds the groups of 4 consecutive digits, months are dropped
     # at this stage because there are only 2 digits.
