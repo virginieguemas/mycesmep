@@ -700,7 +700,7 @@ if do_ArcticSeas_timeseries:
                     if up_to_date:
                         seaindex_files[variable][model_label] = cache_file
                         continue
-                        # Here we skip to the next model because we do not need to update the diagnostics
+                        # Here we skip to the next model/obs because we do not need to update the diagnostics
 
                     # -- Grid and matching sea mask for this simulation or observation 
                     gridfile, maskfile, label = resolve_grid_and_mask(wmodel)
@@ -718,7 +718,7 @@ if do_ArcticSeas_timeseries:
                         continue
 
                     try:
-                        # Gather in dataset dat all informations about model read in datasetup.py and
+                        # Gather in dataset dat all informations about model read in datasetup.py 
                         # or in ArcticSeas_obs for the observations together with
                         # the period of the netcdf files computed by get_period_manager
                         dat = ds(**wmodel)
@@ -727,10 +727,12 @@ if do_ArcticSeas_timeseries:
                         # -- on the monthly fields, and seasonal means are computed when plotting,
                         # -- from complete seasons only (see seasonal_mean_complete_years)
                         datafile = cfile(dat)
-                        # Path to the netcdf file(s) of the dataset
+                        # -- cfile is a CLIMAF function that gathers all the input file into a 
+                        # -- single one containing only the variable and period of interest
+                        # -- datafile is the complete path to this output file
 
                         # -- in case sea ice concentration is published as a percentage (0-100) 
-                        # -- turn it into a fraction (0-1). Detect and write the corrected copy
+                        # -- turn it into a fraction (0-1). correct and write the corrected copy
                         # -- to our own workdir rather than overwriting CliMAF's cache file.
                         # -- The field is read by pieces of ArcticSeas_chunk_time time steps (see
                         # -- chunked_in_time) to limit the memory used by long model series
@@ -770,8 +772,13 @@ if do_ArcticSeas_timeseries:
                         # -- page also when the cache is reused later
                         result = subprocess.run(cmd, capture_output=True, text=True)
                         print(result.stdout + result.stderr)
+                        # print sends to the log and chec_returncode captures the e to
+                        # be printed below
                         result.check_returncode()
+                        # send each error message occcurence of SEA_WARNING_PATTERN to the 
+                        # text file stored next to the cache file
                         write_sea_warnings(cache_file, result.stderr)
+                        # cache_file is stored in the seaindex_files dictionary
                         seaindex_files[variable][model_label] = cache_file
                     except Exception as e:
                         print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
