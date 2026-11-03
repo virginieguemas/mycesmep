@@ -544,14 +544,16 @@ if do_ArcticSeas_timeseries:
         # -- missing observations, when computing their climatologies and when plotting
         Wobs = copy.deepcopy(ArcticSeas_obs) if 'ArcticSeas_obs' in dir() and ArcticSeas_obs else []
         # -- How each observation is plotted (see ArcticSeas_obs_dates/ArcticSeas_obs_period
-        # -- in params_ArcticSeas.py, overridden by 'obs_dates'/'obs_period' in its own
-        # -- entry). These keys are removed from the entry so that they never reach ds()
-        default_obs_dates = ArcticSeas_obs_dates if 'ArcticSeas_obs_dates' in dir() else 'climato'
-        default_obs_period = ArcticSeas_obs_period if 'ArcticSeas_obs_period' in dir() else 'full'
+        # -- in params_ArcticSeas.py, overridden by 'obs_dates'/'obs_period' in each obs
+        # -- dictionary of ArcticSeas_obs)
+        default_obs_dates = ArcticSeas_obs_dates if 'ArcticSeas_obs_dates' in dir() else 'real'
+        default_obs_period = ArcticSeas_obs_period if 'ArcticSeas_obs_period' in dir() else 'sim'
         obs_settings = dict()  # obs label -> (obs_dates, obs_period)
         for obs in Wobs:
             obs_dates = obs.pop('obs_dates', default_obs_dates)
             obs_period = str(obs.pop('obs_period', default_obs_period))
+            # obs_dates and obs_period are stored in the obs_dates and obs_period standalone variables 
+            # and simultaneously those keys are removed from the obs dictionary to be sent to CLIMAF
             if obs_dates not in ('climato', 'real'):
                 print("ArcticSeas: obs_dates '%s' for %s should be 'climato' or 'real', using 'climato'"
                       % (obs_dates, model_label_of(obs)))
