@@ -772,7 +772,7 @@ if do_ArcticSeas_timeseries:
                         # -- page also when the cache is reused later
                         result = subprocess.run(cmd, capture_output=True, text=True)
                         print(result.stdout + result.stderr)
-                        # print sends to the log and chec_returncode captures the e to
+                        # print sends to the log and check_returncode captures the e to
                         # be printed below
                         result.check_returncode()
                         # send each error message occcurence of SEA_WARNING_PATTERN to the 
@@ -784,30 +784,44 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
                               % (variable, real_variable, model_label, e))
 
-            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x values: dates in a
-            # ==> -- non-standard calendar (e.g. noleap, 360_day) are cftime objects, which matplotlib
-            # ==> -- only plots with the nc-time-axis package, and cannot mix with standard dates
-            # ==> -- (another simulation, an observation with obs_display = 'real'). Warn in the log and
-            # ==> -- on the page if any dataset uses such a calendar (seasonal means use integer years
-            # ==> -- and are not concerned)
+            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x 
+            # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects, 
+            # ==> -- which matplotlib only plots with the nc-time-axis package, and cannot mix with 
+            # ==> -- standard dates (i.e. in another simulation, or an observation with obs_display = 
+            # ==> -- 'real'). Warn in the log and the atlas page if any dataset uses such a calendar 
+            # ==> -- (seasonal means use integer years and are not concerned)
             # -----------------------------------------------------------------------------------------
             if season_month_list is None:
+                # season_month_list == None means monthly data to be plotted
                 non_standard_calendars = dict()  # label -> calendar
-                for variable, files in seaindex_files.items():
-                    for model_label, cache_file in files.items():
+                for variable, expe in seaindex_files.items():
+                    # variable : sic/sit
+                    # expe : {simulation/observation label: its cache file} for this variable
+                    for model_label, cache_file in expe.items():
                         if model_label in non_standard_calendars or not os.path.exists(cache_file):
+                        # this model/obs is already known to have a non-standard calendar 
+                        # or we can not check its calendar because we do not have any cache_file
                             continue
                         with xr.open_dataset(cache_file) as cached:
                             first_var = next(iter(cached.data_vars), None)
                             if first_var is None:
                                 continue
                             dates = cached[cached[first_var].dims[0]]
-                            # Standard calendars are decoded as numpy datetime64, the others as cftime
+                            # dates contain the time axis of this cache_file
                             if not np.issubdtype(dates.dtype, np.datetime64):
+                                # If the type of time-axis is not datetime64, we get in the time axis which 
+                                # type it is (360_day, no_leap, ...)
                                 non_standard_calendars[model_label] = dates.encoding.get('calendar', 'non-standard')
+                                # We store that information to be printed below.
                 if non_standard_calendars:
+                    # If non_standard_calendars is not empty, we will write a message on the html page because
+                    # we can not mix monthly values for that experiment / observation with datetime64 time axes 
+                    # of other experiments on the same figure.
                     calendars_text = ', '.join('%s (%s)' % (label, calendar)
                                                for label, calendar in non_standard_calendars.items())
+                    # calendars_text = label1 (calendar1) 
+                    # or calendars_text = label1 (calendar1), label2 (calendar2), label3 (calendar3) 
+                    # with any number of label (calendar)
                     message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
                               "and fails if they are mixed with standard dates (other simulations, " \
@@ -840,23 +854,39 @@ if do_ArcticSeas_timeseries:
             # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
             # -- on the grid of that simulation/observation
             if ArcticSeas_meanORsum == 'sum':
-                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (thousand km2)'
+                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (Thousand km2)'
             else:
                 area_attr, area_divisor, area_title = 'mean_cell_area_m2', 1e6, 'Mean grid cell area (km2)'
-            # -- 'Missing values' warnings of comp_seaiceindex.py, per sea, for every
-            # -- simulation/observation and variable plotted
+            # -- For each sea, one row will contain as many plots as in that dictionary with title:
             variable_titles = dict((spec['variable'], spec['title']) for spec in variable_plot_specs)
             warnings_per_sea = dict()  # sea -> ['label (variable title): message', ...]
-            for variable, files in seaindex_files.items():
-                for model_label, cache_file in files.items():
+            # Warning messages about missing data are reorganized to be gathered per sea
+            # instead of per variable and experiment/observation (initially in a text file
+            # next to each cache_file
+            for variable, expe in seaindex_files.items():
+                # variable : sic/sit
+                # expe : {simulation/observation label: its cache file} for this variable
+                for model_label, cache_file in expe.items():
                     for warned_sea, message in read_sea_warnings(cache_file).items():
+                        # For this set of variable and experiment/observation, if we have a warning
+                        # message about the sea warned_sea, we append it to previous messages for
+                        # this warned sea (to nothing if there was none before)
                         warnings_per_sea.setdefault(warned_sea, []).append(
+                            # if there was no previous message, set default creates an empty entry
+                            # for warned_sea in the warning_per_sea dictionary
                             '%s (%s): %s' % (model_label, variable_titles.get(variable, variable), message))
+                            # The final message to be printed below the sea title will be :
+                            # model_label (Sea ice area) : warning message about missing values
+                            # model_label (Sea ice volume) : warning message about missing values
+                            # etc ... for any number of model_label which has missing values in this sea
             for sea in seas:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
+                # The long_name attributes of seas were gathered earlier in sea_diplay_names
                 title = sea_name + '<br><small>' + area_title + ': ' + \
                     sea_areas_text(sea, model_labels, seaindex_files, area_attr, area_divisor) + '</small>'
+                    # sea_areas_text is a function defined earlier which returns a line with 
+                    # model_label area_of_the_sea, model_label area_of_the_sea, etc ...
                 if sea in warnings_per_sea:
                     title += '<br><small><font color="red">Warning - ' + \
                              '<br>Warning - '.join(warnings_per_sea[sea]) + '</font></small>'
