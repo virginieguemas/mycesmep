@@ -160,42 +160,48 @@ def read_sea_warnings(cache_file):
     return sea_warnings
 
 
-def sea_areas_text(sea, labels, seaindex_files, area_attr, area_divisor):
-    """ From an input sea (ex: centrarc), and for a list of experiment and observation
-    labels (typically customname), this function returns a line to be printed later on the html
-    atlas page, listing the area of that sea in each of the experiment and observation dataset 
-    (it is not necessarily the same area because of the land/sea mask). It needs a dictionary 
-    containing for each variable and each label, its cache file : seaindex_files. It also
-    needs the name of the attribute in the cache file in which the sea area is stored : 
+def sea_areas_text(sea, label_groups, seaindex_files, area_attr, area_divisor):
+    """ From an input sea (ex: centrarc), and for groups of experiment and observation
+    labels (typically customname) sharing the same grid and sea mask file, this function returns
+    a line to be printed later on the html atlas page, listing the area of that sea once per
+    group (e.g. 'REF1, REF3: 1424; nsidc_cdr_v6: 1376'): the area is not necessarily the same
+    from one grid to another, but it is the same for all the datasets of a group. It needs a
+    dictionary containing for each variable and each label, its cache file : seaindex_files.
+    It also needs the name of the attribute in the cache file in which the sea area is stored :
     'total_area_m2' or 'mean_cell_area_m2' in the outputs from comp_seaiceindex.py at the
     time of writing. area_divisor allows to convert to a printable unit. """
     parts = []
     # We define a list which will hold the parts of the final line to print
-    for label in labels:
-        # We loop on the experiment and observation labels
+    for labels in label_groups:
+        # We loop on the groups of experiments and observations sharing a grid
         area = None
-        for variable in ARCTIC_SEAS_VARIABLES:
-            # We loop on the Arctic variables just in case some are missing because it is the
-            # same land/sea mask for all variables of a given experiment but observations often
-            # have only one of the variables
-            outfile = seaindex_files.get(variable, dict()).get(label)
-            # We get the cache file corresponding to that label and that variable, None if there
-            # isn't any cache. We need to use get to avoid a crash when a variable isn't there.
-            if outfile is None or not os.path.exists(outfile):
-                continue # If we don't have any cache file, we go to next variable
-            with xr.open_dataset(outfile) as out_ds:
-                if sea in out_ds.data_vars and area_attr in out_ds[sea].attrs:
-                # We look for the area_attr attribute in the cache file we found
-                # It should contain the area of the sea in that experiment/observation
-                    area = float(out_ds[sea].attrs[area_attr]) / area_divisor
-                # area_divisor is to convert to Thousand km2 or km2
+        for label in labels:
+            # The area is read in the cache of the first dataset of the group which has one
+            for variable in ARCTIC_SEAS_VARIABLES:
+                # We loop on the Arctic variables just in case some are missing because it is the
+                # same land/sea mask for all variables of a given experiment but observations often
+                # have only one of the variables
+                outfile = seaindex_files.get(variable, dict()).get(label)
+                # seaindex_files = { variable : { model_label, cache_file } , variable : ... }
+                # We get the cache file corresponding to that label and that variable, None if there
+                # isn't any cache. We need to use get to avoid a crash when a variable isn't there.
+                if outfile is None or not os.path.exists(outfile):
+                    continue # If we don't have any cache file, we go to next variable
+                with xr.open_dataset(outfile) as out_ds:
+                    if sea in out_ds.data_vars and area_attr in out_ds[sea].attrs:
+                    # We look for the area_attr attribute in the cache file we found
+                    # It should contain the area of the sea on that grid
+                        area = float(out_ds[sea].attrs[area_attr]) / area_divisor
+                    # area_divisor is to convert to Thousand km2 or km2
+                if area is not None:
+                    break
+                # If we found the area of the sea for one variable, we skip the next variable
             if area is not None:
                 break
-            # If we found the area of the sea for one variable, we skip the next variable
-            # and go directly to next label
-        parts.append('%s %s' % (label, 'unknown' if area is None else '%.0f' % area))
-        # We add to parts a label followed by the area if found, unknown if not
-    return ', '.join(parts)
+            # If we found the area of the sea for one dataset, we skip the next datasets of the group
+        parts.append('%s: %s' % (', '.join(labels), 'unknown' if area is None else '%.0f' % area))
+        # We add to parts the labels of the group followed by the area if found, unknown if not
+    return '; '.join(parts)
 
 
 def chunked_in_time(da, chunk_time):
@@ -837,29 +843,20 @@ if do_ArcticSeas_timeseries:
             # -----------------------------------------------------------------------------------------
             index += open_table()
             if ArcticSeas_meanORsum == 'sum':
-                variable_plot_specs = [
-                    dict(variable='sic', title='Sea ice area',
-                         ylabel='Sea ice area (Millions km2)'),
-                    dict(variable='sit', title='Sea ice volume',
-                         ylabel='Sea ice volume (Thousand km3)'),
-                ]
+                variable_plot_specs = {
+                    'sic': dict(title='Sea ice area',
+                                ylabel='Sea ice area (Millions km2)'),
+                    'sit': dict(title='Sea ice volume',
+                                ylabel='Sea ice volume (Thousand km3)'),
+                }
             else:
-                variable_plot_specs = [
-                    dict(variable='sic', title='Sea ice concentration',
-                         ylabel='Area-weighted mean sea ice concentration (%)'),
-                    dict(variable='sit', title='Sea ice thickness',
-                         ylabel='Area-weighted mean sea ice thickness (m)'),
-                ]
-            # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file, the
-            # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
-            # -- on the grid of that simulation/observation
-            if ArcticSeas_meanORsum == 'sum':
-                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (Thousand km2)'
-            else:
-                area_attr, area_divisor, area_title = 'mean_cell_area_m2', 1e6, 'Mean grid cell area (km2)'
-            # -- For each sea, one row will contain as many plots as in that dictionary with title:
-            variable_titles = dict((spec['variable'], spec['title']) for spec in variable_plot_specs)
-            warnings_per_sea = dict()  # sea -> ['label (variable title): message', ...]
+                variable_plot_specs = {
+                    'sic': dict(title='Sea ice concentration',
+                                ylabel='Area-weighted mean sea ice concentration (%)'),
+                    'sit': dict(title='Sea ice thickness',
+                                ylabel='Area-weighted mean sea ice thickness (m)'),
+                }
+            warnings_per_sea = dict()  # sea -> [ 'model_label (diagnostics): message', ...]
             # Warning messages about missing data are reorganized to be gathered per sea
             # instead of per variable and experiment/observation (initially in a text file
             # next to each cache_file
@@ -874,26 +871,40 @@ if do_ArcticSeas_timeseries:
                         warnings_per_sea.setdefault(warned_sea, []).append(
                             # if there was no previous message, set default creates an empty entry
                             # for warned_sea in the warning_per_sea dictionary
-                            '%s (%s): %s' % (model_label, variable_titles.get(variable, variable), message))
+                            '%s (%s): %s' % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'], message))
+                            # (variable missing from variable_plot_specs -> 'unknown diagnostics')
                             # The final message to be printed below the sea title will be :
                             # model_label (Sea ice area) : warning message about missing values
                             # model_label (Sea ice volume) : warning message about missing values
                             # etc ... for any number of model_label which has missing values in this sea
+            # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file, the
+            # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
+            # -- on the grid of that simulation/observation
+            if ArcticSeas_meanORsum == 'sum':
+                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (Thousand km2)'
+            else:
+                area_attr, area_divisor, area_title = 'mean_cell_area_m2', 1e6, 'Mean grid cell area (km2)'
+            # -- The sea areas depend only on the grid and sea mask: they are listed once per group
+            # -- of simulations/observations sharing the same mask file
+            # -- available_masks contain : { maskfile : (gridfile, group_of_labels) , ... }, one entry
+            # -- per group of simulations/observations sharing the same grid and mask
+            area_label_groups = [labels for (gridfile, labels) in available_masks.values()]
+            # -- area_label_groups is a list of lists of labels using the same grid
             for sea in seas:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
                 # The long_name attributes of seas were gathered earlier in sea_diplay_names
                 title = sea_name + '<br><small>' + area_title + ': ' + \
-                    sea_areas_text(sea, model_labels, seaindex_files, area_attr, area_divisor) + '</small>'
+                    sea_areas_text(sea, area_label_groups, seaindex_files, area_attr, area_divisor) + '</small>'
                     # sea_areas_text is a function defined earlier which returns a line with 
-                    # model_label area_of_the_sea, model_label area_of_the_sea, etc ...
+                    # group of model_labels : area_of_the_sea; group of model_labels area_of_the_sea, etc ...
                 if sea in warnings_per_sea:
                     title += '<br><small><font color="red">Warning - ' + \
                              '<br>Warning - '.join(warnings_per_sea[sea]) + '</font></small>'
                 index += start_line(title)
-                for plot_var in variable_plot_specs:
-                    # variable_plot_specs is a list of dictionaries holding plot titles and ylabels
-                    variable = plot_var['variable']
+                for variable, plot_var in variable_plot_specs.items():
+                    # variable : sic/sit
+                    # plot_var : dictionary holding the plot title and ylabel for this variable
 
                     # -- Gather the data available for this sea/variable first, so we know
                     # -- which simulations (if any) are missing before deciding whether to
