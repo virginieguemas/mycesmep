@@ -341,7 +341,7 @@ def plotted_series(da, months, period='full'):
     return da[time_dim].values, da.values
     # In case of annual/seasonal means, the x values look like [YYYY, YYYY .... YYYY]
     # In case of monthly time series, they look like [YYYY-MM-DD, YYYY-MM-DD,  .... ]
-    # It is a numpy array of datetime64 for monthly time series, integers for seasonal.
+    # It is a numpy array of datetime64 or cftime for monthly time series, integers for seasonal.
 
 
 def obs_climatology_curve(da, clim_period, months, sim_times):
@@ -383,7 +383,7 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
         # time_dim.month is the key to gather data by month for groupby to average.
         # If some months are never observed (ex: summer months for CryoSat), 
         # reindex adds those missing months with a NaN
-        sim_months = xr.DataArray(sim_times, dims='simtime').dt.month
+        sim_months = xr.DataArray(sim_times, dims='doesnotmatter').dt.month
         # sim_times is a numpy array of datetime64 values that needs to be converted
         # to an Xarray so that we can use .dt.month to pick the month of each point
         # on the time axis to build sim_months
@@ -667,6 +667,7 @@ if do_ArcticSeas_timeseries:
                     model_label = model_label_of(wmodel)
                     if model_label not in model_labels:
                         model_labels.append(model_label)
+                        # mode_labels holds all the labels of all models and observations
 
                     # -- Netcdf variable name to find in output files for this simulation/variable
                     # -----------------------------------------------------------------------------------------
@@ -675,7 +676,7 @@ if do_ArcticSeas_timeseries:
                         print("ArcticSeas: no ArcticSeas_variable_names entry for %s / %s, skipping"
                               % (model_label, variable))
                         continue
-                        # We skip to next model/obs here if variable not declared in param_ArcticSeas.py
+                        # We skip to next model/obs here if variable not declared in params_ArcticSeas.py
 
                     # Climaf needs the variable to find the input netcdf files
                     wmodel.update(dict(variable=real_variable))
@@ -889,7 +890,7 @@ if do_ArcticSeas_timeseries:
             # -- available_masks contain : { maskfile : (gridfile, group_of_labels) , ... }, one entry
             # -- per group of simulations/observations sharing the same grid and mask
             area_label_groups = [labels for (gridfile, labels) in available_masks.values()]
-            # -- area_label_groups is a list of lists of labels using the same grid
+            # -- area_label_groups is a list of lists of labels using the same mask (hence the same grid)
             for sea in seas:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
@@ -902,78 +903,127 @@ if do_ArcticSeas_timeseries:
                     title += '<br><small><font color="red">Warning - ' + \
                              '<br>Warning - '.join(warnings_per_sea[sea]) + '</font></small>'
                 index += start_line(title)
-                for variable, plot_var in variable_plot_specs.items():
+                for variable, plot_specs in variable_plot_specs.items():
                     # variable : sic/sit
-                    # plot_var : dictionary holding the plot title and ylabel for this variable
+                    # plot_specs : dictionary holding the plot title and ylabel for this variable
 
                     # -- Gather the data available for this sea/variable first, so we know
                     # -- which simulations (if any) are missing before deciding whether to
                     # -- plot the available ones or to report an error instead
                     # -----------------------------------------------------------------------------------------
-                    curves = []  # (model_label, time_values, data_values) for simulations with data
-                    obs_series = dict()  # obs label -> per-sea DataArray, for observations with data
-                    present_labels = []
+                    curves = []  # list of tuples (model_label, time_values, data_values) containing
+                                 # the model label and the x and y values to be plotted for each simulation
+                                 # which actually has data to be plotted
+                    obs_series = dict()  # a dictionary holding for each obs label a DataArray with the
+                                 # monthly data for this observational dataset if the sea is in its cache file 
+                    present_labels = [] # only the labels of the models or obs which have data for this sea
                     for model_label, outfile in seaindex_files.get(variable, dict()).items():
+                        # if variable is not in seaindex_files, empty dictionary so we do not
+                        # go through this loop
+                        # if variable is in seaindex_files, we loop through the list of (model_label, cachefile) 
+                        # for this variable 
                         if not os.path.exists(outfile):
                             continue
-                        out_ds = xr.open_dataset(outfile)
-                        if sea in out_ds.data_vars:
+                        # if the cachefile is not there, we go to next model or observation for this variable
+                        with xr.open_dataset(outfile) as out_ds:
+                            if sea not in out_ds.data_vars:
+                                continue
+                            # if we do not have any data for this sea for this model we go to next model or obs
                             da = out_ds[sea].load()
-                            time_dim = da.dims[0]
-                            if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
-                                # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
-                                # -- thousand km^3), to match the plot's ylabel; purely local
-                                # -- to this plot, the cache file on disk is left untouched
-                                da = da / 1e12
-                            if model_label in obs_labels:
-                                obs_series[model_label] = da
-                            else:
-                                # -- Seasonal means of complete seasons only (ArcticSeas_season in params_ArcticSeas.py)
-                                time_values, data_values = plotted_series(da, season_month_list)
-                                curves.append((model_label, time_values, data_values))
-                            present_labels.append(model_label)
-                        out_ds.close()
+                        # -- The file out_ds is closed here: da is loaded in memory, we no longer need out_ds
+                        if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
+                            # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
+                            # -- thousand km^3), to match the plot's ylabel; purely local
+                            # -- to this plot, the cache file on disk is left untouched
+                            da = da / 1e12
+                        if model_label in obs_labels:
+                            # All observational data have been treated as model data and their cachefile are also
+                            # stored in seaindex_files so that if model_label is actually an obs_label, da needs 
+                            # to be stored in the obs_series dictionary with the obs_label as key and not in the 
+                            # curve list which is for model/experiment data
+                            obs_series[model_label] = da
+                        else:
+                            # -- Seasonal means of complete seasons only (ArcticSeas_season in params_ArcticSeas.py)
+                            time_values, data_values = plotted_series(da, season_month_list)
+                            # We obtain a tuple containing a numpy array of integer years if we computed a seasonal
+                            # mean (using only season with no missing data inside the season) as first element
+                            # and the corresponding seasonal means as second element
+                            # If no seasonal mean was requested (season_month_list = None), the tuple contains
+                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values 
+                            curves.append((model_label, time_values, data_values))
+                            # curves is a list of tuples in which we add the tuple holding this model_label, 
+                            # its time_values to be plotted along x, its data_values to be plotted along y
+                        present_labels.append(model_label)
+                        # only the labels of the model or observations that have data for this sea
 
                     # -- Observations: either their actual dates within obs_period ('real'), or their
                     # -- climatology over obs_period repeated along the simulation dates ('climato').
-                    # -- Without any simulation to follow, a climatology falls back to the real dates
+                    # -- Without any simulation to follow, observations will be plotted in 'real' mode
                     # -- within obs_period
                     # -----------------------------------------------------------------------------------------
-                    obs_curves = []  # (obs label, legend label, time_values, data_values)
+                    obs_curves = []  # a list of tuples : (obs label, legend label, time_values, data_values)
                     sim_times = None
                     if curves:
-                        sim_times = np.unique(np.concatenate([time_values for _, time_values, _ in curves]))
+                        # If we do have model data for this sea, sim_times contains all the dates covered by 
+                        # all the simulations of all models/experiments without duplicate
+                        sim_times = np.unique(np.concatenate([time_values for (mod_lab, time_values, data) in curves]))
                     for obs_label, da in obs_series.items():
+                        # If we do have observations to plot, we loop over those observational datasets
                         obs_display, obs_period = obs_settings[obs_label]
-                        time_dim = da.dims[0]
+                        # We get back the information stored earlier in obs_settings :
+                        # real / climato
+                        # full / sim / YYYY-YYYY
                         if obs_period == 'sim':
-                            # -- From the first to the last year of the simulations of this figure
+                            # -- From the first to the last year of the simulations for this diagnostics
                             # -- ('full' if there is no simulation to follow)
                             if sim_times is None:
                                 obs_period = 'full'
                             else:
                                 sim_years = sim_times if season_month_list \
-                                    else xr.DataArray(sim_times, dims='simtime').dt.year.values
+                                    else xr.DataArray(sim_times, dims='doesnotmatter').dt.year.values
+                                # We only create a DataArray to use the dt.year.values and extract the year of each date
                                 obs_period = '%d-%d' % (sim_years.min(), sim_years.max())
+                                # For option 'sim', we build an obs_period covering all the years of all the simulations
                         if obs_display == 'real' or sim_times is None:
+                            # If we do not have any sim_times (no simulation available to be plotted), we plot in mode 'real'
                             # -- Only the points within obs_period (every point if 'full')
                             time_values, data_values = plotted_series(da, season_month_list, obs_period)
+                            # We obtain a tuple containing a numpy array of integer years if we computed a seasonal
+                            # mean (using only season with no missing data inside the season) as first element
+                            # and the corresponding seasonal means as second element
+                            # If no seasonal mean was requested (season_month_list = None), the tuple contains
+                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values 
+                            # If obs_period is 'full', the whole time series is output, if a period is provided
+                            # with YYYY-YYYY, only this period is output
                             if len(time_values) == 0:
                                 print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
                                       % (obs_label, obs_period, sea))
                                 continue
                             obs_curves.append((obs_label, obs_label, time_values, data_values))
-                            continue
-                        clim = obs_climatology_curve(da, obs_period, season_month_list, sim_times)
-                        if clim is None:
-                            print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
-                                  % (obs_label, obs_period, sea))
-                            continue
-                        values, first_year, last_year = clim
-                        obs_curves.append((obs_label, '%s (clim %d-%d)' % (obs_label, first_year, last_year),
-                                           sim_times, values))
-                    # model_labels holds every simulation ArcticSeas attempted (see the compute
-                    # loop above); any of them missing from present_labels has no data here.
+                            # We include in the obs_curves list a new tuple with (obs_customname,
+                            # obs_legend, x data to be plotted, y data to be plotted)
+                        else:
+                            clim = obs_climatology_curve(da, obs_period, season_month_list, sim_times)
+                            # obs_climatology_curve computes a climatology of the DataArray da over the
+                            # obs_period period and repeats it along the sim_times time axis : a single
+                            # value for seasonal mean, a 12-month cycle for monthly means. 
+                            # The months within the season are passed through season_month_list. If 
+                            # season_month_list is None, we obtain a monthly climatology.
+                            # clim is a tuple holding the numpy array of y values to be plotted against 
+                            # the sim_times x values, together with the first and last year of the climatology
+                            if clim is None:
+                                print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
+                                      % (obs_label, obs_period, sea))
+                                continue
+                            values, first_year, last_year = clim
+                            obs_curves.append((obs_label, '%s (clim %d-%d)' % (obs_label, first_year, last_year),
+                                               sim_times, values))
+                            # We include in the obs_curves list a new tuple with (obs_customname,
+                            # obs_legend, x data to be plotted, y data to be plotted)
+
+                    # model_labels holds every simulation listed in datasets_setup.py and every 
+                    # observation listed in params_ArcticSeas.py
+                    # Any of them missing from present_labels has no data here.
                     # Observations are left out: a missing observation is just not plotted
                     missing_labels = [m for m in model_labels
                                       if m not in present_labels and m not in obs_labels]
@@ -1001,16 +1051,16 @@ if do_ArcticSeas_timeseries:
                                     label=legend_label, zorder=3)
                         ax.legend(fontsize=8)
 
-                    ax.set_title("%s - %s (%s)" % (sea_name, plot_var['title'], season_label))
+                    ax.set_title("%s - %s (%s)" % (sea_name, plot_specs['title'], season_label))
                     ax.set_xlabel('Time')
-                    ax.set_ylabel(plot_var['ylabel'])
+                    ax.set_ylabel(plot_specs['ylabel'])
                     fig.tight_layout()
 
                     png_path = os.path.join(workdir, 'ts_%s_%s.png' % (sanitize(sea), variable))
                     fig.savefig(png_path, dpi=100)
                     plt.close(fig)
 
-                    index += cell(plot_var['title'], png_path, thumbnail=thumbN_size, hover=hover, **alternative_dir)
+                    index += cell(plot_specs['title'], png_path, thumbnail=thumbN_size, hover=hover, **alternative_dir)
                 index += close_line()
             index += close_table()
 
