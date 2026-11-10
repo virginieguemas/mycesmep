@@ -284,6 +284,38 @@ def season_months(season):
     # +1 is because we list the months as 1 to 12 whereas position in python are indexed
     # from 0 (in MONTH_INITIALS)
 
+
+def without_duplicate_dates(da):
+    """Removes the repeated dates of a time series da (time as first dimension). They appear
+    when the input files of a simulation overlap (e.g. two sets of files covering the same
+    years, concatenated by CliMAF): each year would then hold 24 months instead of 12, and
+    seasonal_mean_complete_years would drop it as incomplete. Only the first value of each
+    date is kept, and the dates are sorted.
+    Returns a tuple: (da without repeated dates, number of values removed, True if the
+    removed values were identical to the kept ones)."""
+    time_dim = da.dims[0]
+    # da has only one dimension : a time dimension
+    first = da.drop_duplicates(time_dim, keep='first')
+    # first keeps only one value per date, the first found in da
+    n_removed = da.sizes[time_dim] - first.sizes[time_dim]
+    # we count the number of values removed
+    if n_removed == 0:
+        return da, 0, True
+        # Nothing to remove: da is returned as it is
+    last = da.drop_duplicates(time_dim, keep='last')
+    # last keeps only one value per date, the last found in da
+    identical = bool(((first == last) | (first.isnull() & last.isnull())).all())
+    # first == last matches the values date by date and returns an array of True/False if values
+    # are the same/different for each date, if first and last both have NaN for a given
+    # date, this first test would return False, hence we need a second test to check whether
+    # both are NaN with isnull 
+    # we obtain an array of True / False if values are the same (including both NaN) / different
+    # then .all() returns True if all values of this array are True
+    # we change the True / False result from an array to a simple boolean with the bool function
+    # identical = True means each single value of last and first is the same
+    return first.sortby(time_dim), n_removed, identical
+
+
 def seasonal_mean_complete_years(da, months):
     """From a monthly time series data array da (time as first dimension), and a
     list of calendar months (between 1 and 12) within the season, this function computes
@@ -885,6 +917,25 @@ if do_ArcticSeas_timeseries:
                             # model_label (Sea ice area) : warning message about missing values
                             # model_label (Sea ice volume) : warning message about missing values
                             # etc ... for any number of model_label which has missing values in this sea
+                    # -- Repeated dates (overlapping input files) are removed silently before plotting
+                    # -- when their values are identical; when they differ, the input files hold two
+                    # -- different versions of the series and we add a warning below the sea title 
+                    if not os.path.exists(cache_file):
+                        # if the cachefile is not there, we go to next model or observation for this variable
+                        continue
+                    with xr.open_dataset(cache_file) as cached:
+                        for sea in cached.data_vars:
+                            da, n_removed, identical = without_duplicate_dates(cached[sea].load())
+                            # The without_duplicate_dates applied on the cache file checks for this sea
+                            # whether there are any duplication of values for the same dates and returns
+                            # the number of duplicates if there are any (n_removed) together with 
+                            # a True/False flag if both values are the same / different for the same dates
+                            if n_removed and not identical:
+                                # We found two different values for one or more dates
+                                warnings_per_sea.setdefault(sea, []).append(
+                                    '%s (%s): %d repeated dates with different values, first value kept'
+                                    % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'],
+                                       n_removed))
             # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file, the
             # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
             # -- on the grid of that simulation/observation
@@ -902,13 +953,13 @@ if do_ArcticSeas_timeseries:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
                 # The long_name attributes of seas were gathered earlier in sea_diplay_names
-                title = sea_name + '<br><small>' + area_title + ': ' + \
-                    sea_areas_text(sea, area_label_groups, seaindex_files, area_attr, area_divisor) + '</small>'
+                title = sea_name + '<br><span style="font-size:70%">' + area_title + ': ' + \
+                    sea_areas_text(sea, area_label_groups, seaindex_files, area_attr, area_divisor) + '</span>'
                     # sea_areas_text is a function defined earlier which returns a line with 
                     # group of model_labels : area_of_the_sea; group of model_labels area_of_the_sea, etc ...
                 if sea in warnings_per_sea:
-                    title += '<br><small><font color="red">Warning - ' + \
-                             '<br>Warning - '.join(warnings_per_sea[sea]) + '</font></small>'
+                    title += '<br><span style="font-size:70%; color:red">Warning - ' + \
+                             '<br>Warning - '.join(warnings_per_sea[sea]) + '</span>'
                 index += start_line(title)
                 for variable, plot_specs in variable_plot_specs.items():
                     # variable : sic/sit
@@ -938,6 +989,12 @@ if do_ArcticSeas_timeseries:
                             # if we do not have any data for this sea for this model we go to next model or obs
                             da = out_ds[sea].load()
                         # -- The file out_ds is closed here: da is loaded in RAM, we no longer need out_ds
+                        da = without_duplicate_dates(da)[0]
+                        # -- We remove duplicated dates/values in da because those repeated dates would trick
+                        # -- the seasonal_mean_complete_years function into considering seasons as incomplete because
+                        # -- it checks that the number of expected months in a season is indeed there
+                        # -- only the first value for each date is kept (a warning was set above, below the
+                        # -- sea title, if the repeated values were different)
                         if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
                             # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
                             # -- thousand km^3), to match the plot's ylabel; purely local
