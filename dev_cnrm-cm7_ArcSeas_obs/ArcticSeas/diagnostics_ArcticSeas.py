@@ -70,9 +70,16 @@ CACHE_VARIABLE_LABELS = {
 }
 
 # -- (color, linestyle) for the observations (ArcticSeas_obs), so that
-# -- they stand out from the simulations (default matplotlib color cycle, solid lines)
+# -- they stand out from the simulations (colors of SIM_COLORS, solid lines)
 OBS_STYLES = [('black', '-'), ('black', '--'), ('black', ':'), ('black', '-.'),
               ('grey', '-'), ('grey', '--'), ('grey', ':'), ('grey', '-.')]
+
+# -- Colors of the simulations (solid lines): the default matplotlib colors without its grey
+# -- (kept for the observations). A simulation gets the color of its rank among all the
+# -- simulations of datasets_setup.py, so that it keeps the same color on every plot, even
+# -- when other simulations are missing from some of them (colors repeat beyond 9 simulations)
+SIM_COLORS = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
+              'tab:brown', 'tab:pink', 'tab:olive', 'tab:cyan']
 
 
 def latest_year_of_wmodel(wmodel):
@@ -840,7 +847,7 @@ if do_ArcticSeas_timeseries:
                     index += close_line() + close_table()
 
             # ==> -- Build one table row per sea; for each sea, one plot for the ice area (sic) and
-            # ==> -- one for the ice volume (sit), overlaying all the simulations
+            # ==> -- one for the ice volume (sit), showing all the simulations and observations
             # -----------------------------------------------------------------------------------------
             index += open_table()
             if ArcticSeas_meanORsum == 'sum':
@@ -1024,27 +1031,37 @@ if do_ArcticSeas_timeseries:
                     # model_labels holds every simulation listed in datasets_setup.py and every 
                     # observation listed in params_ArcticSeas.py
                     # Any of them missing from present_labels has no data here.
-                    # Observations are left out: a missing observation is just not plotted
                     missing_labels = [m for m in model_labels
                                       if m not in present_labels and m not in obs_labels]
+                    # Observations are left out: a missing observation is just not plotted
+                    # if m is in obs_labels, we do not include it in missing_labels even if
+                    # there is no data for this observation
 
                     fig, ax = plt.subplots(figsize=(6, 4))
                     # New figure created for each sea, each variable and associated diagnostics
                     if not curves and not obs_curves:
                         # -- Always an error message here, regardless of ArcticSeas_on_missing_simulations
-                        ax.text(0.5, 0.5, 'No data available for any simulation',
+                        # -- when we don't have any observation nor any model data
+                        ax.text(0.5, 0.5, 'No data available for any simulation nor any observation',
                                 ha='center', va='center', wrap=True, transform=ax.transAxes)
                     elif missing_labels and ArcticSeas_on_missing_simulations == 'error':
+                        # -- As soon as a single simulation is missing, a message is shown here
+                        # -- instead of the figure with the other simulations and observations
                         ax.text(0.5, 0.5, 'Data missing for: %s' % ', '.join(missing_labels),
                                 ha='center', va='center', wrap=True, transform=ax.transAxes)
                     else:
                         # -- ArcticSeas_on_missing_simulations == 'partial' (or nothing missing):
                         # -- plot the simulations that do have data, silently skipping the rest
-                        # -- Simulations first (default color cycle), then observations on top
-                        # -- with their own fixed style (same style for a given observation
-                        # -- on every plot, from its rank in ArcticSeas_obs)
+                        # -- Simulations first, then observations on top, each with a fixed style
+                        # -- (same color for a given simulation on every plot, from its rank among
+                        # -- the simulations of datasets_setup.py; same style for a given
+                        # -- observation on every plot, from its rank in ArcticSeas_obs)
+                        sim_labels = [m for m in model_labels if m not in obs_labels]
+                        # sim_labels : all the simulations in the order of datasets_setup.py,
+                        # whether or not they have data on this plot
                         for model_label, time_values, data_values in curves:
-                            ax.plot(time_values, data_values, lw=1.5, label=model_label)
+                            color = SIM_COLORS[sim_labels.index(model_label) % len(SIM_COLORS)]
+                            ax.plot(time_values, data_values, lw=1.5, color=color, label=model_label)
                         for obs_label, legend_label, time_values, data_values in obs_curves:
                             color, linestyle = OBS_STYLES[obs_labels.index(obs_label) % len(OBS_STYLES)]
                             ax.plot(time_values, data_values, lw=2, color=color, linestyle=linestyle,
