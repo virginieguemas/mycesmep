@@ -213,7 +213,7 @@ def sea_areas_text(sea, label_groups, seaindex_files, area_attr, area_divisor):
 
 def chunked_in_time(da, chunk_time):
     """da read by pieces of chunk_time time steps along its first dimension (time) with dask,
-    so that operations on it never load the whole field in memory; da unchanged if
+    so that operations on it never load the whole field in RAM; da unchanged if
     chunk_time is None/0, if da has no time dimension (2 dimensions or less, e.g. a single
     (y, x) field) or if dask is not available."""
     if not chunk_time or da.ndim <= 2:
@@ -749,7 +749,7 @@ if do_ArcticSeas_timeseries:
                         # -- turn it into a fraction (0-1). correct and write the corrected copy
                         # -- to our own workdir rather than overwriting CliMAF's cache file.
                         # -- The field is read by pieces of ArcticSeas_chunk_time time steps (see
-                        # -- chunked_in_time) to limit the memory used by long model series
+                        # -- chunked_in_time) to limit the RAM used by long model series
                         if variable == 'sic':
                             with xr.open_dataset(datafile) as sic_unit:
                             # datafile is opened only in this block, closed automatically at the end of the block
@@ -937,7 +937,7 @@ if do_ArcticSeas_timeseries:
                                 continue
                             # if we do not have any data for this sea for this model we go to next model or obs
                             da = out_ds[sea].load()
-                        # -- The file out_ds is closed here: da is loaded in memory, we no longer need out_ds
+                        # -- The file out_ds is closed here: da is loaded in RAM, we no longer need out_ds
                         if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
                             # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
                             # -- thousand km^3), to match the plot's ylabel; purely local
