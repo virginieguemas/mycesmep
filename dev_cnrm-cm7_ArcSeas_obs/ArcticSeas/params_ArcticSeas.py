@@ -146,7 +146,7 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 # -- polar maps of the Arctic seas) and copies of sic converted from % into a fraction.
 # -- Created if it does not exist. None (default) : ArcticSeas_workfiles under the
 # -- directory where the atlas is run.
-ArcticSeas_workdir = None
+ArcticSeas_workdir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_workdir'
 
 # -- Variable name to find the sea ice concentration (sic) and the sea ice tickness (sit)
 # -- in the output files, one entry per simulation (keyed by its 'customname',
