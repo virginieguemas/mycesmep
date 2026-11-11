@@ -125,6 +125,17 @@ SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+
 # WARNING : if the comp_seaiceindex message were to change, the change should be reflected in the
 # line above otherwise the ArcticSeas option could not detect it
 
+
+def report_failed_comput(message_failed_comput, message):
+    """Prints a message (why a diagnostic (sea ice area/volume) could not be computed from
+    a simulation or observation) in the log and stores it in the list of messages named 
+    message_failed_comput, to be shown on the atlas page. A message already
+    in the list (e.g. same missing grid file for sic and sit) is not added twice."""
+    print("ArcticSeas: " + message)
+    if message not in message_failed_comput:
+        message_failed_comput.append(message)
+
+
 def warnings_file_of(cache_file):
     """Defines a filename for the text file, next to a per-sea cache file, holding the 
     'missing values' warnings issued by comp_seaiceindex.py when it computed that cache 
@@ -689,9 +700,13 @@ if do_ArcticSeas_timeseries:
             # ==> -- comp_seaiceindex.py and update the cache
             # -----------------------------------------------------------------------------------------
             seaindex_files = dict()
-            # seaindex_files is set to contain the file names holding the sea ice area / volume  
+            # seaindex_files is defined to contain the file names holding the sea ice area / volume  
             # organized by simulation and variable
-            model_labels = []
+            model_labels = [] # list of model and observations labels (i.e. customnames by default)
+            message_failed_comput = []
+            # message_failed_comput is a list created to gather error messages as strings of characters
+            # which were intended for the logs. Those are captured to be printed on the atlas before
+            # the figures in addition to the logs : missing grid, mask, data...
             #
             # ARCTIC_SEAS_VARIABLES = ['sic', 'sit'] -- these are not necessarily the actual
             # netcdf variable name in the netcdf files that varies by simulation (e.g. N3CPL's volume
@@ -706,14 +721,19 @@ if do_ArcticSeas_timeseries:
                     model_label = model_label_of(wmodel)
                     if model_label not in model_labels:
                         model_labels.append(model_label)
-                        # mode_labels holds all the labels of all models and observations
+                        # model_labels holds all the labels of all models and observations
 
                     # -- Netcdf variable name to find in output files for this simulation/variable
                     # -----------------------------------------------------------------------------------------
                     real_variable = ArcticSeas_variable_names.get(model_label, dict()).get(variable)
                     if real_variable is None:
-                        print("ArcticSeas: no ArcticSeas_variable_names entry for %s / %s, skipping"
-                              % (model_label, variable))
+                        message = "no ArcticSeas_variable_names entry for %s / %s, skipping" % (model_label, variable)
+                        if model_label in obs_labels:
+                            # normal for an observation which does not provide this variable
+                            # (e.g. no thickness in a concentration product): log only
+                            print("ArcticSeas: " + message)
+                        else:
+                            report_failed_comput(message_failed_comput, message)
                         continue
                         # We skip to next model/obs here if variable not declared in params_ArcticSeas.py
 
@@ -728,8 +748,8 @@ if do_ArcticSeas_timeseries:
                     # -- prints 'Error in get_period_manager => No File found for ...'
                     # -- and leaves 'period' unset)
                     if 'period' not in wmodel:
-                        print("ArcticSeas: no data found for %s / %s (variable %s), skipping"
-                              % (model_label, variable, real_variable))
+                        report_failed_comput(message_failed_comput, "no data found for %s / %s (variable %s), skipping"
+                                             % (model_label, variable, real_variable))
                         continue
                         # We skip to next model/obs here if period is not available = no input data found
 
@@ -752,15 +772,16 @@ if do_ArcticSeas_timeseries:
                     gridfile, maskfile, label = resolve_grid_and_mask(wmodel)
 
                     if gridfile is None:
-                        print("ArcticSeas: no ArcticSeas_gridfile/ArcticSeas_maskfile entry for %s, "
-                              "skipping" % model_label)
+                        report_failed_comput(message_failed_comput, "no ArcticSeas_gridfile/ArcticSeas_maskfile entry "
+                                             "for %s, skipping" % model_label)
                         continue
                     if not os.path.exists(gridfile):
-                        print("ArcticSeas: grid file not found for %s -> %s" % (model_label, gridfile))
+                        report_failed_comput(message_failed_comput, "grid file not found for %s -> %s"
+                                             % (model_label, gridfile))
                         continue
                     if maskfile not in available_masks:
-                        print("ArcticSeas: no sea mask available for %s (mask %s), skipping"
-                              % (model_label, maskfile))
+                        report_failed_comput(message_failed_comput, "no sea mask available for %s (mask %s), skipping"
+                                             % (model_label, maskfile))
                         continue
 
                     try:
@@ -827,8 +848,8 @@ if do_ArcticSeas_timeseries:
                         # cache_file is stored in the seaindex_files dictionary
                         seaindex_files[variable][model_label] = cache_file
                     except Exception as e:
-                        print("ArcticSeas: failed to compute %s (variable %s) for %s -> %s"
-                              % (variable, real_variable, model_label, e))
+                        report_failed_comput(message_failed_comput, "failed to compute %s (variable %s) for %s -> %s"
+                                             % (variable, real_variable, model_label, e))
 
             # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x 
             # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects, 
@@ -877,6 +898,15 @@ if do_ArcticSeas_timeseries:
                     index += open_table()
                     index += start_line('<font color="red">Warning - ' + message + '</font>')
                     index += close_line() + close_table()
+
+            # ==> -- Error messages explaining why sea ice area/volume could not be computed for one
+            # ==> -- or more simulations or observations (these are also printed in the log)
+            # -----------------------------------------------------------------------------------------
+            if message_failed_comput:
+                index += open_table()
+                index += start_line('<font color="red">Not computed - ' +
+                                    '<br>Not computed - '.join(message_failed_comput) + '</font>')
+                index += close_line() + close_table()
 
             # ==> -- Build one table row per sea; for each sea, one plot for the ice area (sic) and
             # ==> -- one for the ice volume (sit), showing all the simulations and observations
