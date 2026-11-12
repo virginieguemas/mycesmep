@@ -127,6 +127,7 @@ fi
 if [[ -d "/cnrm" ]] ; then
    
     unset PYTHONPATH
+    export PYTHONNOUSERSITE=1 # ignore ~/.local packages (to avoid incompatibilities)
 
     # CDAT
     # Remove CDAT dependency for now
