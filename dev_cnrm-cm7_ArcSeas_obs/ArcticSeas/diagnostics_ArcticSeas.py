@@ -239,6 +239,16 @@ def chunked_in_time(da, chunk_time):
         return da
 
 
+def percent_scale(datafile, netcdf_variable, chunk_time):
+    """Scale factor turning the sea ice concentration netcdf_variable of datafile into a
+    fraction (0-1). This scale factor will be needed for comp_seaiceindex.py through --scale: 
+    0.01 if the concentration is published as a percentage (0-100, detected by a maximum above 
+    1.5), 1 otherwise. The field is read by pieces of chunk_time time steps (see chunked_in_time)."""
+    with xr.open_dataset(datafile) as dataset:
+        field = chunked_in_time(dataset[netcdf_variable], chunk_time)
+        return 0.01 if float(field.max()) > 1.5 else 1.
+
+
 # -- Initials of the 12 calendar months, January first
 MONTH_INITIALS = 'JFMAMJJASOND'
 
@@ -723,7 +733,9 @@ if do_ArcticSeas_timeseries:
                         model_labels.append(model_label)
                         # model_labels holds all the labels of all models and observations
 
-                    # -- Netcdf variable name to find in output files for this simulation/variable
+                    # -- Netcdf variable name(s) to find in output files for this simulation/variable:
+                    # -- a single name (e.g. 'sivolu') or a list of names whose product is used
+                    # -- (e.g. ['sithic', 'siconc'] : thickness of the ice x concentration)
                     # -----------------------------------------------------------------------------------------
                     real_variable = ArcticSeas_variable_names.get(model_label, dict()).get(variable)
                     if real_variable is None:
@@ -737,11 +749,17 @@ if do_ArcticSeas_timeseries:
                         continue
                         # We skip to next model/obs here if variable not declared in params_ArcticSeas.py
 
-                    # Climaf needs the variable to find the input netcdf files
-                    wmodel.update(dict(variable=real_variable))
+                    # List of the netcdf variable names, with a single element if there is no product
+                    real_variables = [real_variable] if isinstance(real_variable, str) else list(real_variable)
+                    # Text used only in the messages, e.g. 'sithic x siconc'
+                    real_variable_text = ' x '.join(real_variables)
+
+                    # Climaf needs the variable to find the input netcdf files: the period is
+                    # resolved below for the first variable, and used for all the variables of a product
+                    wmodel.update(dict(variable=real_variables[0]))
                     # -- get_period_manager() with diag='ts' is what actually
                     # -- resolves ts_period into a concrete 'period' (date1-date2) usable by ds()
-                    # -- period included in the wmodel dictionary
+                    # -- period is included in the wmodel dictionary by the following line
                     wmodel = get_period_manager(wmodel, diag='ts')
 
                     # -- when it finds no file for a variable/simulation, get_period_manager()
@@ -749,7 +767,7 @@ if do_ArcticSeas_timeseries:
                     # -- and leaves 'period' unset)
                     if 'period' not in wmodel:
                         report_failed_comput(message_failed_comput, "no data found for %s / %s (variable %s), skipping"
-                                             % (model_label, variable, real_variable))
+                                             % (model_label, variable, real_variable_text))
                         continue
                         # We skip to next model/obs here if period is not available = no input data found
 
@@ -785,47 +803,54 @@ if do_ArcticSeas_timeseries:
                         continue
 
                     try:
-                        # Gather in dataset dat all informations about model read in datasetup.py 
-                        # or in ArcticSeas_obs for the observations together with
-                        # the period of the netcdf files computed by get_period_manager
-                        dat = ds(**wmodel)
-                        # -- No time averaging here (e.g. ccdo yearmean), which would average
-                        # -- whatever months are present in each year: comp_seaiceindex.py works
-                        # -- on the monthly fields, and seasonal means are computed when plotting,
-                        # -- from complete seasons only (see seasonal_mean_complete_years)
-                        datafile = cfile(dat)
-                        # -- cfile is a CLIMAF function that gathers all the input file into a 
-                        # -- single one containing only the variable and period of interest
-                        # -- datafile is the complete path to this output file
+                        # Name of the sea ice concentration of this simulation/observation, to
+                        # detect below whether it is published as a percentage
+                        sic_name = ArcticSeas_variable_names.get(model_label, dict()).get('sic')
+                        datafiles = [] # datafiles is a list of complete paths to single files
+                        # containing one variable for the whole period for each variable in
+                        # the list real_variables
+                        scales = [] # scales is a list of factors to be applied to the list of variables
+                        # used in the product to obtain the diagnostics; actually mostly 1, scale is
+                        # 0.01 only when we have a sea ice concentration as percentage, either on
+                        # its own, or to be multiplied by the thickness to obtain a sea ice volume
+                        for real_name in real_variables:
+                            # Gather in dataset dat all informations about model read in datasetup.py
+                            # or in ArcticSeas_obs for the observations together with
+                            # the period of the netcdf files computed by get_period_manager
+                            dat = ds(**dict(wmodel, variable=real_name))
+                            # variable is set to real_name (same value as before get_period_manager
+                            # for the first variable, replaced for the next ones of a product)
+                            # -- No time averaging here (e.g. ccdo yearmean), which would average
+                            # -- whatever months are present in each year: comp_seaiceindex.py works
+                            # -- on the monthly fields, and seasonal means are computed when plotting,
+                            # -- from complete seasons only (see seasonal_mean_complete_years)
+                            datafile = cfile(dat)
+                            # -- cfile is a CLIMAF function that gathers all the input file into a
+                            # -- single one containing only the variable and period of interest
+                            # -- datafile is the complete path to this output file
+                            datafiles.append(datafile)
 
-                        # -- in case sea ice concentration is published as a percentage (0-100) 
-                        # -- turn it into a fraction (0-1). correct and write the corrected copy
-                        # -- to our own workdir rather than overwriting CliMAF's cache file.
-                        # -- The field is read by pieces of ArcticSeas_chunk_time time steps (see
-                        # -- chunked_in_time) to limit the RAM used by long model series
-                        if variable == 'sic':
-                            with xr.open_dataset(datafile) as sic_unit:
-                            # datafile is opened only in this block, closed automatically at the end of the block
-                            # (it must stay open while the corrected copy is written, since the values
-                            # are only read, piece by piece, at that time)
-                                sic_field = chunked_in_time(sic_unit[real_variable], chunk_time)
-                                is_percent = float(sic_field.max()) > 1.5
-                                if is_percent:
-                                    fraction_file = os.path.join(
-                                        workdir, 'sic_fraction_%s.nc' % sanitize(model_label))
-                                    fraction_ds = sic_unit.copy()
-                                    fraction_ds[real_variable] = sic_field / 100.
-                                    fraction_ds.to_netcdf(fraction_file)
-                            if is_percent:
-                                datafile = fraction_file
+                            # -- in case sea ice concentration is published as a percentage (0-100),
+                            # -- comp_seaiceindex.py turns it into a fraction (0-1) with --scale 0.01
+                            # -- (also when the concentration is part of a product, e.g. sithic x siconc)
+                            if real_name == sic_name:
+                                scales.append(percent_scale(datafile, real_name, chunk_time))
+                                # percent_scale is a function which checks whether the maximum of the
+                                # field is above 1.5. If so, it considers it to be a percentage instead
+                                # of a fraction and returns a scale of 0.01 (1 if it is already a fraction)
+                            else:
+                                scales.append(1.)
 
                         # Create a cache directory to hold the sea ice index output files if not there
                         if not os.path.isdir(os.path.dirname(cache_file)):
                             os.makedirs(os.path.dirname(cache_file))
 
+                        # *list unpacks the list: e.g. '--var', *['sithic', 'siconc'] gives
+                        # '--var', 'sithic', 'siconc'
                         cmd = ['python3', comp_seaiceindex_script,
-                               '--data', datafile,
-                               '--var', real_variable,
+                               '--data', *datafiles,
+                               '--var', *real_variables,
+                               '--scale', *[str(scale) for scale in scales],
                                '--mask', maskfile,
                                '--grid', gridfile,
                                '--dxvar', ArcticSeas_dxvar,
@@ -834,6 +859,10 @@ if do_ArcticSeas_timeseries:
                                '--out', cache_file]
                         if chunk_time:
                             cmd += ['--chunk_time', str(chunk_time)]
+                        if len(real_variables) > 1:
+                            # Product (e.g. sithic x siconc): no ice volume (0) where the
+                            # concentration is 0, even if the thickness is not defined (NaN) there
+                            cmd += ['--zero_if_any_zero']
                         # -- Output captured (and echoed to the log) to keep its 'missing values'
                         # -- warnings next to the cache file, so that they are shown on the atlas
                         # -- page also when the cache is reused later
@@ -849,7 +878,7 @@ if do_ArcticSeas_timeseries:
                         seaindex_files[variable][model_label] = cache_file
                     except Exception as e:
                         report_failed_comput(message_failed_comput, "failed to compute %s (variable %s) for %s -> %s"
-                                             % (variable, real_variable, model_label, e))
+                                             % (variable, real_variable_text, model_label, e))
 
             # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x 
             # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects, 

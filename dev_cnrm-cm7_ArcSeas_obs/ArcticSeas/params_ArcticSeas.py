@@ -143,20 +143,27 @@ ArcticSeas_dyvar = 'e2t'
 ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 
 # -- Working directory for the files produced at each atlas run: figures (time series,
-# -- polar maps of the Arctic seas) and copies of sic converted from % into a fraction.
+# -- polar maps of the Arctic seas).
 # -- Created if it does not exist. None (default) : ArcticSeas_workfiles under the
 # -- directory where the atlas is run.
 ArcticSeas_workdir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_workdir'
 
-# -- Variable name to find the sea ice concentration (sic) and the sea ice tickness (sit)
+# -- Variable names to find the sea ice concentration (sic) and the sea ice tickness (sit)
 # -- in the output files, one entry per simulation (keyed by its 'customname',
 # -- or its 'experiment' if it has none -- same key as ArcticSeas_gridfile/
 # -- ArcticSeas_maskfile). A simulation missing from this dictionary is skipped, 
 # -- with a message in the log.
-# -- WARNING : 'sit' must be the sea ice volume per grid cell area (e.g. NEMO/SI3 'sivolu',
-# -- "Sea-ice volume per area"), so that its area-weighted sum is the sea ice volume; NOT
-# -- the thickness of the ice-covered part only (e.g. 'sithic', "Sea-ice thickness"),
-# -- whose sum would count every grid cell as fully ice-covered and overestimate the volume
+# -- WARNING : 'sit' must be the sea ice volume per grid cell area, so that its area-weighted
+# -- sum is the sea ice volume, given either:
+# --   - as a single name, e.g. NEMO/SI3 'sivolu' ("Sea-ice volume per area"),
+# --   - or as a list of names whose product is used, e.g. ['sithic', 'siconc']: the thickness
+# --     of the ice-covered part only ('sithic', "Sea-ice thickness") multiplied by the sea ice
+# --     concentration; 'sithic' alone would count every grid cell as fully ice-covered and
+# --     overestimate the volume.
+# -- The variables of a product must have exactly the same dates. A concentration in % is
+# -- detected and turned into a fraction if it has the same name as the 'sic' entry of the
+# -- same simulation. Where the concentration is 0, the product is 0 even if the thickness
+# -- is not defined (NaN) there.
 ArcticSeas_variable_names = {
     'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},
     'REF1': {'sic': 'siconc', 'sit': 'sivolu'},
