@@ -24,39 +24,16 @@ routine_cache_cleaning = [dict(age='+20')]
 
 # -- Head title of the atlas
 # ---------------------------------------------------------------------------- >
-atlas_head_title = "Arctic Seas - Sea Ice Area and Volume"
-
-
-# -- Choose the season over which the time series are averaged
-# ---------------------------------------------------------------------------- >
-# -> 'ANM' for annual means (January to December), or the initials of consecutive months,
-#    possibly across the end of the year: 'DJF' (December to February), 'JJA' (June to
-#    August), 'NDJFMA', 'MJJASO', 'JASONDJFMAMJ' (July to June)... The initials must match
-#    one single run of months ('J', 'M' or 'A' alone are ambiguous).
-#    A season across the end of the year is assigned to the year of its last month
-#    (DJF 1980 = December 1979 to February 1980).
-# -> 'monthly' to plot the native monthly values.
-# comp_seaiceindex.py always works on the monthly fields; seasonal means are computed when
-# plotting, from complete seasons only (all their months available): a season with missing
-# months is left out rather than giving a mean skewed towards the months present. No
-# recomputation is needed when the season is changed.
-# When using CryoSat-2, set ArcticSeas_season = 'NDJFMA' otherwise you'll end up with missing observations
-# (because the ice thickness is not observed in summer)
-ArcticSeas_season = 'ANM'
-# -- Minimum latitude for stereographic projection: southernmost latitude shown on the
-# -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
-ArcticSeas_latcutoff =  50.
+atlas_head_title = "Arctic Seas - Sea Ice Extent and Volume"
 
 # ---------------------------------------------------------------------------- >
-# -- Arctic Seas : per-sea sea ice area / volume time series
+# -- Arctic Seas : per-sea sea ice extent / volume time series
 # -- Relies on the external script comp_seaiceindex.py from the sea_ice_diag_tools
-# -- repository, which computes, for a variable, either the area-weighted mean or
-# -- the area-weighted sum (area-integral) over each region described in a mask
-# -- netcdf file (one region = one data variable in the mask file), weighting by
-# -- the grid cell area (dxvar*dyvar) taken from a grid file.
-# --   -> applied to 'sic' with meanORsum='sum'  => actual sea ice area  per sea
-# --   -> applied to 'sit' with meanORsum='sum'  => actual sea ice volume per sea
-# -- (meanORsum='mean' instead gives the area-weighted mean concentration/thickness)
+# -- repository, which computes the area-weighted sum (area-integral) of a variable over
+# -- each region described in a mask netcdf file (one region = one data variable in the
+# -- mask file), weighting by the grid cell area (dxvar*dyvar) taken from a grid file.
+# --   -> applied to 'sic' >= ArcticSeas_extent_threshold => sea ice extent per sea
+# --   -> applied to 'sit'                                => sea ice volume per sea
 #
 # -- The sea mask file can be computed by create_mask_regions.py from the same
 # -- sea_ice_diag_tools repository, given the a grid description file holding
@@ -74,18 +51,43 @@ ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
 
 # -- Observational references, declared here rather than in datasets_setup.py
 # -- to avoid interactions with other diagnostics.
-# -- Same syntax as an entry of models in datasets_setup.py: 
-# -- a CliMAF dataset description (the project is declared in my_projects.py), 
-# -- with 'frequency' and 'ts_period' ('full' = every available date). 
-# -- Each observation is then looked up by its 'customname' in
-# -- ArcticSeas_gridfile, ArcticSeas_maskfile and ArcticSeas_variable_names exactly like
-# -- a simulation; it only needs an ArcticSeas_variable_names entry for the variables
-# -- it provides (e.g. no 'sit' for a sea ice concentration product).
-# -- Observations are plotted in black/grey with distinct line styles, and a missing
-# -- observation never counts as a missing simulation (see ArcticSeas_on_missing_simulations).
+# -- Same syntax as an entry of models in datasets_setup.py:
+# -- a CliMAF dataset description (the project is declared in my_projects.py),
+# -- with 'frequency' and 'ts_period' ('full' = every available date).
+# -- Each observation is then looked up by its 'customname' (or by its 'project' if it
+# -- has no 'customname') in ArcticSeas_gridfile, ArcticSeas_maskfile and
+# -- ArcticSeas_variable_names exactly like a simulation; only the available
+# -- variables need to be specified in ArcticSeas_variable_names (e.g. no 'sit'
+# -- for a sea ice concentration product).
+# -- Observations are plotted in black/grey with distinct line styles, and
+# -- a missing observation is simply left out of the figure: it never triggers
+# -- the error of ArcticSeas_on_missing_simulations = 'error', which removes any
+# -- figure which was expected to contain that observation
+# -- (see ArcticSeas_on_missing_simulations).
 ArcticSeas_obs = [
     dict(project='NSIDC_CDR_V6', customname='nsidc_cdr_v6', frequency='monthly', ts_period='full'),
 ]
+
+# -- Choose the season over which the time series are averaged
+# ---------------------------------------------------------------------------- >
+# -> 'ANM' for annual means (January to December), or the initials of consecutive months,
+#    possibly across the end of the year: 'DJF' (December to February), 'JJA' (June to
+#    August), 'NDJFMA', 'MJJASO', 'JASONDJFMAMJ' (July to June)... The initials must match
+#    one single run of months ('J', 'M' or 'A' alone are ambiguous).
+#    A season across the end of the year is assigned to the year of its last month
+#    (DJF 1980 = December 1979 to February 1980).
+# -> 'monthly' to plot the native monthly values.
+#
+# -- comp_seaiceindex.py always works on the monthly fields; seasonal means are computed
+# -- when plotting, from complete seasons only (all their months available): a season with
+# -- missing months is left out rather than giving a mean skewed towards the months present.
+# -- No recomputation is needed when the season is changed.
+# -- When using CryoSat-2, set ArcticSeas_season = 'NDJFMA' otherwise you'll end up with
+# -- missing observations (because the ice thickness is not observed in summer)
+ArcticSeas_season = 'ANM'
+# -- Minimum latitude for stereographic projection: southernmost latitude shown on the
+# -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
+ArcticSeas_latcutoff =  50.
 
 # -- How the observations are plotted, since their dates sometimes do not match those of
 # -- the simulations like in PICTL:
@@ -96,10 +98,10 @@ ArcticSeas_obs = [
 # --                the mean of each calendar month)
 # --   'real'    -> observations plotted at their actual dates, over ArcticSeas_obs_period
 ArcticSeas_obs_display = 'climato'
-# -- ArcticSeas_obs_period : 
+# -- ArcticSeas_obs_period :
 # --      used with 'climato' (period of the climatology) and with 'real' (period plotted)
 # --             -> 'full' (every available year)
-# --             -> 'sim' (from the first to the last year of the simulations of each figure; 
+# --             -> 'sim' (from the first to the last year of the simulations of each figure;
 # --                'full' if a figure has no simulation)
 # --             -> 'YYYY-YYYY' (years of the period, included)
 # -- Both can be set for one observation only with the keys 'obs_display' and 'obs_period'
@@ -111,12 +113,15 @@ ArcticSeas_obs_period = 'full'
 # -- Grid description file (NEMO mesh_mask-like: land-sea mask, lon/lat, cell sizes
 # -- e1t/e2t) and matching Arctic-seas mask file (one data variable (2D) per sea/region,
 # -- with a 'long_name' attribute giving the sea name ; built on demand by
-# -- ArcticSeas_tools_dir/masks/create_mask_regions.py if missing), one entry each for
-# -- every simulation in `models` (see datasets_setup.py), keyed by its 'customname'.
-# -- Simulations that share the same grid should simply repeat the same paths: the mask
-# -- is then only built once and reused.
-# -- A simulation without a 'customname' is instead keyed by its 'experiment'.
-# -- A simulation missing from these dictionaries is skipped, with a message in the log.
+# -- ArcticSeas_tools_dir/masks/create_mask_regions.py if missing), one entry for each
+# -- simulation in `models` (see datasets_setup.py), keyed by its 'customname'.
+# -- One entry for each observation.
+# -- Simulations/observations that share the same grid should simply repeat the same
+# -- paths: the mask is then only built once and reused.
+# -- A simulation without a 'customname' is instead keyed by its 'experiment', an
+# -- observation without a 'customname' by its 'project'.
+# -- A simulation/observation missing from these dictionaries is skipped, with a message
+# -- in the log.
 ArcticSeas_gridfile = {
     'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc',
     'REF1': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
@@ -134,11 +139,11 @@ ArcticSeas_maskfile = {
 ArcticSeas_dxvar = 'e1t'
 ArcticSeas_dyvar = 'e2t'
 
-# -- Where the per-sea sea ice area/volume time series computed by comp_seaiceindex.py
-# -- are cached, one sub-directory per simulation (based on its customname), one
-# -- netcdf file per variable inside. Reused across atlas runs: a simulation is only
-# -- (re-)processed by comp_seaiceindex.py if no cache exists yet, or if the
-# -- simulation now extends further in time than what is cached (i.e. it was
+# -- Where the per-sea sea ice extent/volume time series computed by comp_seaiceindex.py
+# -- are cached, one sub-directory per simulation/observation (based on its key, e.g. its
+# -- customname), one netcdf file per variable. Reused across atlas runs: a
+# -- simulation is only (re-)processed by comp_seaiceindex.py if no cache exists yet,
+# -- or if the simulation now extends further in time than what is cached (i.e. it was
 # -- lengthened since the cache was last built).
 ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 
@@ -148,18 +153,18 @@ ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
 # -- directory where the atlas is run.
 ArcticSeas_workdir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_workdir'
 
-# -- Variable names to find the sea ice concentration (sic) and the sea ice tickness (sit)
-# -- in the output files, one entry per simulation (keyed by its 'customname',
-# -- or its 'experiment' if it has none -- same key as ArcticSeas_gridfile/
-# -- ArcticSeas_maskfile). A simulation missing from this dictionary is skipped, 
-# -- with a message in the log.
+# -- Variable names to find the sea ice concentration (sic) and the sea ice thickness (sit)
+# -- in the output files, one entry per simulation/observation (keyed by its 'customname',
+# -- or, if it has none, its 'experiment' for a simulation or its 'project' for an
+# -- observation -- same key as ArcticSeas_gridfile/ArcticSeas_maskfile).
+# -- A simulation/observation missing from this dictionary is skipped, with a message in the log.
 # -- WARNING : 'sit' must be the sea ice volume per grid cell area, so that its area-weighted
 # -- sum is the sea ice volume, given either:
 # --   - as a single name, e.g. NEMO/SI3 'sivolu' ("Sea-ice volume per area"),
 # --   - or as a list of names whose product is used, e.g. ['sithic', 'siconc']: the thickness
 # --     of the ice-covered part only ('sithic', "Sea-ice thickness") multiplied by the sea ice
-# --     concentration; 'sithic' alone would count every grid cell as fully ice-covered and
-# --     overestimate the volume.
+# --     concentration ('siconc', "Sea-ice concentration"); 'sithic' alone would count every
+# --     grid cell as fully ice-covered and overestimate the volume.
 # -- The variables of a product must have exactly the same dates. A concentration in % is
 # -- detected and turned into a fraction if it has the same name as the 'sic' entry of the
 # -- same simulation. Where the concentration is 0, the product is 0 even if the thickness
@@ -171,15 +176,12 @@ ArcticSeas_variable_names = {
     'nsidc_cdr_v6': {'sic': 'cdr_seaice_conc_monthly'},
 }
 
-# -- 'sum'  -> area-weighted sum (area-integral): sic gives the actual sea ice
-# --           area, sit gives the actual sea ice volume, in each sea
-# -- 'mean' -> area-weighted mean: sic gives the mean sea ice concentration,
-# --           sit gives the mean sea ice thickness, in each sea
-ArcticSeas_meanORsum = 'sum'
+# -- Sea ice extent : area of the grid cells where the sea ice concentration (as a fraction)
+# -- is above or equal to this threshold (0.15 by default, i.e. 15%)
+ArcticSeas_extent_threshold = 0.15
 
 # -- Number of time steps read at once when processing the data (in comp_seaiceindex.py and
-# -- when checking whether sic is in % and converting it into a fraction), to avoid filling
-# -- the memory with long model series:
+# -- when checking whether sic is in %), to avoid filling the memory with long model series:
 # -- e.g. 120 = 10 years of monthly data at a time. Requires dask; set to None to read
 # -- each field entirely at once.
 ArcticSeas_chunk_time = 120

@@ -7,7 +7,7 @@
 # --            using the CliMAF html toolbox (start_line, cell, close_table... )                         - |
 # --            to create the Arctic Seas atlas page                                                      - |
 # --                                                                                                      - |
-# --      Time series of sea ice area (sic) and sea ice volume (sit) computed as an                       - |
+# --      Time series of sea ice extent (sic) and sea ice volume (sit) computed as an                     - |
 # --      area-weighted sum over each Arctic sea, using the external script comp_seaiceindex.py           - |
 #         (sea_ice_diag_tools repository) applied to a mask file describing the individual seas and       - |
 #         a grid file giving the cell areas. If not provided by the user, the mask file for the           - |
@@ -44,30 +44,32 @@ def sanitize(name):
 
 
 def model_label_of(wmodel):
-    """Identifier for a simulation, used to look it up in the ArcticSeas_*
+    """Identifier for a simulation or an observation, used to look it up in the ArcticSeas_*
     per-simulation dictionaries (params_ArcticSeas.py) and in log/error messages: its
-    customname if defined, else experiment if defined, else unknown simulation ."""
-    return wmodel.get('customname', wmodel.get('experiment', 'unknown simulation'))
+    customname if defined, else its experiment if defined (simulations), else its project if
+    defined (observations, which usually have no experiment), else unknown dataset."""
+    return wmodel.get('customname', wmodel.get('experiment', wmodel.get('project', 'unknown dataset')))
 
 
-# -- Generic name for the variables on which the average or sum should be
-# -- computed : 'sic' -> sea ice area, 'sit' -> sea ice volume.
+# -- Generic name for the variables on which the area-weighted sum should be
+# -- computed : 'sic' -> sea ice extent, 'sit' -> sea ice volume.
 # -- Fixed names (not a user parameter). A correspondance is set in 
 # -- params_ArcticSeas.py to find actual netcdf variable for a given
 # -- simulation through ArcticSeas_variable_names.
 ARCTIC_SEAS_VARIABLES = ['sic', 'sit']
 
 # -- File names for the cache files (stored in one directory per experiment)
-# -- sia/siv = sea ice area/volume (area-weighted sum)
-# -- sic/sit = sea ice concentration/thickness (area-weighted mean)
+# -- sie/siv = sea ice extent/volume (area-weighted sum)
 # -- The cached series are always monthly (seasonal means are computed when plotting,
 # -- see seasonal_mean_complete_years)
 CACHE_VARIABLE_LABELS = {
-    ('sic', 'sum'): 'sia',
-    ('sit', 'sum'): 'siv',
-    ('sic', 'mean'): 'sic',
-    ('sit', 'mean'): 'sit',
+    'sic': 'sie',
+    'sit': 'siv',
 }
+
+# -- Attribute of each sea, in the output files of comp_seaiceindex.py, holding the total area
+# -- of the sea on the grid of the simulation/observation (in m2)
+SEA_AREA_ATTRIBUTE = 'total_area_m2'  # at the time of writing
 
 # -- (color, linestyle) for the observations (ArcticSeas_obs), so that
 # -- they stand out from the simulations (colors of SIM_COLORS, solid lines)
@@ -127,7 +129,7 @@ SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+
 
 
 def report_failed_comput(message_failed_comput, message):
-    """Prints a message (why a diagnostic (sea ice area/volume) could not be computed from
+    """Prints a message (why a diagnostic (sea ice extent/volume) could not be computed from
     a simulation or observation) in the log and stores it in the list of messages named 
     message_failed_comput, to be shown on the atlas page. A message already
     in the list (e.g. same missing grid file for sic and sit) is not added twice."""
@@ -178,16 +180,15 @@ def read_sea_warnings(cache_file):
     return sea_warnings
 
 
-def sea_areas_text(sea, label_groups, seaindex_files, area_attr, area_divisor):
+def sea_areas_text(sea, label_groups, seaindex_files):
     """ From an input sea (ex: centrarc), and for groups of experiment and observation
     labels (typically customname) sharing the same grid and sea mask file, this function returns
     a line to be printed later on the html atlas page, listing the area of that sea once per
     group (e.g. 'REF1, REF3: 1424; nsidc_cdr_v6: 1376'): the area is not necessarily the same
     from one grid to another, but it is the same for all the datasets of a group. It needs a
     dictionary containing for each variable and each label, its cache file : seaindex_files.
-    It also needs the name of the attribute in the cache file in which the sea area is stored :
-    'total_area_m2' or 'mean_cell_area_m2' in the outputs from comp_seaiceindex.py at the
-    time of writing. area_divisor allows to convert to a printable unit. """
+    The sea area is read in the SEA_AREA_ATTRIBUTE attribute of the cache file (in m2) and
+    returned in thousand km2. """
     parts = []
     # We define a list which will hold the parts of the final line to print
     for labels in label_groups:
@@ -206,11 +207,11 @@ def sea_areas_text(sea, label_groups, seaindex_files, area_attr, area_divisor):
                 if outfile is None or not os.path.exists(outfile):
                     continue # If we don't have any cache file, we go to next variable
                 with xr.open_dataset(outfile) as out_ds:
-                    if sea in out_ds.data_vars and area_attr in out_ds[sea].attrs:
-                    # We look for the area_attr attribute in the cache file we found
+                    if sea in out_ds.data_vars and SEA_AREA_ATTRIBUTE in out_ds[sea].attrs:
+                    # We look for the SEA_AREA_ATTRIBUTE attribute in the cache file we found
                     # It should contain the area of the sea on that grid
-                        area = float(out_ds[sea].attrs[area_attr]) / area_divisor
-                    # area_divisor is to convert to Thousand km2 or km2
+                        area = float(out_ds[sea].attrs[SEA_AREA_ATTRIBUTE]) / 1e9
+                    # / 1e9 converts m2 into thousand km2
                 if area is not None:
                     break
                 # If we found the area of the sea for one variable, we skip the next variable
@@ -421,7 +422,7 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
         da = seasonal_mean_complete_years(da, months)
         # da now holds one value per complete season, along a 'year' dimension of integer years
     time_dim = da.dims[0]
-    # time_dim is the name of the time dimension from the input da file (sea ice area/volume)
+    # time_dim is the name of the time dimension from the input da file (sea ice extent/volume)
     years = da[time_dim] if seasonal else da[time_dim].dt.year
     # years holds only the years of each time step (repeated 12 times per year for monthly data)
     if clim_period != 'full':
@@ -458,7 +459,7 @@ if do_ArcticSeas_timeseries:
     # 
     # ==> -- Open the section and an html file - Function from CLIMAF library
     # -----------------------------------------------------------------------------------------
-    index += section("Sea ice area and volume per Arctic sea", level=4)
+    index += section("Sea ice extent and volume per Arctic sea", level=4)
     #
     # ==> -- Control the size of the thumbnail -> thumbN_size
     # Note: thumbnail_size is None in share/default/default_atlas_settings.py, and can be set
@@ -490,6 +491,10 @@ if do_ArcticSeas_timeseries:
     # ==> -- Number of time steps read at once when processing the data (None: all at once)
     # -----------------------------------------------------------------------------------------
     chunk_time = ArcticSeas_chunk_time if 'ArcticSeas_chunk_time' in dir() else None
+    #
+    # ==> -- Concentration threshold (fraction) above which a grid cell counts in the sea ice extent
+    # -----------------------------------------------------------------------------------------
+    extent_threshold = ArcticSeas_extent_threshold if 'ArcticSeas_extent_threshold' in dir() else 0.15
     #
     # Working directory (ArcticSeas_workdir in params_ArcticSeas.py, or ArcticSeas_workfiles
     # under the execution directory by default), created if non-existant already
@@ -710,7 +715,7 @@ if do_ArcticSeas_timeseries:
             # ==> -- comp_seaiceindex.py and update the cache
             # -----------------------------------------------------------------------------------------
             seaindex_files = dict()
-            # seaindex_files is defined to contain the file names holding the sea ice area / volume  
+            # seaindex_files is defined to contain the file names holding the sea ice extent / volume  
             # organized by simulation and variable
             model_labels = [] # list of model and observations labels (i.e. customnames by default)
             message_failed_comput = []
@@ -771,8 +776,8 @@ if do_ArcticSeas_timeseries:
                         continue
                         # We skip to next model/obs here if period is not available = no input data found
 
-                    # Build a name for the output files (sea ice volume and sea ice area)
-                    cache_label = CACHE_VARIABLE_LABELS[(variable, ArcticSeas_meanORsum)]
+                    # Build a name for the output files (sea ice volume and sea ice extent)
+                    cache_label = CACHE_VARIABLE_LABELS[variable]
                     cache_file = os.path.join(ArcticSeas_cache_dir, sanitize(model_label), cache_label + '.nc')
                     # Finding the last simulation/observation year both in the input and output files
                     simulation_latest_year = latest_year_of_wmodel(wmodel)
@@ -855,7 +860,7 @@ if do_ArcticSeas_timeseries:
                                '--grid', gridfile,
                                '--dxvar', ArcticSeas_dxvar,
                                '--dyvar', ArcticSeas_dyvar,
-                               '--meanORsum', ArcticSeas_meanORsum,
+                               '--meanORsum', 'sum',
                                '--out', cache_file]
                         if chunk_time:
                             cmd += ['--chunk_time', str(chunk_time)]
@@ -863,6 +868,10 @@ if do_ArcticSeas_timeseries:
                             # Product (e.g. sithic x siconc): no ice volume (0) where the
                             # concentration is 0, even if the thickness is not defined (NaN) there
                             cmd += ['--zero_if_any_zero']
+                        if variable == 'sic':
+                            # Sea ice extent: area of the grid cells where the concentration (as a
+                            # fraction, after --scale) reaches extent_threshold (0.15 by default)
+                            cmd += ['--threshold', str(extent_threshold)]
                         # -- Output captured (and echoed to the log) to keep its 'missing values'
                         # -- warnings next to the cache file, so that they are shown on the atlas
                         # -- page also when the cache is reused later
@@ -928,7 +937,7 @@ if do_ArcticSeas_timeseries:
                     index += start_line('<font color="red">Warning - ' + message + '</font>')
                     index += close_line() + close_table()
 
-            # ==> -- Error messages explaining why sea ice area/volume could not be computed for one
+            # ==> -- Error messages explaining why sea ice extent/volume could not be computed for one
             # ==> -- or more simulations or observations (these are also printed in the log)
             # -----------------------------------------------------------------------------------------
             if message_failed_comput:
@@ -937,24 +946,16 @@ if do_ArcticSeas_timeseries:
                                     '<br>Not computed - '.join(message_failed_comput) + '</font>')
                 index += close_line() + close_table()
 
-            # ==> -- Build one table row per sea; for each sea, one plot for the ice area (sic) and
+            # ==> -- Build one table row per sea; for each sea, one plot for the ice extent (sic) and
             # ==> -- one for the ice volume (sit), showing all the simulations and observations
             # -----------------------------------------------------------------------------------------
             index += open_table()
-            if ArcticSeas_meanORsum == 'sum':
-                variable_plot_specs = {
-                    'sic': dict(title='Sea ice area',
-                                ylabel='Sea ice area (Millions km2)'),
-                    'sit': dict(title='Sea ice volume',
-                                ylabel='Sea ice volume (Thousand km3)'),
-                }
-            else:
-                variable_plot_specs = {
-                    'sic': dict(title='Sea ice concentration',
-                                ylabel='Area-weighted mean sea ice concentration (%)'),
-                    'sit': dict(title='Sea ice thickness',
-                                ylabel='Area-weighted mean sea ice thickness (m)'),
-                }
+            variable_plot_specs = {
+                'sic': dict(title='Sea ice extent',
+                            ylabel='Sea ice extent (Millions km2)'),
+                'sit': dict(title='Sea ice volume',
+                            ylabel='Sea ice volume (Thousand km3)'),
+            }
             warnings_per_sea = dict()  # sea -> [ 'model_label (diagnostics): message', ...]
             # Warning messages about missing data are reorganized to be gathered per sea
             # instead of per variable and experiment/observation (initially in a text file
@@ -973,7 +974,7 @@ if do_ArcticSeas_timeseries:
                             '%s (%s): %s' % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'], message))
                             # (variable missing from variable_plot_specs -> 'unknown diagnostics')
                             # The final message to be printed below the sea title will be :
-                            # model_label (Sea ice area) : warning message about missing values
+                            # model_label (Sea ice extent) : warning message about missing values
                             # model_label (Sea ice volume) : warning message about missing values
                             # etc ... for any number of model_label which has missing values in this sea
                     # -- Repeated dates (overlapping input files) are removed silently before plotting
@@ -995,13 +996,9 @@ if do_ArcticSeas_timeseries:
                                     '%s (%s): %d repeated dates with different values, first value kept'
                                     % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'],
                                        n_removed))
-            # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file, the
-            # -- total area of the sea ('sum') or the mean grid cell area within the sea ('mean')
-            # -- on the grid of that simulation/observation
-            if ArcticSeas_meanORsum == 'sum':
-                area_attr, area_divisor, area_title = 'total_area_m2', 1e9, 'Sea area (Thousand km2)'
-            else:
-                area_attr, area_divisor, area_title = 'mean_cell_area_m2', 1e6, 'Mean grid cell area (km2)'
+            # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file
+            # -- (SEA_AREA_ATTRIBUTE), the total area of the sea on the grid of that
+            # -- simulation/observation.
             # -- The sea areas depend only on the grid and sea mask: they are listed once per group
             # -- of simulations/observations sharing the same mask file
             # -- available_masks contain : { maskfile : (gridfile, group_of_labels) , ... }, one entry
@@ -1012,8 +1009,8 @@ if do_ArcticSeas_timeseries:
                 sea_name = sea_display_names.get(sea, sea)
                 # If sea_display_names is not defined for sea, sea_name is sea
                 # The long_name attributes of seas were gathered earlier in sea_diplay_names
-                title = sea_name + '<br><span style="font-size:70%">' + area_title + ': ' + \
-                    sea_areas_text(sea, area_label_groups, seaindex_files, area_attr, area_divisor) + '</span>'
+                title = sea_name + '<br><span style="font-size:70%">Sea area (Thousand km2): ' + \
+                    sea_areas_text(sea, area_label_groups, seaindex_files) + '</span>'
                     # sea_areas_text is a function defined earlier which returns a line with 
                     # group of model_labels : area_of_the_sea; group of model_labels area_of_the_sea, etc ...
                 if sea in warnings_per_sea:
@@ -1054,11 +1051,10 @@ if do_ArcticSeas_timeseries:
                         # -- it checks that the number of expected months in a season is indeed there
                         # -- only the first value for each date is kept (a warning was set above, below the
                         # -- sea title, if the repeated values were different)
-                        if variable in ('sic', 'sit') and ArcticSeas_meanORsum == 'sum':
-                            # -- sea ice area (m^2 -> millions km^2) or volume (m^3 ->
-                            # -- thousand km^3), to match the plot's ylabel; purely local
-                            # -- to this plot, the cache file on disk is left untouched
-                            da = da / 1e12
+                        da = da / 1e12
+                        # -- sea ice extent (m^2 -> millions km^2) or volume (m^3 ->
+                        # -- thousand km^3), to match the plot's ylabel; purely local
+                        # -- to this plot, the cache file on disk is left untouched
                         if model_label in obs_labels:
                             # All observational data have been treated as model data and their cachefile are also
                             # stored in seaindex_files so that if model_label is actually an obs_label, da needs 
