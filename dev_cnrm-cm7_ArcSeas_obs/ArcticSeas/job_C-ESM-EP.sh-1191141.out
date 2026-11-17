@@ -1,0 +1,106 @@
+at CNRM
+Tue Nov 17 11:27:20 CET 2026
+$comparison
+dev_cnrm-cm7_ArcSeas_obs
+$component
+ArcticSeas
+$WD
+/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+$cesmep_frontpage
+../
+/var/spool/slurm/slurmd.spool/job1191141/slurm_script: line 109: export: `=': not a valid identifier
+/var/spool/slurm/slurmd.spool/job1191141/slurm_script: line 109: export: `1': not a valid identifier
+Tue Nov 17 11:27:20 CET 2026
+PATH /cnrm/est/COMMON/climaf/climaf_3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PYTHONPATH /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules:/cnrm/est/COMMON/climaf/climaf_3.0:/cnrm/est/COMMON/climaf/add_packages/lib/python3.12/site-packages/
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+CESMEP_CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Running main_C-ESM-EP.py for season  with parameter file 
+Using CliMAF cache = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !
+python => 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+---
+Required softwares to run CliMAF => you are using the following versions/installations:
+rootmainpath =  /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+-- Use diagnostics_file = /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/diagnostics_ArcticSeas.py
+==> ----------------------------------- #
+==> Working on models:
+==> ----------------------------------- #
+  
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1870-1899
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  piC-LR_633_oas5_x2553_trip_t0d
+  customname =  CNRM-CM6.2 (runoffs corr)
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4
+  --
+  --
+  project =  N4CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1920-1949
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  AOGCM_drv632_NEMO422_LR_t7
+  customname =  REF1
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  2020-2049
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  CM67_N4_3_REF3
+  customname =  REF3
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+==> ----------------------------------- #
+==> Against reference:
+==> ----------------------------------- #
+  
+  reference = default
+  --> you are using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)
+  --> you can setup you own references in custom_obs_dict.py for each variable independently
+index_atlas in chtml.py =  /cnrm/ioga/Users/guemas/NO_SAVE//C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs_guemas/ArcticSeas/index_atlas
+index_atlas in chtml.py =  /cnrm/ioga/Users/guemas/NO_SAVE//C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs_guemas/ArcticSeas/index_atlas
+index_atlas in chtml.py =  /cnrm/ioga/Users/guemas/NO_SAVE//C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs_guemas/ArcticSeas/index_atlas
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'siconc'}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'siconc'}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'siconc'}
+dat_dict before .resolve  {'project': 'NSIDC_CDR_V6', 'customname': 'nsidc_cdr_v6', 'frequency': 'monthly', 'ts_period': 'full', 'variable': 'cdr_seaice_conc_monthly'}
+ArcticSeas: no ArcticSeas_variable_names entry for cryosat2_rdeft4 / sic, skipping
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'sivolu'}
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'sivolu'}
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'sivolu'}
+ArcticSeas: no ArcticSeas_variable_names entry for nsidc_cdr_v6 / sit, skipping
+dat_dict before .resolve  {'project': 'CRYOSAT2_RDEFT4', 'customname': 'cryosat2_rdeft4', 'frequency': 'monthly', 'ts_period': 'full', 'variable': 'sea_ice_thickness'}
+Traceback (most recent call last):
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../main_C-ESM-EP.py", line 263, in <module>
+    exec(open(diagnostics_file).read())
+  File "<string>", line 785, in <module>
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules/CM_atlas/time_manager.py", line 186, in get_period_manager
+    req = ds(**req_dict).explore('resolve')
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 1046, in explore
+    raise Climaf_Classes_Error(" ".join(error_msg))
+climaf.utils.Climaf_Classes_Error: 'Periods with holes are not handled: [201010-201104, 201110-201204, 201210-201304, 201310-201404, 201410-201504, 201510-201604, 201610-201704, 201710-201804, 201810-201904, 201910-202004, 202010-202104, 202110-202204, 202210-202304, 202310-202404, 202410-202503]'
