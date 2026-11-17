@@ -805,7 +805,15 @@ if do_ArcticSeas_timeseries:
                     # -- get_period_manager() with diag='ts' is what actually
                     # -- resolves ts_period into a concrete 'period' (date1-date2) usable by ds()
                     # -- period is included in the wmodel dictionary by the following line
-                    wmodel = get_period_manager(wmodel, diag='ts')
+                    try:
+                        wmodel = get_period_manager(wmodel, diag='ts')
+                    except Exception as e:
+                        # -- e.g. CliMAF error 'Periods with holes are not handled' for a series
+                        # -- with missing files: this simulation/observation is skipped instead
+                        # -- of stopping the whole atlas
+                        report_failed_comput(message_failed_comput, "files not usable for %s / %s (variable %s), "
+                                             "skipping -> %s" % (model_label, variable, real_variable_text, e))
+                        continue
 
                     # -- when it finds no file for a variable/simulation, get_period_manager()
                     # -- prints 'Error in get_period_manager => No File found for ...'
