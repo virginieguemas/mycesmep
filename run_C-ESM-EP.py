@@ -576,6 +576,8 @@ for component in job_components:
         #variables += ',cesmep_frontpage=' + frontpage_address
         variables += ',cesmep_frontpage=../'
         variables += ',CESMEP_CLIMAF_CACHE=' + cesmep_climaf_cache
+        # -- where the atlas are written ('in' or 'out', see locations.py), passed on to the job
+        variables += ',CESMEP_ATLAS_LOCATION=' + os.getenv('CESMEP_ATLAS_LOCATION', 'in')
         #
         mail = ''
         if email is not None:

@@ -47,9 +47,25 @@ if atCNRM:
     # This value is used as 'pathwebspace' in run_C-ESM-EP.py
     # It will be complemented with 'C-ESM-EP/'
     # This location can be shared among users, as username will be added at end of data path
-    #path_to_cesmep_output_rootdir = '/cnrm/ioga/Users/' + username + '/NO_SAVE/'
-    path_to_cesmep_output_rootdir = '/sx/d0/images/' + username + '/atlas/'
-    
+    #
+    # -- cesmep_atlas_location chooses where the atlas are written:
+    # --   'in'  -> /cnrm/ioga/Users/<username>/NO_SAVE/ (visible from the compute nodes)
+    # --   'out' -> /sx/d0/images/<username>/atlas/ (to look at the atlas from outside)
+    # -- It is given by the environment variable CESMEP_ATLAS_LOCATION ('in' if not set), e.g.:
+    # --   CESMEP_ATLAS_LOCATION=out python run_C-ESM-EP.py <comparison> <components>
+    # -- run_C-ESM-EP.py passes it on to the jobs, so that they write the atlas at the same place
+    # -- WARNING: in November 2026, /sx was not visible from the compute nodes (aneto), where the
+    # -- jobs run: with 'out', the jobs failed with "Permission denied: '/sx'"
+    cesmep_atlas_location = os.getenv('CESMEP_ATLAS_LOCATION', 'in')
+    cesmep_output_rootdirs = {
+        'in':  '/cnrm/ioga/Users/' + username + '/NO_SAVE/',
+        'out': '/sx/d0/images/' + username + '/atlas/',
+    }
+    if cesmep_atlas_location not in cesmep_output_rootdirs:
+        raise ValueError("cesmep_atlas_location must be 'in' or 'out' in locations.py, not '%s'"
+                         % cesmep_atlas_location)
+    path_to_cesmep_output_rootdir = cesmep_output_rootdirs[cesmep_atlas_location]
+
     # Describe the rendering method; if it is http, must match the workspace and the adress for http server
     # For now, at CNRM, we do not use http:// but file:// for atlas rendering 
     root_url_to_cesmep_outputs = 'file://'+path_to_cesmep_output_rootdir
