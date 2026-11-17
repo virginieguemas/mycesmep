@@ -47,8 +47,8 @@ if atCNRM:
     # This value is used as 'pathwebspace' in run_C-ESM-EP.py
     # It will be complemented with 'C-ESM-EP/'
     # This location can be shared among users, as username will be added at end of data path
-    path_to_cesmep_output_rootdir = '/cnrm/ioga/Users/' + username + '/NO_SAVE/'
-    #path_to_cesmep_output_rootdir = '/sx/d0/images/' + username + '/atlas/'
+    #path_to_cesmep_output_rootdir = '/cnrm/ioga/Users/' + username + '/NO_SAVE/'
+    path_to_cesmep_output_rootdir = '/sx/d0/images/' + username + '/atlas/'
     
     # Describe the rendering method; if it is http, must match the workspace and the adress for http server
     # For now, at CNRM, we do not use http:// but file:// for atlas rendering 
