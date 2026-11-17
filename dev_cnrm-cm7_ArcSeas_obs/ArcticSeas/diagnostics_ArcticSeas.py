@@ -30,7 +30,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-# -- Init html index - Example from MyOwnDiag - fonction from CLIMAF library 
+# -- Init html index - Example from MyOwnDiag - fonction from CLIMAF library
 # -----------------------------------------------------------------------------------
 index = header(atlas_head_title, style_file=style_file)
 
@@ -53,7 +53,7 @@ def model_label_of(wmodel):
 
 # -- Generic name for the variables on which the area-weighted sum should be
 # -- computed : 'sic' -> sea ice extent, 'sit' -> sea ice volume.
-# -- Fixed names (not a user parameter). A correspondance is set in 
+# -- Fixed names (not a user parameter). A correspondance is set in
 # -- params_ArcticSeas.py to find actual netcdf variable for a given
 # -- simulation through ArcticSeas_variable_names.
 ARCTIC_SEAS_VARIABLES = ['sic', 'sit']
@@ -85,7 +85,7 @@ SIM_COLORS = ['tab:blue', 'tab:orange', 'tab:green', 'tab:red', 'tab:purple',
 
 
 def latest_year_of_wmodel(wmodel):
-    """Latest year covered by an experiment or observation described in wmodel dictionary after its 
+    """Latest year covered by an experiment or observation described in wmodel dictionary after its
     period has been detected by get_period_manager. This function relies on build_period_str()."""
     # build_period_str return a chain of characters holding the first and last dates
     # then re.findall(r'\d{4}' finds the groups of 4 consecutive digits, months are dropped
@@ -130,7 +130,7 @@ SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+
 
 def report_failed_comput(message_failed_comput, message):
     """Prints a message (why a diagnostic (sea ice extent/volume) could not be computed from
-    a simulation or observation) in the log and stores it in the list of messages named 
+    a simulation or observation) in the log and stores it in the list of messages named
     message_failed_comput, to be shown on the atlas page. A message already
     in the list (e.g. same missing grid file for sic and sit) is not added twice."""
     print("ArcticSeas: " + message)
@@ -139,20 +139,20 @@ def report_failed_comput(message_failed_comput, message):
 
 
 def warnings_file_of(cache_file):
-    """Defines a filename for the text file, next to a per-sea cache file, holding the 
-    'missing values' warnings issued by comp_seaiceindex.py when it computed that cache 
+    """Defines a filename for the text file, next to a per-sea cache file, holding the
+    'missing values' warnings issued by comp_seaiceindex.py when it computed that cache
     file (one per line, may be empty).
     This file allows to store information that will be printed on the Atlas html page later."""
     return cache_file + '.warnings'
 
 
 def write_sea_warnings(cache_file, stderr):
-    """From the standard error of comp_seaiceindex.py, all the 'missing values' warnings 
+    """From the standard error of comp_seaiceindex.py, all the 'missing values' warnings
     related to a cache_file are stored into a text file named cache_file.warnings."""
     with open(warnings_file_of(cache_file), 'w') as f:
     # A cache_file_name.warnings text file is opened, overwritten if there was one before
         for match in SEA_WARNING_PATTERN.finditer(stderr):
-        # We find all occurrences (finditer) of the warning message about missing values 
+        # We find all occurrences (finditer) of the warning message about missing values
         # (SEA_WARNING_PATTERN) in a sea in the standard error output of comp_seaiceindex.py
             f.write(match.group(0) + '\n')
             # match.group(0) is the full error message output by comp_seaiceindex.py without
@@ -160,7 +160,7 @@ def write_sea_warnings(cache_file, stderr):
 
 
 def read_sea_warnings(cache_file):
-    """Builds a dictionary holding for each sea name as a key : the 'missing values' warning 
+    """Builds a dictionary holding for each sea name as a key : the 'missing values' warning
     message, as kept by write_sea_warnings."""
     sea_warnings = dict()
     if os.path.exists(warnings_file_of(cache_file)):
@@ -170,14 +170,23 @@ def read_sea_warnings(cache_file):
                 # Each line in this file should correspond with a sea with missing values
                 match = SEA_WARNING_PATTERN.search(line)
                 # SEA_WARNING_PATTERN is the generic error message from comp_seaiceindex
-                # match is a Match object holding the full error message with the actual sea 
-                # name in match.group(0) and the sea name in match.group(1) because a set of 
+                # match is a Match object holding the full error message with the actual sea
+                # name in match.group(0) and the sea name in match.group(1) because a set of
                 # parenthesis was included in SEA_WARNING_PATTERN to be able to isolate that
                 # sea name
                 if match:
                     sea_warnings[match.group(1)] = match.group(0)
                     # If we find an occurrence, we add an element to the dictionary
     return sea_warnings
+
+
+def is_daily(wmodel):
+    """True if the dataset described by the dictionary wmodel (datasets_setup.py or ArcticSeas_obs)
+    holds daily data, which this atlas does not handle yet: 'daily' (or 'day') as 'frequency' or
+    'ts_frequency', or a CMIP table name containing 'day' (e.g. 'SIday')."""
+    frequencies = [str(wmodel.get(key, '')).lower() for key in ('frequency', 'ts_frequency')]
+    return any(frequency in ('daily', 'day') for frequency in frequencies) or \
+        'day' in str(wmodel.get('table', '')).lower()
 
 
 def covers_sea(obs_seas, label, sea):
@@ -253,8 +262,8 @@ def chunked_in_time(da, chunk_time):
 
 def percent_scale(datafile, netcdf_variable, chunk_time):
     """Scale factor turning the sea ice concentration netcdf_variable of datafile into a
-    fraction (0-1). This scale factor will be needed for comp_seaiceindex.py through --scale: 
-    0.01 if the concentration is published as a percentage (0-100, detected by a maximum above 
+    fraction (0-1). This scale factor will be needed for comp_seaiceindex.py through --scale:
+    0.01 if the concentration is published as a percentage (0-100, detected by a maximum above
     1.5), 1 otherwise. The field is read by pieces of chunk_time time steps (see chunked_in_time)."""
     with xr.open_dataset(datafile) as dataset:
         field = chunked_in_time(dataset[netcdf_variable], chunk_time)
@@ -266,9 +275,9 @@ MONTH_INITIALS = 'JFMAMJJASOND'
 
 
 def season_months(season):
-    """Returns a list of numbers from 1 to 12 indicating the position in the year of each month 
+    """Returns a list of numbers from 1 to 12 indicating the position in the year of each month
     in the argument season, in the order they appear in the argument season, except for
-    'ANM' which returns [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] (ANM = annual means for 
+    'ANM' which returns [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] (ANM = annual means for
     consistency with the other diagnostics of CESMEP). season can be across the
     end of the year: 'DJF' -> [12, 1, 2], 'JJA' -> [6, 7, 8], 'NDJFMA' -> [11, 12, 1, 2, 3, 4],
     'JASONDJFMAMJ' -> July to June. The initials must match one single run of consecutive
@@ -282,17 +291,17 @@ def season_months(season):
         # The raise ValueError allows to send an error message to the main script which will
         # capture it and print in the log that the season requested by the user was not
         # understood and annual means will be used instead
-    # starts holds all possible starting months of 'season' from O for January to 11 for 
+    # starts holds all possible starting months of 'season' from O for January to 11 for
     # December (0 to 11 to be python positions in MONTH_INITIALS - different from the
     # months that will be output and range between 1 and 12)
-    # Initially, every month is a possible start; then, letter by letter of 'season', we 
+    # Initially, every month is a possible start; then, letter by letter of 'season', we
     # only keep those whose i-th following month has the i-th letter
     # of season as initial ((start + i) % 12 goes on from December to January).
     # At the end, starts should hold a single value, but it can hold several ('J', 'M' or 'A'
     # alone: ambiguous) or none (initials not following each other in the calendar)
     #
-    starts = list(range(12))              
-         # initially every month from J to D could be the beginning of 'season'                                        
+    starts = list(range(12))
+         # initially every month from J to D could be the beginning of 'season'
     for i in range(len(season)):          # i-th letter of season
         kept = []
         for start in starts:              # possible starting months still left
@@ -302,7 +311,7 @@ def season_months(season):
             # Then we find all occurrences of letter 1 of 'season' right after
             # an occurrence of letter 0 of 'season' within MONTH_INTIALS and so on
             # Crossing the end of the year is allowed thanks to % 12
-                kept.append(start)        
+                kept.append(start)
         starts = kept
     if len(starts) != 1:
         # We should end up with only one possibility as a first month for 'season'
@@ -341,7 +350,7 @@ def without_duplicate_dates(da):
     # first == last matches the values date by date and returns an array of True/False if values
     # are the same/different for each date, if first and last both have NaN for a given
     # date, this first test would return False, hence we need a second test to check whether
-    # both are NaN with isnull 
+    # both are NaN with isnull
     # we obtain an array of True / False if values are the same (including both NaN) / different
     # then .all() returns True if all values of this array are True
     # we change the True / False result from an array to a simple boolean with the bool function
@@ -352,7 +361,7 @@ def without_duplicate_dates(da):
 def seasonal_mean_complete_years(da, months):
     """From a monthly time series data array da (time as first dimension), and a
     list of calendar months (between 1 and 12) within the season, this function computes
-    seasonal averages and returns a time series in which the time dimension holds one 
+    seasonal averages and returns a time series in which the time dimension holds one
     value per year, along a 'year' dimension (integer years). A season with missing months
     (start/end of a series, data gap) is dropped rather than giving a mean skewed towards
     the months present. A season across the end of the year (e.g. DJF) is assigned to the
@@ -374,14 +383,14 @@ def seasonal_mean_complete_years(da, months):
     # True/False : if a month is before January in the season, its year will be shifted to next
     # so as to be averaged in the correct season
     season_year = xr.where(in_next_year, date_year + 1, date_year).rename('year')
-    # Year of the season of each da value: year + 1 for the months coming before January 
+    # Year of the season of each da value: year + 1 for the months coming before January
     valid_months = da.notnull().groupby(season_year).sum()
-    # season_year is the key to gather data to be averaged together : same season_year, same average 
+    # season_year is the key to gather data to be averaged together : same season_year, same average
     # valid_months is the number of months in a season which are not NaN/Inf/None - a time series
     # as long as the seasonal time series computed below and which discard the NaN/Ind/None in its average
     seasonal = da.groupby(season_year).mean()
     return seasonal.where(valid_months == len(months), drop=True)
-    # We drop all seasonal means which were computed from less months than the total number of months 
+    # We drop all seasonal means which were computed from less months than the total number of months
     # in the input argument months
 
 
@@ -407,7 +416,7 @@ def plotted_series(da, months, period='full'):
         first, last = [int(year) for year in period.split('-')]
         # We get the first and last year of the period to be plotted
         years = da[time_dim] if seasonal else da[time_dim].dt.year
-        # Year of each value (repeated 12 times per year for monthly data) 
+        # Year of each value (repeated 12 times per year for monthly data)
         da = da.where((years >= first) & (years <= last), drop=True)
         # We select the data within this period
     return da[time_dim].values, da.values
@@ -418,13 +427,13 @@ def plotted_series(da, months, period='full'):
 
 def obs_climatology_curve(da, clim_period, months, sim_times):
     """Computes a climatology of an observed time series da (time as first dimension) over
-    clim_period ('full' or 'YYYY-YYYY') and repeats it along the time dimension sim_times 
+    clim_period ('full' or 'YYYY-YYYY') and repeats it along the time dimension sim_times
     of the experiments. For annual or seasonal means, a single mean value is repeated each
     year. For monthly climatologies, the mean of each calendar month is repeated in cycles.
     The input argument months is the list of calendar months of the season (obtained by
-    season_months), or None for monthly values (for ArcticSeas_season = 'monthly'). 
-    The output is a tupple : 
-    (values along sim_times, first year, last year of the climatology), or None if no 
+    season_months), or None for monthly values (for ArcticSeas_season = 'monthly').
+    The output is a tupple :
+    (values along sim_times, first year, last year of the climatology), or None if no
     observation falls within clim_period.
     da is a monthly series: if months is given, its seasonal means are first computed from
     complete seasons only (using seasonal_mean_complete_years)."""
@@ -453,21 +462,21 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
     else:
         monthly_clim = da.groupby(time_dim + '.month').mean().reindex(month=range(1, 13))
         # time_dim.month is the key to gather data by month for groupby to average.
-        # If some months are never observed (ex: summer months for CryoSat), 
+        # If some months are never observed (ex: summer months for CryoSat),
         # reindex adds those missing months with a NaN
         sim_months = xr.DataArray(sim_times, dims='doesnotmatter').dt.month
         # sim_times is a numpy array of datetime64 values that needs to be converted
         # to an Xarray so that we can use .dt.month to pick the month of each point
         # on the time axis to build sim_months
         values = monthly_clim.sel(month=sim_months).values
-        # Knowing the month of each point on the time axis (in sim_months), we can 
+        # Knowing the month of each point on the time axis (in sim_months), we can
         # select the correct monthly value from the monthly climatology monthly_clim
         # so that values is a monthly climatology repeated in cycle
     return values, int(years.min()), int(years.max())
 
 
 if do_ArcticSeas_timeseries:
-    # 
+    #
     # ==> -- Open the section and an html file - Function from CLIMAF library
     # -----------------------------------------------------------------------------------------
     index += section("Sea ice extent and volume per Arctic sea", level=4)
@@ -640,7 +649,7 @@ if do_ArcticSeas_timeseries:
             # if there was no 'seas' entry, None is assigned to this label in obs_seas
             obs_display = obs.pop('obs_display', default_obs_display)
             obs_period = str(obs.pop('obs_period', default_obs_period))
-            # obs_display and obs_period are stored in the obs_display and obs_period standalone variables 
+            # obs_display and obs_period are stored in the obs_display and obs_period standalone variables
             # and simultaneously those keys are removed from the obs dictionary to be sent to CLIMAF
             if obs_display not in ('climato', 'real'):
                 print("ArcticSeas: obs_display '%s' for %s should be 'climato' or 'real', using 'real'"
@@ -657,6 +666,11 @@ if do_ArcticSeas_timeseries:
                 print("ArcticSeas: observation %s has the same customname as a simulation; "
                       "their per-simulation settings and cache will be mixed up" % label)
         Wdatasets = Wmodels + Wobs
+        # -- Daily data are not handled yet (seasonal means, which keep only the seasons with all
+        # -- their months, and the check of the cache, which reads the years in a monthly period,
+        # -- both expect monthly data):
+        # -- daily_labels -> labels of the daily datasets, if any
+        daily_labels = [model_label_of(model) for model in Wdatasets if is_daily(model)]
 
         # -- Find every distinct grid/mask actually needed by the simulations and
         # -- observations, then build/locate each of them (deduplicated by mask file)
@@ -681,7 +695,16 @@ if do_ArcticSeas_timeseries:
         # Build all required maskfiles only once thanks to the information stored in grids_needed
         # If maskfile properly built fill in available_masks
 
-        if not available_masks:
+        if daily_labels:
+            index += open_table()
+            index += start_line('Error')
+            index += "This atlas does not handle daily data yet; daily dataset(s): %s. " \
+                     "Please use monthly data (frequency='monthly')." % ', '.join(daily_labels)
+            index += close_line() + close_table()
+            print("ArcticSeas: daily data not handled yet, atlas not produced -> %s"
+                  % ', '.join(daily_labels))
+
+        elif not available_masks:
             index += open_table()
             index += start_line('Error')
             index += "No Arctic seas mask file could be found or built for any of the " \
@@ -692,7 +715,7 @@ if do_ArcticSeas_timeseries:
         # --------------------------------------------------------------------------------------------
         else:
             # -- Plot of the Arctic seas geometry, one per distinct grid (not one per
-            # -- simulation: the label already lists every simulation sharing that grid) 
+            # -- simulation: the label already lists every simulation sharing that grid)
             # -----------------------------------------------------------------------------------------
             index += section("Arctic seas", level=5)
             index += open_table()
@@ -732,7 +755,7 @@ if do_ArcticSeas_timeseries:
             # ==> -- comp_seaiceindex.py and update the cache
             # -----------------------------------------------------------------------------------------
             seaindex_files = dict()
-            # seaindex_files is defined to contain the file names holding the sea ice extent / volume  
+            # seaindex_files is defined to contain the file names holding the sea ice extent / volume
             # organized by simulation and variable
             model_labels = [] # list of model and observations labels (i.e. customnames by default)
             message_failed_comput = []
@@ -808,7 +831,7 @@ if do_ArcticSeas_timeseries:
                         continue
                         # Here we skip to the next model/obs because we do not need to update the diagnostics
 
-                    # -- Grid and matching sea mask for this simulation or observation 
+                    # -- Grid and matching sea mask for this simulation or observation
                     gridfile, maskfile, label = resolve_grid_and_mask(wmodel)
 
                     if gridfile is None:
@@ -897,7 +920,7 @@ if do_ArcticSeas_timeseries:
                         # print sends to the log and check_returncode captures the e to
                         # be printed below
                         result.check_returncode()
-                        # send each error message occcurence of SEA_WARNING_PATTERN to the 
+                        # send each error message occcurence of SEA_WARNING_PATTERN to the
                         # text file stored next to the cache file
                         write_sea_warnings(cache_file, result.stderr)
                         # cache_file is stored in the seaindex_files dictionary
@@ -906,11 +929,11 @@ if do_ArcticSeas_timeseries:
                         report_failed_comput(message_failed_comput, "failed to compute %s (variable %s) for %s -> %s"
                                              % (variable, real_variable_text, model_label, e))
 
-            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x 
-            # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects, 
-            # ==> -- which matplotlib only plots with the nc-time-axis package, and cannot mix with 
-            # ==> -- standard dates (i.e. in another simulation, or an observation with obs_display = 
-            # ==> -- 'real'). Warn in the log and the atlas page if any dataset uses such a calendar 
+            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x
+            # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects,
+            # ==> -- which matplotlib only plots with the nc-time-axis package, and cannot mix with
+            # ==> -- standard dates (i.e. in another simulation, or an observation with obs_display =
+            # ==> -- 'real'). Warn in the log and the atlas page if any dataset uses such a calendar
             # ==> -- (seasonal means use integer years and are not concerned)
             # -----------------------------------------------------------------------------------------
             if season_month_list is None:
@@ -921,7 +944,7 @@ if do_ArcticSeas_timeseries:
                     # expe : {simulation/observation label: its cache file} for this variable
                     for model_label, cache_file in expe.items():
                         if model_label in non_standard_calendars or not os.path.exists(cache_file):
-                        # this model/obs is already known to have a non-standard calendar 
+                        # this model/obs is already known to have a non-standard calendar
                         # or we can not check its calendar because we do not have any cache_file
                             continue
                         with xr.open_dataset(cache_file) as cached:
@@ -931,18 +954,18 @@ if do_ArcticSeas_timeseries:
                             dates = cached[cached[first_var].dims[0]]
                             # dates contain the time axis of this cache_file
                             if not np.issubdtype(dates.dtype, np.datetime64):
-                                # If the type of time-axis is not datetime64, we get in the time axis which 
+                                # If the type of time-axis is not datetime64, we get in the time axis which
                                 # type it is (360_day, no_leap, ...)
                                 non_standard_calendars[model_label] = dates.encoding.get('calendar', 'non-standard')
                                 # We store that information to be printed below.
                 if non_standard_calendars:
                     # If non_standard_calendars is not empty, we will write a message on the html page because
-                    # we can not mix monthly values for that experiment / observation with datetime64 time axes 
+                    # we can not mix monthly values for that experiment / observation with datetime64 time axes
                     # of other experiments on the same figure.
                     calendars_text = ', '.join('%s (%s)' % (label, calendar)
                                                for label, calendar in non_standard_calendars.items())
-                    # calendars_text = label1 (calendar1) 
-                    # or calendars_text = label1 (calendar1), label2 (calendar2), label3 (calendar3) 
+                    # calendars_text = label1 (calendar1)
+                    # or calendars_text = label1 (calendar1), label2 (calendar2), label3 (calendar3)
                     # with any number of label (calendar)
                     message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
@@ -1000,7 +1023,7 @@ if do_ArcticSeas_timeseries:
                             # etc ... for any number of model_label which has missing values in this sea
                     # -- Repeated dates (overlapping input files) are removed silently before plotting
                     # -- when their values are identical; when they differ, the input files hold two
-                    # -- different versions of the series and we add a warning below the sea title 
+                    # -- different versions of the series and we add a warning below the sea title
                     if not os.path.exists(cache_file):
                         # if the cachefile is not there, we go to next model or observation for this variable
                         continue
@@ -1009,7 +1032,7 @@ if do_ArcticSeas_timeseries:
                             da, n_removed, identical = without_duplicate_dates(cached[sea].load())
                             # The without_duplicate_dates applied on the cache file checks for this sea
                             # whether there are any duplication of values for the same dates and returns
-                            # the number of duplicates if there are any (n_removed) together with 
+                            # the number of duplicates if there are any (n_removed) together with
                             # a True/False flag if both values are the same / different for the same dates
                             if n_removed and not identical and covers_sea(obs_seas, model_label, sea):
                                 # We found two different values for one or more dates
@@ -1032,7 +1055,7 @@ if do_ArcticSeas_timeseries:
                 # The long_name attributes of seas were gathered earlier in sea_diplay_names
                 title = sea_name + '<br><span style="font-size:70%">Sea area (Thousand km2): ' + \
                     sea_areas_text(sea, area_label_groups, seaindex_files) + '</span>'
-                    # sea_areas_text is a function defined earlier which returns a line with 
+                    # sea_areas_text is a function defined earlier which returns a line with
                     # group of model_labels : area_of_the_sea; group of model_labels area_of_the_sea, etc ...
                 if sea in warnings_per_sea:
                     title += '<br><span style="font-size:70%; color:red">Warning - ' + \
@@ -1050,13 +1073,13 @@ if do_ArcticSeas_timeseries:
                                  # the model label and the x and y values to be plotted for each simulation
                                  # which actually has data to be plotted
                     obs_series = dict()  # a dictionary holding for each obs label a DataArray with the
-                                 # monthly data for this observational dataset if the sea is in its cache file 
+                                 # monthly data for this observational dataset if the sea is in its cache file
                     present_labels = [] # only the labels of the models or obs which have data for this sea
                     for model_label, outfile in seaindex_files.get(variable, dict()).items():
                         # if variable is not in seaindex_files, empty dictionary so we do not
                         # go through this loop
-                        # if variable is in seaindex_files, we loop through the list of (model_label, cachefile) 
-                        # for this variable 
+                        # if variable is in seaindex_files, we loop through the list of (model_label, cachefile)
+                        # for this variable
                         if not os.path.exists(outfile):
                             continue
                         # if the cachefile is not there, we go to next model or observation for this variable
@@ -1081,8 +1104,8 @@ if do_ArcticSeas_timeseries:
                         # -- to this plot, the cache file on disk is left untouched
                         if model_label in obs_labels:
                             # All observational data have been treated as model data and their cachefile are also
-                            # stored in seaindex_files so that if model_label is actually an obs_label, da needs 
-                            # to be stored in the obs_series dictionary with the obs_label as key and not in the 
+                            # stored in seaindex_files so that if model_label is actually an obs_label, da needs
+                            # to be stored in the obs_series dictionary with the obs_label as key and not in the
                             # curve list which is for model/experiment data
                             obs_series[model_label] = da
                         else:
@@ -1092,9 +1115,9 @@ if do_ArcticSeas_timeseries:
                             # mean (using only season with no missing data inside the season) as first element
                             # and the corresponding seasonal means as second element
                             # If no seasonal mean was requested (season_month_list = None), the tuple contains
-                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values 
+                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values
                             curves.append((model_label, time_values, data_values))
-                            # curves is a list of tuples in which we add the tuple holding this model_label, 
+                            # curves is a list of tuples in which we add the tuple holding this model_label,
                             # its time_values to be plotted along x, its data_values to be plotted along y
                         present_labels.append(model_label)
                         # only the labels of the model or observations that have data for this sea
@@ -1107,7 +1130,7 @@ if do_ArcticSeas_timeseries:
                     obs_curves = []  # a list of tuples : (obs label, legend label, time_values, data_values)
                     sim_times = None
                     if curves:
-                        # If we do have model data for this sea, sim_times contains all the dates covered by 
+                        # If we do have model data for this sea, sim_times contains all the dates covered by
                         # all the simulations of all models/experiments without duplicate
                         sim_times = np.unique(np.concatenate([time_values for (mod_lab, time_values, data) in curves]))
                     for obs_label, da in obs_series.items():
@@ -1135,7 +1158,7 @@ if do_ArcticSeas_timeseries:
                             # mean (using only season with no missing data inside the season) as first element
                             # and the corresponding seasonal means as second element
                             # If no seasonal mean was requested (season_month_list = None), the tuple contains
-                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values 
+                            # a numpy array of datetime64 or cftime monthly dates and the corresponding monthly values
                             # If obs_period is 'full', the whole time series is output, if a period is provided
                             # with YYYY-YYYY, only this period is output
                             if len(time_values) == 0:
@@ -1149,10 +1172,10 @@ if do_ArcticSeas_timeseries:
                             clim = obs_climatology_curve(da, obs_period, season_month_list, sim_times)
                             # obs_climatology_curve computes a climatology of the DataArray da over the
                             # obs_period period and repeats it along the sim_times time axis : a single
-                            # value for seasonal mean, a 12-month cycle for monthly means. 
-                            # The months within the season are passed through season_month_list. If 
+                            # value for seasonal mean, a 12-month cycle for monthly means.
+                            # The months within the season are passed through season_month_list. If
                             # season_month_list is None, we obtain a monthly climatology.
-                            # clim is a tuple holding the numpy array of y values to be plotted against 
+                            # clim is a tuple holding the numpy array of y values to be plotted against
                             # the sim_times x values, together with the first and last year of the climatology
                             if clim is None:
                                 print("ArcticSeas: no %s data within obs_period %s for %s, not plotted"
@@ -1164,7 +1187,7 @@ if do_ArcticSeas_timeseries:
                             # We include in the obs_curves list a new tuple with (obs_customname,
                             # obs_legend, x data to be plotted, y data to be plotted)
 
-                    # model_labels holds every simulation listed in datasets_setup.py and every 
+                    # model_labels holds every simulation listed in datasets_setup.py and every
                     # observation listed in params_ArcticSeas.py
                     # Any of them missing from present_labels has no data here.
                     missing_labels = [m for m in model_labels
