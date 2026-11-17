@@ -33,6 +33,9 @@ import matplotlib.pyplot as plt
 # -- Init html index - Example from MyOwnDiag - fonction from CLIMAF library
 # -----------------------------------------------------------------------------------
 index = header(atlas_head_title, style_file=style_file)
+# -- start_line (CliMAF) puts the title of each table line in a list item (<li>), shown with a
+# -- bullet: the bullets are hidden on this page only
+index += '<style>li {list-style-type: none;}</style>\n'
 
 
 def sanitize(name):
@@ -721,7 +724,6 @@ if do_ArcticSeas_timeseries:
             # -- Plot of the Arctic seas geometry, one per distinct grid (not one per
             # -- simulation: the label already lists every simulation sharing that grid)
             # -----------------------------------------------------------------------------------------
-            index += section("Arctic seas", level=5)
             index += open_table()
             index += start_line('Arctic seas')
             for maskfile, (gridfile, shared_labels) in available_masks.items():
