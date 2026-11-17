@@ -180,6 +180,17 @@ def read_sea_warnings(cache_file):
     return sea_warnings
 
 
+def covers_sea(obs_seas, label, sea):
+    """False if the observation product designated by label is restricted, by the key 'seas'
+    of its ArcticSeas_obs entry (sent here through the dictionary obs_seas), to a list of seas
+    which does not include the sea named sea (e.g. this product does not cover that sea);
+    True otherwise (simulations, and observations without such a restriction).
+    If obs_seas gives None for a label, or has no entry for it (simulations), all the seas
+    are plotted. """
+    seas_of_label = obs_seas.get(label)
+    return seas_of_label is None or sea in seas_of_label
+
+
 def sea_areas_text(sea, label_groups, seaindex_files):
     """ From an input sea (ex: centrarc), and for groups of experiment and observation
     labels (typically customname) sharing the same grid and sea mask file, this function returns
@@ -620,7 +631,13 @@ if do_ArcticSeas_timeseries:
         default_obs_display = ArcticSeas_obs_display if 'ArcticSeas_obs_display' in dir() else 'real'
         default_obs_period = ArcticSeas_obs_period if 'ArcticSeas_obs_period' in dir() else 'sim'
         obs_settings = dict()  # obs label -> (obs_display, obs_period)
+        obs_seas = dict()  # obs label -> list of the seas it covers (key 'seas'), None for all the seas
         for obs in Wobs:
+            obs_seas[model_label_of(obs)] = obs.pop('seas', None)
+            # 'seas' is removed from the obs dictionary, which is sent to CliMAF (see below)
+            # what was in 'seas' is stored in obs_seas under the label of the observation (its
+            # customname, or its project) as key
+            # if there was no 'seas' entry, None is assigned to this label in obs_seas
             obs_display = obs.pop('obs_display', default_obs_display)
             obs_period = str(obs.pop('obs_period', default_obs_period))
             # obs_display and obs_period are stored in the obs_display and obs_period standalone variables 
@@ -965,6 +982,10 @@ if do_ArcticSeas_timeseries:
                 # expe : {simulation/observation label: its cache file} for this variable
                 for model_label, cache_file in expe.items():
                     for warned_sea, message in read_sea_warnings(cache_file).items():
+                        if not covers_sea(obs_seas, model_label, warned_sea):
+                            continue
+                            # no warning for a sea where the user already stated that this
+                            # observation is not available through the seas key in ArcticSeas_obs
                         # For this set of variable and experiment/observation, if we have a warning
                         # message about the sea warned_sea, we append it to previous messages for
                         # this warned sea (to nothing if there was none before)
@@ -990,7 +1011,7 @@ if do_ArcticSeas_timeseries:
                             # whether there are any duplication of values for the same dates and returns
                             # the number of duplicates if there are any (n_removed) together with 
                             # a True/False flag if both values are the same / different for the same dates
-                            if n_removed and not identical:
+                            if n_removed and not identical and covers_sea(obs_seas, model_label, sea):
                                 # We found two different values for one or more dates
                                 warnings_per_sea.setdefault(sea, []).append(
                                     '%s (%s): %d repeated dates with different values, first value kept'
@@ -1039,6 +1060,9 @@ if do_ArcticSeas_timeseries:
                         if not os.path.exists(outfile):
                             continue
                         # if the cachefile is not there, we go to next model or observation for this variable
+                        if not covers_sea(obs_seas, model_label, sea):
+                            continue
+                        # observation restricted to other seas (key 'seas' in ArcticSeas_obs): not plotted here
                         with xr.open_dataset(outfile) as out_ds:
                             if sea not in out_ds.data_vars:
                                 continue

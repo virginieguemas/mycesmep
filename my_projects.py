@@ -40,3 +40,13 @@ cproject('NSIDC_CDR_V6', 'variable')
 dataloc(project = 'NSIDC_CDR_V6', organization = 'generic', url = file_patterns)
 
 
+# -- Observations: CryoSat-2 RDEFT4 sea ice thickness (NASA GSFC), regrouped into monthly
+# -- files by /cnrm/ioga/Users/guemas/Obs/regroup_rdeft4.py (time dimension, NaN for missing
+# -- values, ice_con as a fraction), on the NSIDC 25 km polar stereographic grid (psn25).
+# -- October to April only. Variables: 'sea_ice_thickness' (m), 'ice_con' (fraction 0-1).
+file_patterns = []
+file_patterns.append('/cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_YYYYMM.nc')
+cproject('CRYOSAT2_RDEFT4', 'variable')
+dataloc(project = 'CRYOSAT2_RDEFT4', organization = 'generic', url = file_patterns)
+
+
