@@ -592,7 +592,7 @@ for component in job_components:
  \
               '\t echo -n Job submitted : $jobId\n\n' + \
  \
-              ' \t sqsub -b \"-d afternotok:$jobId\" ' + \
+              ' \t sqsub -b \"-d afternotok:$jobId --kill-on-invalid-dep=yes\" ' + \
               '-e \"atlas_pathfilename=' + atlas_pathfilename + ',' + variables + '\"' + \
               ' ../../share/fp_template/copy_html_error_page.sh >/dev/null 2>&1 \n)\n'
 
