@@ -125,10 +125,17 @@ def latest_year_in_ncfile(ncfile):
 
 
 # -- Message issued by comp_seaiceindex.py when the field has missing values within a sea
-SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+)' where mask == 1")
+SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+)' where mask == 1"
+                                 r"(?: \([^)]*\))?")
+# group(0) is the entire message
 # [^']+ means one or more character that are not '
-# WARNING : if the comp_seaiceindex message were to change, the change should be reflected in the
-# line above otherwise the ArcticSeas option could not detect it
+# ([^']+) captures the name of the sea as group(1)
+# (?: \([^)]*\))? : optional text between parentheses after the message, e.g. the percentage of
+# missing values '(2.3% of the sea points, over the time steps with data)', kept in the message
+# (?: ... )? recognizes this optional text without capturing it as group(2)
+# \([^)]*\) means any characters between parentheses except a closing parenthesis
+# WARNING : if the comp_seaiceindex message were to change, the change should be reflected in
+# SEA_WARNING_PATTERN otherwise the ArcticSeas option could not detect it
 
 
 def report_failed_comput(message_failed_comput, message):
