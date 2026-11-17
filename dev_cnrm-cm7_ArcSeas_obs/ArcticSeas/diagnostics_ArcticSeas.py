@@ -601,14 +601,18 @@ if do_ArcticSeas_timeseries:
             return os.path.exists(maskfile)
 
         def ensure_check_masks_plot(gridfile, maskfile, label):
-            """(Re-)run check_masks.py for this grid if its plot is missing or predates maskfile.
+            """(Re-)run check_masks.py for this grid and label (list of the simulations/observations
+            sharing this grid) if its plot is missing or predates maskfile.
             check_masks.py always writes fixed relative filenames ('check_masks_arctic.png',
             'check_masks_antarctic.png') in its current directory -- run it in workdir and
-            immediately rename the Arctic one to <mask file name without .nc>_lat<latcutoff>.png,
-            so every distinct grid ends up with its own plot name, and a new latcutoff gives a new
-            plot. MPLBACKEND=Agg avoids the script's closing plt.show() blocking/failing headless."""
-            png = os.path.join(workdir, '%s_lat%g.png' % (os.path.splitext(os.path.basename(maskfile))[0],
-                                                          map_latcutoff))
+            immediately rename the Arctic one to
+            <mask file name without .nc>_lat<latcutoff>_<label>.png, so every distinct grid ends
+            up with its own plot name, and a new latcutoff or a new label (e.g. a new observation
+            on the same grid) gives a new plot. MPLBACKEND=Agg avoids the script's closing
+            plt.show() blocking/failing headless."""
+            png = os.path.join(workdir, '%s_lat%g_%s.png' % (os.path.splitext(os.path.basename(maskfile))[0],
+                                                             map_latcutoff, sanitize(label)))
+            # -- sanitize(label): spaces, commas, parentheses... of the label replaced by '_'
             need = not os.path.exists(png) or os.path.getmtime(png) < os.path.getmtime(maskfile)
             if need and os.path.exists(check_masks_script):
                 try:
