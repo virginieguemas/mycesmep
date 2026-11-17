@@ -128,6 +128,7 @@ if [[ -d "/cnrm" ]] ; then
    
     unset PYTHONPATH
     export PYTHONNOUSERSITE=1 # ignore ~/.local packages (to avoid incompatibilities)
+    export PYTHONUNBUFFERED=1 # python messages written to the job log as they come
 
     # CDAT
     # Remove CDAT dependency for now
