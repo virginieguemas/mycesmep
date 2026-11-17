@@ -1,0 +1,48 @@
+at CNRM
+Tue Nov 17 15:53:18 CET 2026
+$comparison
+dev_cnrm-cm7_ArcSeas_obs
+$component
+ArcticSeas
+$WD
+/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+$cesmep_frontpage
+../
+/var/spool/slurm/slurmd.spool/job1191172/slurm_script: line 109: export: `=': not a valid identifier
+/var/spool/slurm/slurmd.spool/job1191172/slurm_script: line 109: export: `1': not a valid identifier
+Tue Nov 17 15:53:18 CET 2026
+PATH /cnrm/est/COMMON/climaf/climaf_3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PYTHONPATH /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules:/cnrm/est/COMMON/climaf/climaf_3.0:/cnrm/est/COMMON/climaf/add_packages/lib/python3.12/site-packages/
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+CESMEP_CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Running main_C-ESM-EP.py for season  with parameter file 
+Using CliMAF cache = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+python => 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+---
+Required softwares to run CliMAF => you are using the following versions/installations:
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !
+rootmainpath =  /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+-- Use diagnostics_file = /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/diagnostics_ArcticSeas.py
+Traceback (most recent call last):
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../main_C-ESM-EP.py", line 156, in <module>
+    os.makedirs(atlas_dir)
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 215, in makedirs
+  File "<frozen os>", line 215, in makedirs
+  [Previous line repeated 4 more times]
+  File "<frozen os>", line 225, in makedirs
+PermissionError: [Errno 13] Permission denied: '/sx'

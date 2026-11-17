@@ -1,0 +1,6 @@
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !

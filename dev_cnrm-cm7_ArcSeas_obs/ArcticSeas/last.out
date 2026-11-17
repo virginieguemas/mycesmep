@@ -1,0 +1,854 @@
+debug    : TMPDIR found: /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+debug    : Create temporary dir /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29
+debug    : CDO command init: cdo -O -f nc
+debug    : Alias and variable considered: None -- ice_con
+debug    : Region considered: None
+debug    : Units considered: None
+debug    : Missing values considered: None
+debug    : Period considered: 2010-10-01T00:00:00,2025-03-31T23:59:00
+debug    : Operator considered: None
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201010.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201010.nc
+debug    : Time at launch 1794922380.0976017
+debug    : 
+debug    : Time at end 1794922380.1759646
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201011.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201011.nc
+debug    : Time at launch 1794922380.1818457
+debug    : 
+debug    : Time at end 1794922380.2637427
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201012.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201012.nc
+debug    : Time at launch 1794922380.2694488
+debug    : 
+debug    : Time at end 1794922380.34984
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201101.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201101.nc
+debug    : Time at launch 1794922380.3563242
+debug    : 
+debug    : Time at end 1794922380.4382422
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201102.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201102.nc
+debug    : Time at launch 1794922380.4449732
+debug    : 
+debug    : Time at end 1794922380.5286736
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201103.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201103.nc
+debug    : Time at launch 1794922380.534105
+debug    : 
+debug    : Time at end 1794922380.6142797
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201104.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201104.nc
+debug    : Time at launch 1794922380.6207213
+debug    : 
+debug    : Time at end 1794922380.7084913
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201105.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201105.nc
+debug    : Time at launch 1794922380.7138925
+debug    : 
+debug    : Time at end 1794922380.797179
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201106.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201106.nc
+debug    : Time at launch 1794922380.8029144
+debug    : 
+debug    : Time at end 1794922380.8834705
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201107.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201107.nc
+debug    : Time at launch 1794922380.888772
+debug    : 
+debug    : Time at end 1794922380.9738655
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201108.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201108.nc
+debug    : Time at launch 1794922380.9805214
+debug    : 
+debug    : Time at end 1794922381.0572524
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201109.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201109.nc
+debug    : Time at launch 1794922381.0635545
+debug    : 
+debug    : Time at end 1794922381.1426265
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201110.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201110.nc
+debug    : Time at launch 1794922381.1484668
+debug    : 
+debug    : Time at end 1794922381.2313254
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201111.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201111.nc
+debug    : Time at launch 1794922381.23771
+debug    : 
+debug    : Time at end 1794922381.3217144
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201112.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201112.nc
+debug    : Time at launch 1794922381.3284063
+debug    : 
+debug    : Time at end 1794922381.4326525
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201201.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201201.nc
+debug    : Time at launch 1794922381.4385996
+debug    : 
+debug    : Time at end 1794922381.5353546
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201202.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201202.nc
+debug    : Time at launch 1794922381.5426679
+debug    : 
+debug    : Time at end 1794922381.6274898
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201203.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201203.nc
+debug    : Time at launch 1794922381.634457
+debug    : 
+debug    : Time at end 1794922381.7182612
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201204.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201204.nc
+debug    : Time at launch 1794922381.7258768
+debug    : 
+debug    : Time at end 1794922381.8001716
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201205.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201205.nc
+debug    : Time at launch 1794922381.805845
+debug    : 
+debug    : Time at end 1794922381.888022
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201206.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201206.nc
+debug    : Time at launch 1794922381.894533
+debug    : 
+debug    : Time at end 1794922381.980576
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201207.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201207.nc
+debug    : Time at launch 1794922381.9862182
+debug    : 
+debug    : Time at end 1794922382.0623934
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201208.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201208.nc
+debug    : Time at launch 1794922382.0696294
+debug    : 
+debug    : Time at end 1794922382.1619277
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201209.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201209.nc
+debug    : Time at launch 1794922382.1685386
+debug    : 
+debug    : Time at end 1794922382.2809188
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201210.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201210.nc
+debug    : Time at launch 1794922382.2862992
+debug    : 
+debug    : Time at end 1794922382.3630438
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201211.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201211.nc
+debug    : Time at launch 1794922382.3697765
+debug    : 
+debug    : Time at end 1794922382.4473245
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201212.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201212.nc
+debug    : Time at launch 1794922382.4528477
+debug    : 
+debug    : Time at end 1794922382.5284898
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201301.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201301.nc
+debug    : Time at launch 1794922382.5343056
+debug    : 
+debug    : Time at end 1794922382.6155019
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201302.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201302.nc
+debug    : Time at launch 1794922382.62078
+debug    : 
+debug    : Time at end 1794922382.7007701
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201303.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201303.nc
+debug    : Time at launch 1794922382.7066333
+debug    : 
+debug    : Time at end 1794922382.787464
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201304.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201304.nc
+debug    : Time at launch 1794922382.7934616
+debug    : 
+debug    : Time at end 1794922382.8713508
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201305.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201305.nc
+debug    : Time at launch 1794922382.8775654
+debug    : 
+debug    : Time at end 1794922382.9575908
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201306.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201306.nc
+debug    : Time at launch 1794922382.963423
+debug    : 
+debug    : Time at end 1794922383.040798
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201307.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201307.nc
+debug    : Time at launch 1794922383.0478914
+debug    : 
+debug    : Time at end 1794922383.1290314
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201308.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201308.nc
+debug    : Time at launch 1794922383.134572
+debug    : 
+debug    : Time at end 1794922383.2125342
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201309.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201309.nc
+debug    : Time at launch 1794922383.218406
+debug    : 
+debug    : Time at end 1794922383.2913814
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201310.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201310.nc
+debug    : Time at launch 1794922383.2981603
+debug    : 
+debug    : Time at end 1794922383.4017577
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201311.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201311.nc
+debug    : Time at launch 1794922383.4080424
+debug    : 
+debug    : Time at end 1794922383.4829843
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201312.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201312.nc
+debug    : Time at launch 1794922383.4891999
+debug    : 
+debug    : Time at end 1794922383.5670333
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201401.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201401.nc
+debug    : Time at launch 1794922383.5730157
+debug    : 
+debug    : Time at end 1794922383.6431441
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201402.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201402.nc
+debug    : Time at launch 1794922383.649253
+debug    : 
+debug    : Time at end 1794922383.726771
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201403.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201403.nc
+debug    : Time at launch 1794922383.7329035
+debug    : 
+debug    : Time at end 1794922383.8054268
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201404.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201404.nc
+debug    : Time at launch 1794922383.8117332
+debug    : 
+debug    : Time at end 1794922383.8913221
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201405.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201405.nc
+debug    : Time at launch 1794922383.897773
+debug    : 
+debug    : Time at end 1794922383.9765685
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201406.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201406.nc
+debug    : Time at launch 1794922383.9826603
+debug    : 
+debug    : Time at end 1794922384.061765
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201407.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201407.nc
+debug    : Time at launch 1794922384.0684552
+debug    : 
+debug    : Time at end 1794922384.1390462
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201408.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201408.nc
+debug    : Time at launch 1794922384.1446524
+debug    : 
+debug    : Time at end 1794922384.230037
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201409.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201409.nc
+debug    : Time at launch 1794922384.2357862
+debug    : 
+debug    : Time at end 1794922384.3147445
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201410.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201410.nc
+debug    : Time at launch 1794922384.321818
+debug    : 
+debug    : Time at end 1794922384.402445
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201411.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201411.nc
+debug    : Time at launch 1794922384.408657
+debug    : 
+debug    : Time at end 1794922384.488814
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201412.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201412.nc
+debug    : Time at launch 1794922384.494588
+debug    : 
+debug    : Time at end 1794922384.5768182
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201501.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201501.nc
+debug    : Time at launch 1794922384.5828626
+debug    : 
+debug    : Time at end 1794922384.663434
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201502.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201502.nc
+debug    : Time at launch 1794922384.669807
+debug    : 
+debug    : Time at end 1794922384.7449093
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201503.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201503.nc
+debug    : Time at launch 1794922384.7504716
+debug    : 
+debug    : Time at end 1794922384.8286252
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201504.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201504.nc
+debug    : Time at launch 1794922384.8339121
+debug    : 
+debug    : Time at end 1794922384.9098492
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201505.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201505.nc
+debug    : Time at launch 1794922384.9157484
+debug    : 
+debug    : Time at end 1794922384.9910893
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201506.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201506.nc
+debug    : Time at launch 1794922384.996868
+debug    : 
+debug    : Time at end 1794922385.0769806
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201507.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201507.nc
+debug    : Time at launch 1794922385.0834358
+debug    : 
+debug    : Time at end 1794922385.1613522
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201508.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201508.nc
+debug    : Time at launch 1794922385.1678357
+debug    : 
+debug    : Time at end 1794922385.2426348
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201509.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201509.nc
+debug    : Time at launch 1794922385.2484014
+debug    : 
+debug    : Time at end 1794922385.3183272
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201510.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201510.nc
+debug    : Time at launch 1794922385.3247228
+debug    : 
+debug    : Time at end 1794922385.4033065
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201511.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201511.nc
+debug    : Time at launch 1794922385.4093544
+debug    : 
+debug    : Time at end 1794922385.4844327
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201512.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201512.nc
+debug    : Time at launch 1794922385.4905016
+debug    : 
+debug    : Time at end 1794922385.56993
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201601.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201601.nc
+debug    : Time at launch 1794922385.576257
+debug    : 
+debug    : Time at end 1794922385.654123
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201602.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201602.nc
+debug    : Time at launch 1794922385.6606328
+debug    : 
+debug    : Time at end 1794922385.736849
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201603.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201603.nc
+debug    : Time at launch 1794922385.742624
+debug    : 
+debug    : Time at end 1794922385.821888
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201604.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201604.nc
+debug    : Time at launch 1794922385.829296
+debug    : 
+debug    : Time at end 1794922385.9077024
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201605.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201605.nc
+debug    : Time at launch 1794922385.9146388
+debug    : 
+debug    : Time at end 1794922385.996635
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201606.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201606.nc
+debug    : Time at launch 1794922386.0032785
+debug    : 
+debug    : Time at end 1794922386.084251
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201607.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201607.nc
+debug    : Time at launch 1794922386.09083
+debug    : 
+debug    : Time at end 1794922386.1662834
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201608.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201608.nc
+debug    : Time at launch 1794922386.172812
+debug    : 
+debug    : Time at end 1794922386.255583
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201609.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201609.nc
+debug    : Time at launch 1794922386.262443
+debug    : 
+debug    : Time at end 1794922386.3419228
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201610.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201610.nc
+debug    : Time at launch 1794922386.3488283
+debug    : 
+debug    : Time at end 1794922386.4289062
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201611.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201611.nc
+debug    : Time at launch 1794922386.4351256
+debug    : 
+debug    : Time at end 1794922386.515407
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201612.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201612.nc
+debug    : Time at launch 1794922386.5226278
+debug    : 
+debug    : Time at end 1794922386.6069224
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201701.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201701.nc
+debug    : Time at launch 1794922386.613879
+debug    : 
+debug    : Time at end 1794922386.6983755
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201702.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201702.nc
+debug    : Time at launch 1794922386.7048342
+debug    : 
+debug    : Time at end 1794922386.7842906
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201703.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201703.nc
+debug    : Time at launch 1794922386.7914233
+debug    : 
+debug    : Time at end 1794922386.8715923
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201704.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201704.nc
+debug    : Time at launch 1794922386.8779194
+debug    : 
+debug    : Time at end 1794922386.96167
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201705.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201705.nc
+debug    : Time at launch 1794922386.9690716
+debug    : 
+debug    : Time at end 1794922387.0466568
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201706.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201706.nc
+debug    : Time at launch 1794922387.05422
+debug    : 
+debug    : Time at end 1794922387.1339126
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201707.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201707.nc
+debug    : Time at launch 1794922387.140653
+debug    : 
+debug    : Time at end 1794922387.2183335
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201708.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201708.nc
+debug    : Time at launch 1794922387.225253
+debug    : 
+debug    : Time at end 1794922387.3050325
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201709.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201709.nc
+debug    : Time at launch 1794922387.3124647
+debug    : 
+debug    : Time at end 1794922387.3899288
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201710.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201710.nc
+debug    : Time at launch 1794922387.396477
+debug    : 
+debug    : Time at end 1794922387.4770646
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201711.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201711.nc
+debug    : Time at launch 1794922387.484564
+debug    : 
+debug    : Time at end 1794922387.5580344
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201712.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201712.nc
+debug    : Time at launch 1794922387.5643878
+debug    : 
+debug    : Time at end 1794922387.6395848
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201801.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201801.nc
+debug    : Time at launch 1794922387.646458
+debug    : 
+debug    : Time at end 1794922387.722108
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201802.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201802.nc
+debug    : Time at launch 1794922387.7292924
+debug    : 
+debug    : Time at end 1794922387.8102875
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201803.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201803.nc
+debug    : Time at launch 1794922387.8176901
+debug    : 
+debug    : Time at end 1794922387.8940873
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201804.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201804.nc
+debug    : Time at launch 1794922387.901282
+debug    : 
+debug    : Time at end 1794922387.9735217
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201805.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201805.nc
+debug    : Time at launch 1794922387.9804425
+debug    : 
+debug    : Time at end 1794922388.0611377
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201806.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201806.nc
+debug    : Time at launch 1794922388.0670872
+debug    : 
+debug    : Time at end 1794922388.145769
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201807.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201807.nc
+debug    : Time at launch 1794922388.1516442
+debug    : 
+debug    : Time at end 1794922388.2318099
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201808.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201808.nc
+debug    : Time at launch 1794922388.238578
+debug    : 
+debug    : Time at end 1794922388.3160076
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201809.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201809.nc
+debug    : Time at launch 1794922388.3221226
+debug    : 
+debug    : Time at end 1794922388.3941514
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201810.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201810.nc
+debug    : Time at launch 1794922388.4002419
+debug    : 
+debug    : Time at end 1794922388.4780416
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201811.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201811.nc
+debug    : Time at launch 1794922388.4845226
+debug    : 
+debug    : Time at end 1794922388.5533288
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201812.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201812.nc
+debug    : Time at launch 1794922388.5591292
+debug    : 
+debug    : Time at end 1794922388.6358669
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201901.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201901.nc
+debug    : Time at launch 1794922388.6417053
+debug    : 
+debug    : Time at end 1794922388.7208967
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201902.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201902.nc
+debug    : Time at launch 1794922388.726491
+debug    : 
+debug    : Time at end 1794922388.8083043
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201903.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201903.nc
+debug    : Time at launch 1794922388.8146594
+debug    : 
+debug    : Time at end 1794922388.891747
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201904.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201904.nc
+debug    : Time at launch 1794922388.8976443
+debug    : 
+debug    : Time at end 1794922388.9724104
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201905.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201905.nc
+debug    : Time at launch 1794922388.9787323
+debug    : 
+debug    : Time at end 1794922389.0583534
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201906.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201906.nc
+debug    : Time at launch 1794922389.0646653
+debug    : 
+debug    : Time at end 1794922389.13472
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201907.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201907.nc
+debug    : Time at launch 1794922389.1406164
+debug    : 
+debug    : Time at end 1794922389.2210507
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201908.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201908.nc
+debug    : Time at launch 1794922389.2265778
+debug    : 
+debug    : Time at end 1794922389.3108182
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201909.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201909.nc
+debug    : Time at launch 1794922389.3178434
+debug    : 
+debug    : Time at end 1794922389.3955927
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201910.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201910.nc
+debug    : Time at launch 1794922389.4018042
+debug    : 
+debug    : Time at end 1794922389.4819329
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201911.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201911.nc
+debug    : Time at launch 1794922389.4887183
+debug    : 
+debug    : Time at end 1794922389.5672698
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_201912.nc
+debug    : Time at launch 1794922389.5744858
+debug    : 
+debug    : Time at end 1794922389.6541998
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202001.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202001.nc
+debug    : Time at launch 1794922389.660647
+debug    : 
+debug    : Time at end 1794922389.7396243
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202002.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202002.nc
+debug    : Time at launch 1794922389.7454479
+debug    : 
+debug    : Time at end 1794922389.8255403
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202003.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202003.nc
+debug    : Time at launch 1794922389.8313813
+debug    : 
+debug    : Time at end 1794922389.909744
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202004.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202004.nc
+debug    : Time at launch 1794922389.9155772
+debug    : 
+debug    : Time at end 1794922389.9855266
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202005.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202005.nc
+debug    : Time at launch 1794922389.9929483
+debug    : 
+debug    : Time at end 1794922390.0761638
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202006.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202006.nc
+debug    : Time at launch 1794922390.0823135
+debug    : 
+debug    : Time at end 1794922390.1651847
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202007.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202007.nc
+debug    : Time at launch 1794922390.1709912
+debug    : 
+debug    : Time at end 1794922390.2514048
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202008.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202008.nc
+debug    : Time at launch 1794922390.2581248
+debug    : 
+debug    : Time at end 1794922390.3334763
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202009.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202009.nc
+debug    : Time at launch 1794922390.3392606
+debug    : 
+debug    : Time at end 1794922390.412588
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202010.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202010.nc
+debug    : Time at launch 1794922390.4188728
+debug    : 
+debug    : Time at end 1794922390.5009584
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202011.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202011.nc
+debug    : Time at launch 1794922390.506425
+debug    : 
+debug    : Time at end 1794922390.585657
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202012.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202012.nc
+debug    : Time at launch 1794922390.591389
+debug    : 
+debug    : Time at end 1794922390.6666176
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202101.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202101.nc
+debug    : Time at launch 1794922390.6731734
+debug    : 
+debug    : Time at end 1794922390.7537005
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202102.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202102.nc
+debug    : Time at launch 1794922390.7593718
+debug    : 
+debug    : Time at end 1794922390.8432384
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202103.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202103.nc
+debug    : Time at launch 1794922390.849263
+debug    : 
+debug    : Time at end 1794922390.927459
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202104.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202104.nc
+debug    : Time at launch 1794922390.933643
+debug    : 
+debug    : Time at end 1794922391.00905
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202105.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202105.nc
+debug    : Time at launch 1794922391.0143456
+debug    : 
+debug    : Time at end 1794922391.0950544
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202106.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202106.nc
+debug    : Time at launch 1794922391.1009188
+debug    : 
+debug    : Time at end 1794922391.1698792
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202107.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202107.nc
+debug    : Time at launch 1794922391.175777
+debug    : 
+debug    : Time at end 1794922391.250996
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202108.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202108.nc
+debug    : Time at launch 1794922391.2574098
+debug    : 
+debug    : Time at end 1794922391.3323133
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202109.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202109.nc
+debug    : Time at launch 1794922391.338153
+debug    : 
+debug    : Time at end 1794922391.4173365
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202110.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202110.nc
+debug    : Time at launch 1794922391.4233015
+debug    : 
+debug    : Time at end 1794922391.502024
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202111.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202111.nc
+debug    : Time at launch 1794922391.5077543
+debug    : 
+debug    : Time at end 1794922391.5898619
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202112.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202112.nc
+debug    : Time at launch 1794922391.5957024
+debug    : 
+debug    : Time at end 1794922391.6696415
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202201.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202201.nc
+debug    : Time at launch 1794922391.6753442
+debug    : 
+debug    : Time at end 1794922391.7472484
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202202.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202202.nc
+debug    : Time at launch 1794922391.7534401
+debug    : 
+debug    : Time at end 1794922391.827476
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202203.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202203.nc
+debug    : Time at launch 1794922391.8334224
+debug    : 
+debug    : Time at end 1794922391.9116833
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202204.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202204.nc
+debug    : Time at launch 1794922391.91726
+debug    : 
+debug    : Time at end 1794922391.9931612
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202205.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202205.nc
+debug    : Time at launch 1794922391.9988167
+debug    : 
+debug    : Time at end 1794922392.0774412
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202206.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202206.nc
+debug    : Time at launch 1794922392.0842667
+debug    : 
+debug    : Time at end 1794922392.1596162
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202207.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202207.nc
+debug    : Time at launch 1794922392.165403
+debug    : 
+debug    : Time at end 1794922392.2447035
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202208.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202208.nc
+debug    : Time at launch 1794922392.2508385
+debug    : 
+debug    : Time at end 1794922392.3296173
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202209.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202209.nc
+debug    : Time at launch 1794922392.3354163
+debug    : 
+debug    : Time at end 1794922392.4106557
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202210.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202210.nc
+debug    : Time at launch 1794922392.4162781
+debug    : 
+debug    : Time at end 1794922392.4976082
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202211.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202211.nc
+debug    : Time at launch 1794922392.5028667
+debug    : 
+debug    : Time at end 1794922392.582058
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202212.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202212.nc
+debug    : Time at launch 1794922392.5876331
+debug    : 
+debug    : Time at end 1794922392.6682465
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202301.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202301.nc
+debug    : Time at launch 1794922392.674086
+debug    : 
+debug    : Time at end 1794922392.7535717
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202302.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202302.nc
+debug    : Time at launch 1794922392.7587514
+debug    : 
+debug    : Time at end 1794922392.8336778
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202303.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202303.nc
+debug    : Time at launch 1794922392.8395855
+debug    : 
+debug    : Time at end 1794922392.9186208
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202304.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202304.nc
+debug    : Time at launch 1794922392.9239204
+debug    : 
+debug    : Time at end 1794922393.0042977
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202305.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202305.nc
+debug    : Time at launch 1794922393.0100288
+debug    : 
+debug    : Time at end 1794922393.0858982
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202306.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202306.nc
+debug    : Time at launch 1794922393.091443
+debug    : 
+debug    : Time at end 1794922393.172151
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202307.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202307.nc
+debug    : Time at launch 1794922393.177898
+debug    : 
+debug    : Time at end 1794922393.2573524
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202308.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202308.nc
+debug    : Time at launch 1794922393.2633414
+debug    : 
+debug    : Time at end 1794922393.3426378
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202309.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202309.nc
+debug    : Time at launch 1794922393.3477767
+debug    : 
+debug    : Time at end 1794922393.4127114
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202310.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202310.nc
+debug    : Time at launch 1794922393.4176
+debug    : 
+debug    : Time at end 1794922393.4992673
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202311.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202311.nc
+debug    : Time at launch 1794922393.5052443
+debug    : 
+debug    : Time at end 1794922393.574022
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202312.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202312.nc
+debug    : Time at launch 1794922393.5796227
+debug    : 
+debug    : Time at end 1794922393.6598997
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202401.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202401.nc
+debug    : Time at launch 1794922393.6652682
+debug    : 
+debug    : Time at end 1794922393.7373335
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202402.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202402.nc
+debug    : Time at launch 1794922393.743902
+debug    : 
+debug    : Time at end 1794922393.820374
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202403.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202403.nc
+debug    : Time at launch 1794922393.8262408
+debug    : 
+debug    : Time at end 1794922393.9028034
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202404.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202404.nc
+debug    : Time at launch 1794922393.9078164
+debug    : 
+debug    : Time at end 1794922393.987392
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202405.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202405.nc
+debug    : Time at launch 1794922393.9929385
+debug    : 
+debug    : Time at end 1794922394.0731103
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202406.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202406.nc
+debug    : Time at launch 1794922394.0785985
+debug    : 
+debug    : Time at end 1794922394.1691241
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202407.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202407.nc
+debug    : Time at launch 1794922394.1742947
+debug    : 
+debug    : Time at end 1794922394.2386932
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202408.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202408.nc
+debug    : Time at launch 1794922394.2446213
+debug    : 
+debug    : Time at end 1794922394.3244448
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202409.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202409.nc
+debug    : Time at launch 1794922394.33058
+debug    : 
+debug    : Time at end 1794922394.4135158
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202410.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202410.nc
+debug    : Time at launch 1794922394.4188187
+debug    : 
+debug    : Time at end 1794922394.4980767
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202411.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202411.nc
+debug    : Time at launch 1794922394.5043125
+debug    : 
+debug    : Time at end 1794922394.5847657
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202412.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202412.nc
+debug    : Time at launch 1794922394.5914922
+debug    : 
+debug    : Time at end 1794922394.6688182
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202501.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202501.nc
+debug    : Time at launch 1794922394.674251
+debug    : 
+debug    : Time at end 1794922394.7545853
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202502.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202502.nc
+debug    : Time at launch 1794922394.760184
+debug    : 
+debug    : Time at end 1794922394.839572
+debug    : Command launched cdo -O -f nc -selname,ice_con -seldate,2010-10-01T00:00:00,2025-03-31T23:59:00 /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202503.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/tmp_RDEFT4_monthly_202503.nc
+debug    : Time at launch 1794922394.8462226
+debug    : 
+debug    : Time at end 1794922394.917957
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201010.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201011.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201012.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201101.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201102.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201103.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201104.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201105.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201106.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201107.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153151.nc
+debug    : Time at launch 1794922394.9227474
+debug    : 
+debug    : Time at end 1794922395.0549016
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201108.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201109.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201110.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201111.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201112.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201201.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201202.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201203.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201204.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201205.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531521.nc
+debug    : Time at launch 1794922395.0779266
+debug    : 
+debug    : Time at end 1794922395.2169251
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201206.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201207.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201208.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201209.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201210.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201211.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201212.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201301.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201302.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201303.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315221.nc
+debug    : Time at launch 1794922395.2404656
+debug    : 
+debug    : Time at end 1794922395.3745716
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201304.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201305.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201306.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201307.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201308.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201309.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201310.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201311.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201312.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201401.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152221.nc
+debug    : Time at launch 1794922395.397932
+debug    : 
+debug    : Time at end 1794922395.5261674
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201402.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201403.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201404.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201405.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201406.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201407.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201408.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201409.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201410.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201411.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522221.nc
+debug    : Time at launch 1794922395.5492635
+debug    : 
+debug    : Time at end 1794922395.6783845
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201412.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201501.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201502.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201503.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201504.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201505.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201506.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201507.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201508.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201509.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222221.nc
+debug    : Time at launch 1794922395.7025175
+debug    : 
+debug    : Time at end 1794922395.8214455
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201510.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201511.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201512.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201601.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201602.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201603.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201604.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201605.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201606.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201607.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222221.nc
+debug    : Time at launch 1794922395.8446596
+debug    : 
+debug    : Time at end 1794922395.9642391
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201608.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201609.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201610.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201611.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201612.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201701.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201702.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201703.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201704.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201705.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222221.nc
+debug    : Time at launch 1794922395.9863591
+debug    : 
+debug    : Time at end 1794922396.1209114
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201706.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201707.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201708.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201709.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201710.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201711.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201712.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201801.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201802.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201803.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222221.nc
+debug    : Time at launch 1794922396.1449149
+debug    : 
+debug    : Time at end 1794922396.281936
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201804.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201805.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201806.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201807.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201808.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201809.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201810.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201811.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201812.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201901.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222221.nc
+debug    : Time at launch 1794922396.3064134
+debug    : 
+debug    : Time at end 1794922396.4332542
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201902.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201903.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201904.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201905.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201906.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201907.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201908.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201909.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201910.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201911.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222221.nc
+debug    : Time at launch 1794922396.4562507
+debug    : 
+debug    : Time at end 1794922396.5861516
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_201912.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202001.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202002.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202003.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202004.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202005.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202006.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202007.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202008.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202009.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222221.nc
+debug    : Time at launch 1794922396.609848
+debug    : 
+debug    : Time at end 1794922396.745463
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202010.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202011.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202012.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202101.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202102.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202103.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202104.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202105.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202106.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202107.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222221.nc
+debug    : Time at launch 1794922396.7692745
+debug    : 
+debug    : Time at end 1794922396.8978238
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202108.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202109.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202110.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202111.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202112.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202201.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202202.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202203.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202204.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202205.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222221.nc
+debug    : Time at launch 1794922396.9212193
+debug    : 
+debug    : Time at end 1794922397.0489285
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202206.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202207.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202208.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202209.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202210.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202211.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202212.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202301.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202302.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202303.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222221.nc
+debug    : Time at launch 1794922397.0725045
+debug    : 
+debug    : Time at end 1794922397.2132995
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202304.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202305.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202306.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202307.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202308.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202309.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202310.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202311.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202312.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202401.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222221.nc
+debug    : Time at launch 1794922397.236196
+debug    : 
+debug    : Time at end 1794922397.3751547
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202402.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202403.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202404.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202405.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202406.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202407.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202408.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202409.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202410.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202411.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222221.nc
+debug    : Time at launch 1794922397.3985689
+debug    : 
+debug    : Time at end 1794922397.5321379
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202412.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202501.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202502.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/RDEFT4_monthly_202503.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222222.nc
+debug    : Time at launch 1794922397.5552933
+debug    : 
+debug    : Time at end 1794922397.6455197
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222222.nc
+debug    : Time at launch 1794922397.6553676
+debug    : 
+debug    : Time at end 1794922397.7662482
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222222.nc
+debug    : Time at launch 1794922397.7799149
+debug    : 
+debug    : Time at end 1794922397.9073925
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222.nc
+debug    : Time at launch 1794922397.9200945
+debug    : 
+debug    : Time at end 1794922398.0634034
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222.nc
+debug    : Time at launch 1794922398.0761583
+debug    : 
+debug    : Time at end 1794922398.2498505
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222.nc
+debug    : Time at launch 1794922398.2642028
+debug    : 
+debug    : Time at end 1794922398.4693346
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222.nc
+debug    : Time at launch 1794922398.4854288
+debug    : 
+debug    : Time at end 1794922398.6917982
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222.nc
+debug    : Time at launch 1794922398.7084916
+debug    : 
+debug    : Time at end 1794922398.9396195
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222.nc
+debug    : Time at launch 1794922398.9588232
+debug    : 
+debug    : Time at end 1794922399.2136672
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222.nc
+debug    : Time at launch 1794922399.2339802
+debug    : 
+debug    : Time at end 1794922399.500701
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222.nc
+debug    : Time at launch 1794922399.5233092
+debug    : 
+debug    : Time at end 1794922399.8251808
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222.nc
+debug    : Time at launch 1794922399.842442
+debug    : 
+debug    : Time at end 1794922400.1547177
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222.nc
+debug    : Time at launch 1794922400.1755896
+debug    : 
+debug    : Time at end 1794922400.5335763
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222.nc
+debug    : Time at launch 1794922400.5592394
+debug    : 
+debug    : Time at end 1794922400.919404
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222.nc
+debug    : Time at launch 1794922400.9450576
+debug    : 
+debug    : Time at end 1794922401.3037727
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315221.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315222.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522.nc
+debug    : Time at launch 1794922401.3309216
+debug    : 
+debug    : Time at end 1794922401.720211
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531521.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_1531522.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152.nc
+debug    : Time at launch 1794922401.747609
+debug    : 
+debug    : Time at end 1794922402.150271
+debug    : Command launched cdo -O -f nc -mergetime /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153151.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_153152.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315.nc
+debug    : Time at launch 1794922402.1778767
+debug    : 
+debug    : Time at end 1794922402.5971334
+debug    : Command launched cdo -O -f nc -copy /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/climaf_mcdo_g6lex29/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315.nc /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/15/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315.nc
+debug    : Time at launch 1794922402.6257825
+debug    : 
+debug    : Time at end 1794922403.0463665
+
+
+stdout and stderr of script call :
+	 /cnrm/est/COMMON/climaf/climaf_3.0/climaf/../scripts/mcdo.py --operator="" --output_file="/cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/15/c7f270805d15213f9721eafcc21a5a2c5ab95ce6b8b8a50e7fd14e_15315.nc" --var="ice_con" --period="2010-10-01T00:00:00,2025-03-31T23:59:00" --region="" --alias="" --units="" --vm="" /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201010.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201011.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201012.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201101.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201102.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201103.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201104.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201105.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201106.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201107.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201108.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201109.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201110.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201111.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201112.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201201.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201202.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201203.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201204.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201205.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201206.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201207.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201208.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201209.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201210.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201211.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201212.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201301.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201302.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201303.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201304.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201305.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201306.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201307.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201308.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201309.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201310.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201311.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201312.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201401.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201402.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201403.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201404.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201405.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201406.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201407.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201408.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201409.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201410.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201411.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201412.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201501.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201502.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201503.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201504.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201505.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201506.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201507.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201508.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201509.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201510.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201511.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201512.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201601.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201602.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201603.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201604.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201605.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201606.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201607.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201608.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201609.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201610.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201611.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201612.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201701.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201702.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201703.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201704.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201705.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201706.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201707.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201708.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201709.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201710.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201711.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201712.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201801.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201802.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201803.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201804.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201805.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201806.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201807.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201808.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201809.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201810.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201811.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201812.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201901.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201902.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201903.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201904.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201905.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201906.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201907.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201908.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201909.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201910.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201911.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_201912.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202001.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202002.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202003.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202004.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202005.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202006.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202007.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202008.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202009.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202010.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202011.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202012.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202101.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202102.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202103.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202104.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202105.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202106.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202107.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202108.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202109.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202110.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202111.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202112.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202201.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202202.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202203.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202204.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202205.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202206.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202207.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202208.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202209.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202210.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202211.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202212.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202301.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202302.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202303.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202304.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202305.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202306.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202307.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202308.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202309.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202310.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202311.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202312.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202401.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202402.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202403.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202404.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202405.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202406.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202407.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202408.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202409.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202410.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202411.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202412.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202501.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202502.nc /cnrm/ioga/Users/guemas/Obs/CryoSat-2/RDEFT4_monthly/RDEFT4_monthly_202503.nc 
+

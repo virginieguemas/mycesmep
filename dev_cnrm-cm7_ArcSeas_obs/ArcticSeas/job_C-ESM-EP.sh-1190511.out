@@ -1,0 +1,114 @@
+at CNRM
+Tue Nov 10 10:48:47 CET 2026
+$comparison
+dev_cnrm-cm7_ArcSeas_obs
+$component
+ArcticSeas
+$WD
+/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+$cesmep_frontpage
+../
+Tue Nov 10 10:48:47 CET 2026
+PATH /cnrm/est/COMMON/climaf/climaf_3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+PYTHONPATH /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules:/cnrm/est/COMMON/climaf/climaf_3.0:/cnrm/est/COMMON/climaf/add_packages/lib/python3.12/site-packages/
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+CESMEP_CLIMAF_CACHE = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Running main_C-ESM-EP.py for season  with parameter file 
+Using CliMAF cache = /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2
+Unset MAGPLUS_DEBUG which causes issues with cdo
+Unset MAGPLUS_INFO which causes issues with cdo
+warning  : pdftk not available, can not stamp pdf files
+warning  : At least one stamping requirement is not fulfilled, turn it to None.
+CliMAF climaf_version = 3.0
+CliMAF install => /cnrm/est/COMMON/climaf/climaf_3.0
+Cache directory set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2 (use $CLIMAF_CACHE if set) 
+Cache directory for remote data set to : /cnrm/ioga/Users/guemas/NO_SAVE/CESMEP_climaf_cache2/remote_data (use $CLIMAF_REMOTE_CACHE if set) 
+warning  : defining ncview : command ncview is not executable
+warning  : defining curl_tau_atm : command ferret is not executable
+warning  : Binary cdftools not found. Some operators won't work
+Available macros read from ~/.climaf.macros are : []
+warning  : In no stamp mode, there is no way to seriously identify CRS from files in cache  !
+/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/create_mask_regions.py:66: UserWarning: u-grid mask variable 'umaskutil' is missing from mask file: framstru will not be computed
+  warnings.warn("u-grid mask variable '" + umsk_name + "' is missing from mask file: framstru will not be computed")
+/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/create_mask_regions.py:72: UserWarning: v-grid mask variable 'vmaskutil' is missing from mask file: framstrv will not be computed
+  warnings.warn("v-grid mask variable '" + vmsk_name + "' is missing from mask file: framstrv will not be computed")
+Grid file is missing
+Grid file is missing
+/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/check_masks.py:120: UserWarning: The input coordinates to pcolormesh are interpreted as cell centers, but are not monotonically increasing or decreasing. This may lead to incorrectly calculated cell edges, in which case, please supply explicit cell edges to pcolormesh.
+  ax.pcolormesh(x, y, index, cmap=cmap, norm=norm, shading='auto')
+python => 3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]
+---
+Required softwares to run CliMAF => you are using the following versions/installations:
+rootmainpath =  /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas
+-- Use diagnostics_file = /mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/diagnostics_ArcticSeas.py
+==> ----------------------------------- #
+==> Working on models:
+==> ----------------------------------- #
+  
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1870-1899
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  piC-LR_633_oas5_x2553_trip_t0d
+  customname =  CNRM-CM6.2 (runoffs corr)
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4
+  --
+  --
+  project =  N4CPL
+  model =  CNRM-CM62-LR
+  clim_period =  1920-1949
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  AOGCM_drv632_NEMO422_LR_t7
+  customname =  REF1
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+  project =  N3CPL
+  model =  CNRM-CM62-LR
+  clim_period =  2020-2049
+  ts_period =  full
+  mip =  CMIP
+  frequency =  monthly
+  experiment =  CM67_N4_3_REF3
+  customname =  REF3
+  root =  /cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR
+  --
+  --
+==> ----------------------------------- #
+==> Against reference:
+==> ----------------------------------- #
+  
+  reference = default
+  --> you are using the catalog of pre-defined references (in share/cesmep_modules/reference/reference.py)
+  --> you can setup you own references in custom_obs_dict.py for each variable independently
+ArcticSeas: check_masks.py failed for CNRM-CM6.2 (runoffs corr) -> Command '['python3', '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/check_masks.py', '--gridfile', '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc', '--mask', '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm6.nc', '--label', 'CNRM-CM6.2 (runoffs corr)', '--latcutoff', '50.0']' returned non-zero exit status 1.
+ArcticSeas: check_masks.py failed for REF1, REF3 -> Command '['python3', '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools/masks/check_masks.py', '--gridfile', '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc', '--mask', '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc', '--label', 'REF1, REF3', '--latcutoff', '50.0']' returned non-zero exit status 1.
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1870-1899', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'piC-LR_633_oas5_x2553_trip_t0d', 'customname': 'CNRM-CM6.2 (runoffs corr)', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/CM6/REFNEMO4', 'variable': 'siconc'}
+ArcticSeas: grid file not found for CNRM-CM6.2 (runoffs corr) -> /cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc
+dat_dict before .resolve  {'project': 'N4CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '1920-1949', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'AOGCM_drv632_NEMO422_LR_t7', 'customname': 'REF1', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'siconc'}
+ArcticSeas: grid file not found for REF1 -> /cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc
+dat_dict before .resolve  {'project': 'N3CPL', 'model': 'CNRM-CM62-LR', 'clim_period': '2020-2049', 'ts_period': 'full', 'mip': 'CMIP', 'frequency': 'monthly', 'experiment': 'CM67_N4_3_REF3', 'customname': 'REF3', 'root': '/cnrm/ioga/Users/voldoire/NO_SAVE/NEMO4/LR', 'variable': 'siconc'}
+ArcticSeas: grid file not found for REF3 -> /cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc
+dat_dict before .resolve  {'project': 'NSIDC_CDR_V6', 'customname': 'nsidc_cdr_v6', 'frequency': 'monthly', 'ts_period': 'full', 'variable': 'cdr_seaice_conc_monthly'}
+Traceback (most recent call last):
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/dev_cnrm-cm7_ArcSeas_obs/ArcticSeas/../../main_C-ESM-EP.py", line 263, in <module>
+    exec(open(diagnostics_file).read())
+  File "<string>", line 693, in <module>
+  File "/mnt/lfs/d50/ioga/Users/guemas/cesmep/C-ESM-EP/share/cesmep_modules/CM_atlas/time_manager.py", line 186, in get_period_manager
+    req = ds(**req_dict).explore('resolve')
+          ^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 1808, in ds
+    return cdataset(**select_projects(**kwargs))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 583, in __init__
+    attval = processDatasetArgs(**kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/cnrm/est/COMMON/climaf/climaf_3.0/climaf/classes.py", line 452, in processDatasetArgs
+    raise Climaf_Classes_Error(
+climaf.utils.Climaf_Classes_Error: "Dataset's project 'NSIDC_CDR_V6' has not been described by a call to cproject()"
