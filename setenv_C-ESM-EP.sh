@@ -129,9 +129,6 @@ if [[ -d "/cnrm" ]] ; then
     unset PYTHONPATH
     export PYTHONNOUSERSITE=1 # ignore ~/.local packages (to avoid incompatibilities)
     export PYTHONUNBUFFERED=1 # python messages written to the job log as they come
-    # where the atlas are written, 'in' (/cnrm/ioga/.../NO_SAVE) or 'out' (/sx/d0/images), see
-    # locations.py; only a default: a value already set (command line, job) is kept
-    export CESMEP_ATLAS_LOCATION=${CESMEP_ATLAS_LOCATION:-in}
 
     # CDAT
     # Remove CDAT dependency for now

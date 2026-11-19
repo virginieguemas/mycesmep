@@ -576,8 +576,6 @@ for component in job_components:
         #variables += ',cesmep_frontpage=' + frontpage_address
         variables += ',cesmep_frontpage=../'
         variables += ',CESMEP_CLIMAF_CACHE=' + cesmep_climaf_cache
-        # -- where the atlas are written ('in' or 'out', see locations.py), passed on to the job
-        variables += ',CESMEP_ATLAS_LOCATION=' + os.getenv('CESMEP_ATLAS_LOCATION', 'in')
         #
         mail = ''
         if email is not None:
@@ -594,10 +592,10 @@ for component in job_components:
  \
               '\t echo -n Job submitted : $jobId\n\n' + \
  \
-              ' \t sqsub -b \"-d afternotok:$jobId --kill-on-invalid-dep=yes\" ' + \
+              ' \t sqsub -b \"-d afternotok:$jobId --kill-on-invalid-dep=yes --job-name=err_on_' + \
+              jobname + '\" ' + \
               '-e \"atlas_pathfilename=' + atlas_pathfilename + ',' + variables + '\"' + \
               ' ../../share/fp_template/copy_html_error_page.sh >/dev/null 2>&1 \n)\n'
-
     if atCerfacs:
         jobname = component + '_' + comparison + '_C-ESM-EP'
         if component not in metrics_components:
@@ -701,7 +699,7 @@ if argument.lower() not in ['url', 'clean']:
                 cmd += f" rm -f mailjob {launched_jobs}"
             #print('mail cmd=',cmd)
             os.system(cmd)
-    
+
 
 # -- Final: Print the final message with the address of the C-ESM-EP front page
 # -----------------------------------------------------------------------------------------
