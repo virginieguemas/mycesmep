@@ -360,6 +360,16 @@ if argument.lower() not in ['url' , 'clean' ]:
 launched_jobs = comparison_dir + "/launched_jobs"
 os.system("cat /dev/null >"+ launched_jobs)
 
+# -- At CNRM, at most cnrm_max_parallel_jobs jobs can run at the same time on aneto (the others
+# -- are killed): each job waits for the end (successful or not) of the job submitted
+# -- cnrm_max_parallel_jobs jobs before it, so that cnrm_max_parallel_jobs run at a time,
+# -- a new one starting as soon as another one is over. The job ids are gathered in cnrm_job_ids_file
+cnrm_max_parallel_jobs = 4
+cnrm_job_ids_file = comparison_dir + '/cnrm_job_ids'
+if atCNRM:
+    # Create an empty file to store job ids
+    os.system('cat /dev/null > ' + cnrm_job_ids_file)
+
 # -- Submit the jobs
 for component in job_components:
     if do_print:
@@ -581,14 +591,28 @@ for component in job_components:
         if email is not None:
             mail = ' --mail-type=END --mail-user=%s' % email
 
+        # -- Ids of the jobs already submitted (for the previous components/diagnostics):
+        # -- from the (cnrm_max_parallel_jobs+1)th job on, the job waits for the end of the job
+        # -- submitted cnrm_max_parallel_jobs jobs before it
+        dependency = ''
+        if do_print:
+            with open(cnrm_job_ids_file) as f:
+                previous_job_ids = f.read().split()
+                # previous_job_ids is the list of ids of all jobs submitted (excluding the err ones)
+            if len(previous_job_ids) >= cnrm_max_parallel_jobs:
+                dependency = ' -d afterany:' + previous_job_ids[-cnrm_max_parallel_jobs]
+                # this job will wait for the job submitted 4 jobs before
+
         # at CNRM, we use sqsub on PCs for launching on aneto; env vars are sent using arg '-e'
         cmd = '( \n\t cd ' + submitdir + ' ; \n\n' + \
               '\t sqsub \\\n\t\t-e \"' + variables + '\"' + \
-              ' \\\n\t\t-b "--job-name=' + jobname + \
+              ' \\\n\t\t-b "--job-name=' + jobname + dependency + \
               ' --time=03:00:00 --nodes=1' + mail + ' " \\\n\t\t../' + job_script + \
               ' > jobname.tmp  2>&1; \n\n' + \
  \
               ' \tjobId=$(cat jobname.tmp | cut -d \" \" -f 4 jobname.tmp); rm jobname.tmp  ; \n' + \
+ \
+              '\t echo $jobId >> ' + cnrm_job_ids_file + ' ; \n' + \
  \
               '\t echo -n Job submitted : $jobId\n\n' + \
  \
