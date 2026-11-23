@@ -79,7 +79,9 @@ ArcticSeas_obs = [
 # -- is set to 100%: these values are kept (a few % of the winter volume of the central Arctic).
 ]
 
-# -- Choose the season over which the time series are averaged
+# -- Choose the season(s) over which the time series are averaged: a single season, or a list
+# -- of seasons, e.g. ['ANM', 'NDJFMA', 'monthly']. The figures are then gathered season by
+# -- season in the atlas page, with links to each season below the maps of the seas.
 # ---------------------------------------------------------------------------- >
 # -> 'ANM' for annual means (January to December), or the initials of consecutive months,
 #    possibly across the end of the year: 'DJF' (December to February), 'JJA' (June to
@@ -93,8 +95,8 @@ ArcticSeas_obs = [
 # -- when plotting, from complete seasons only (all their months available): a season with
 # -- missing months is left out rather than giving a mean skewed towards the months present.
 # -- No recomputation is needed when the season is changed.
-# -- When using CryoSat-2, set ArcticSeas_season = 'NDJFMA' otherwise you'll end up with
-# -- missing observations (because the ice thickness is not observed in summer)
+# -- When using CryoSat-2, include a season within October-April (e.g. 'NDJFMA') otherwise
+# -- you'll end up with missing observations (because the ice thickness is not observed in summer)
 ArcticSeas_season = 'NDJFMA'
 # -- Minimum latitude for stereographic projection: southernmost latitude shown on the
 # -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
