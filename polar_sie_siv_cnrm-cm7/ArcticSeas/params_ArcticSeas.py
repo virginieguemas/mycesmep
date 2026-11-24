@@ -95,9 +95,9 @@ ArcticSeas_obs = [
 # -- when plotting, from complete seasons only (all their months available): a season with
 # -- missing months is left out rather than giving a mean skewed towards the months present.
 # -- No recomputation is needed when the season is changed.
-# -- When using CryoSat-2, include a season within October-April (e.g. 'NDJFMA') otherwise
+# -- When using CryoSat-2, include a season within November-April (e.g. 'NDJFMA') otherwise
 # -- you'll end up with missing observations (because the ice thickness is not observed in summer)
-ArcticSeas_season = 'NDJFMA'
+ArcticSeas_seasons = ['ANM', 'NDJFMA', 'MJJASO']
 # -- Minimum latitude for stereographic projection: southernmost latitude shown on the
 # -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
 ArcticSeas_latcutoff =  50.
@@ -107,7 +107,7 @@ ArcticSeas_latcutoff =  50.
 # --   'climato' -> climatology of the observations over ArcticSeas_obs_period,
 # --                repeated every year along the dates of the simulations (a single mean
 # --                value -- mean of the seasonal means of the complete seasons -- for a
-# --                season such as 'ANM' or 'DJF', otherwise, with ArcticSeas_season = 'monthly',
+# --                season such as 'ANM' or 'DJF', otherwise, with 'monthly' in ArcticSeas_seasons,
 # --                the mean of each calendar month)
 # --   'real'    -> observations plotted at their actual dates, over ArcticSeas_obs_period
 ArcticSeas_obs_display = 'climato'

@@ -329,7 +329,8 @@ def season_months(season):
         raise ValueError("season '%s' is %s" % (season, 'ambiguous' if starts else
                                                  'not a list of consecutive month initials'))
         # Otherwise, we will send an error message to the main script to be printed
-        # in the log together with the information that annual means will be used
+        # in the log together with the information that this season is skipped. If it
+        # was the only season requested, annual means will be used instead.
     return [(starts[0] + i) % 12 + 1 for i in range(len(season))]
     # Once we know for sure which is the number (from 1 to 12) of the first month
     # of 'season', we can list the numbers of all months of the season
@@ -408,7 +409,7 @@ def plotted_series(da, months, period='full'):
     """Returns a tuple (x values, y values) to be plotted from a monthly time series
     da which already holds at this stage the data in the units to be plotted (e.g. /1e12)
     months can be None or a list of numbers between 1 and 12 computed by
-    season_months from the string ArcticSeas_season provided in params_ArcticSeas.py,
+    season_months from a season of ArcticSeas_seasons provided in params_ArcticSeas.py,
     If months is None, the function returns the original da monthly values together with
     its original monthly time axis.
     If months is a list of months, this functions computes seasonal averages through
@@ -441,8 +442,8 @@ def obs_climatology_curve(da, clim_period, months, sim_times):
     of the experiments. For annual or seasonal means, a single mean value is repeated each
     year. For monthly climatologies, the mean of each calendar month is repeated in cycles.
     The input argument months is the list of calendar months of the season (obtained by
-    season_months), or None for monthly values (for ArcticSeas_season = 'monthly').
-    The output is a tupple :
+    season_months), or None for monthly values (for 'monthly' in ArcticSeas_seasons).
+    The output is a tuple :
     (values along sim_times, first year, last year of the climatology), or None if no
     observation falls within clim_period.
     da is a monthly series: if months is given, its seasonal means are first computed from
@@ -500,30 +501,47 @@ if do_ArcticSeas_timeseries:
     else:
         thumbN_size = thumbnail_size_global
     #
-    # ==> -- Season(s) from ArcticSeas_season in params_ArcticSeas.py: a single season or a list of
-    # ==> -- seasons, each one 'ANM', month initials such as 'DJF' or 'NDJFMA', or 'monthly' for
-    # ==> -- monthly values. season_specs is the list of (season_label, season_month_list) of the
-    # ==> -- valid seasons, in the order given (season_month_list is None for 'monthly'); the
-    # ==> -- figures are produced, and gathered in the atlas page, season by season
+    # ==> -- Season(s) from ArcticSeas_seasons in params_ArcticSeas.py: a single season or a list of
+    # ==> -- seasons. Each season can be 'ANM', a series of month initials such as 'DJF' or 'NDJFMA',
+    # ==> -- or 'monthly' for monthly values. If ArcticSeas_seasons is not provided or provided with
+    # ==> -- only invalid seasons, 'ANM' (annual means) is used. An invalid season is skipped.
     # -----------------------------------------------------------------------------------------
-    requested_seasons = ArcticSeas_season if 'ArcticSeas_season' in dir() else 'ANM'
+    requested_seasons = ArcticSeas_seasons if 'ArcticSeas_seasons' in dir() else 'ANM'
     if isinstance(requested_seasons, str):
         requested_seasons = [requested_seasons]
+        # requested_seasons becomes a list of strings, one for each season
+    # message_failed_comput is a list created to gather error messages as strings of characters
+    # which were intended for the logs. Those are captured to be printed on the atlas before
+    # the figures in addition to the logs : invalid season, missing grid, mask, data...
+    message_failed_comput = []
     season_specs = []
+    # season_specs is a list of (season_label, season_month_list) tuples, one (label, month) tuple
+    # for each valid season, in the order given by ArcticSeas_seasons (season_month_list is None
+    # for 'monthly'); the figures are produced, and gathered in the atlas page, season by season
     for season in requested_seasons:
-        season = str(season)
+        season = str(season) # Only in case of typing error - error message printed with this
         try:
             season_month_list = None if season.lower() == 'monthly' else season_months(season)
+            # season_months is a function defined above to turn a season defined as a string
+            # of characters into a list of integers corresponding to the months in that season
+            # if the season is not valid, an error message is printed and that season is skipped.
         except ValueError as e:
-            print("ArcticSeas: %s, season ignored" % e)
+            report_failed_comput(message_failed_comput, "%s, season ignored" % e)
+            # with an invalid season, the error message is printed in the log and on the atlas page.
             continue
+            # we skip that season and go to next
         season_label = 'monthly' if season_month_list is None else season.upper()
+        # only valid seasons get a label
         if season_label not in [label for (label, months) in season_specs]:
             # a season given twice is only plotted once
             season_specs.append((season_label, season_month_list))
+            # we include, for this valid season, a tuple holding its label and the list of integers
+            # pointing at the months it includes
     if not season_specs:
-        print("ArcticSeas: no valid season in ArcticSeas_season, using 'ANM' (annual means) instead")
+        report_failed_comput(message_failed_comput,
+                             "no valid season in ArcticSeas_seasons, using 'ANM' (annual means) instead")
         season_specs = [('ANM', season_months('ANM'))]
+        # we use annual means if no valid season was specified by the user
     #
     # ==> -- Southernmost latitude shown on the polar maps of the Arctic seas (ArcticSeas_latcutoff
     # ==> -- in params_ArcticSeas.py; 45 by default, as in check_masks.py)
@@ -758,8 +776,9 @@ if do_ArcticSeas_timeseries:
 
             # -- Links to the sections of the page holding the figures of each season (anchors
             # -- season_<label>, set before each season section below)
-            index += '<p>Seasons: ' + ' | '.join('<a href="#season_%s">%s</a>' % (sanitize(label), label)
-                                                  for (label, months) in season_specs) + '</p>\n'
+            index += '<p>Seasons: ' + ' | '.join('<a href="#season_%s">%s</a>'
+                                                 % (sanitize(season_label), season_label)
+                                                 for (season_label, months) in season_specs) + '</p>\n'
 
             # -- Get the list of seas from any one of the mask files: they all describe the same
             # -- set of named seas (netcdf variable names, e.g. 'barentse'), discretized on
@@ -789,10 +808,6 @@ if do_ArcticSeas_timeseries:
             # seaindex_files is defined to contain the file names holding the sea ice extent / volume
             # organized by simulation and variable
             model_labels = [] # list of model and observations labels (i.e. customnames by default)
-            message_failed_comput = []
-            # message_failed_comput is a list created to gather error messages as strings of characters
-            # which were intended for the logs. Those are captured to be printed on the atlas before
-            # the figures in addition to the logs : missing grid, mask, data...
             #
             # ARCTIC_SEAS_VARIABLES = ['sic', 'sit'] -- these are not necessarily the actual
             # netcdf variable name in the netcdf files that varies by simulation (e.g. N3CPL's volume
@@ -822,6 +837,8 @@ if do_ArcticSeas_timeseries:
                             print("ArcticSeas: " + message)
                         else:
                             report_failed_comput(message_failed_comput, message)
+                            # we report in the log and on the atlas page that the variable is not declared
+                            # in ArcticSeas_variable_names
                         continue
                         # We skip to next model/obs here if variable not declared in params_ArcticSeas.py
 
@@ -852,6 +869,7 @@ if do_ArcticSeas_timeseries:
                     if 'period' not in wmodel:
                         report_failed_comput(message_failed_comput, "no data found for %s / %s (variable %s), skipping"
                                              % (model_label, variable, real_variable_text))
+                        # We report in the logs and on the atlas page the missing data
                         continue
                         # We skip to next model/obs here if period is not available = no input data found
 
@@ -968,14 +986,14 @@ if do_ArcticSeas_timeseries:
                         report_failed_comput(message_failed_comput, "failed to compute %s (variable %s) for %s -> %s"
                                              % (variable, real_variable_text, model_label, e))
 
-            # ==> -- Monthly plots (ArcticSeas_season = 'monthly') use the dates of the files as x
+            # ==> -- Monthly plots ('monthly' in ArcticSeas_seasons) use the dates of the files as x
             # ==> -- values: dates in a non-standard calendar (e.g. noleap, 360_day) are cftime objects,
             # ==> -- which matplotlib only plots with the nc-time-axis package, and cannot mix with
             # ==> -- standard dates (i.e. in another simulation, or an observation with obs_display =
             # ==> -- 'real'). Warn in the log and the atlas page if any dataset uses such a calendar
             # ==> -- (seasonal means use integer years and are not concerned)
             # -----------------------------------------------------------------------------------------
-            if any(months is None for (label, months) in season_specs):
+            if any(season_month_list is None for (season_label, season_month_list) in season_specs):
                 # a season_month_list None means monthly data to be plotted
                 non_standard_calendars = dict()  # label -> calendar
                 for variable, expe in seaindex_files.items():
@@ -1006,7 +1024,7 @@ if do_ArcticSeas_timeseries:
                     # calendars_text = label1 (calendar1)
                     # or calendars_text = label1 (calendar1), label2 (calendar2), label3 (calendar3)
                     # with any number of label (calendar)
-                    message = "Monthly plots (ArcticSeas_season = 'monthly') with a non-standard calendar: " + \
+                    message = "Monthly plots ('monthly' in ArcticSeas_seasons) with a non-standard calendar: " + \
                               calendars_text + ". Plotting these dates needs the nc-time-axis package, " \
                               "and fails if they are mixed with standard dates (other simulations, " \
                               "observations with obs_display = 'real'): use a season such " \
@@ -1091,7 +1109,7 @@ if do_ArcticSeas_timeseries:
             for season_label, season_month_list in season_specs:
                 # -- One section per season, with an anchor reached from the links below the maps
                 # -- of the seas; season_label and season_month_list are used below by the plots
-                season_title = 'Monthly values' if season_month_list is None else 'Season ' + season_label
+                season_title = 'Monthly' if season_month_list is None else season_label
                 index += '<a id="season_%s"></a>\n' % sanitize(season_label)
                 index += section(season_title, level=5)
                 index += open_table()
@@ -1155,7 +1173,7 @@ if do_ArcticSeas_timeseries:
                                 # curve list which is for model/experiment data
                                 obs_series[model_label] = da
                             else:
-                                # -- Seasonal means of complete seasons only (ArcticSeas_season in params_ArcticSeas.py)
+                                # -- Seasonal means of complete seasons only (ArcticSeas_seasons in params_ArcticSeas.py)
                                 time_values, data_values = plotted_series(da, season_month_list)
                                 # We obtain a tuple containing a numpy array of integer years if we computed a seasonal
                                 # mean (using only season with no missing data inside the season) as first element
