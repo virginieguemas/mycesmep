@@ -131,7 +131,7 @@ SEA_WARNING_PATTERN = re.compile(r"Missing values found in field for sea '([^']+
 # [^']+ means one or more character that are not '
 # ([^']+) captures the name of the sea as group(1)
 # (?: \([^)]*\))? : optional text between parentheses after the message, e.g. the percentage of
-# missing values '(2.3% of the sea points, over the time steps with data)', kept in the message
+# missing values '(2.3% of the sea points, over all the 174 time steps with data)', kept in the message
 # (?: ... )? recognizes this optional text without capturing it as group(2)
 # \([^)]*\) means any characters between parentheses except a closing parenthesis
 # WARNING : if the comp_seaiceindex message were to change, the change should be reflected in
@@ -774,11 +774,11 @@ if do_ArcticSeas_timeseries:
                 # case of issues with the plotting on the html
             index += close_line() + close_table()
 
-            # -- Links to the sections of the page holding the figures of each season (anchors
-            # -- season_<label>, set before each season section below)
-            index += '<p>Seasons: ' + ' | '.join('<a href="#season_%s">%s</a>'
-                                                 % (sanitize(season_label), season_label)
-                                                 for (season_label, months) in season_specs) + '</p>\n'
+            # -- Links to the sections of the page holding the figures of each season
+            # -- (anchors season_<label>, set before each season section below)
+            season_links = ' | '.join('<a href="#season_%s">%s</a>' % (sanitize(season_label), season_label)
+                                      for (season_label, season_month_list) in season_specs)
+            index += '<p style="text-align:center; font-size:150%">Seasons: ' + season_links + '</p>\n'
 
             # -- Get the list of seas from any one of the mask files: they all describe the same
             # -- set of named seas (netcdf variable names, e.g. 'barentse'), discretized on
@@ -996,10 +996,10 @@ if do_ArcticSeas_timeseries:
             if any(season_month_list is None for (season_label, season_month_list) in season_specs):
                 # a season_month_list None means monthly data to be plotted
                 non_standard_calendars = dict()  # label -> calendar
-                for variable, expe in seaindex_files.items():
+                for variable, cache_file_per_dataset in seaindex_files.items():
                     # variable : sic/sit
-                    # expe : {simulation/observation label: its cache file} for this variable
-                    for model_label, cache_file in expe.items():
+                    # cache_file_per_dataset : {simulation/observation label: its cache file} for this variable
+                    for model_label, cache_file in cache_file_per_dataset.items():
                         if model_label in non_standard_calendars or not os.path.exists(cache_file):
                         # this model/obs is already known to have a non-standard calendar
                         # or we can not check its calendar because we do not have any cache_file
@@ -1053,14 +1053,24 @@ if do_ArcticSeas_timeseries:
                 'sit': dict(title='Sea ice volume',
                             ylabel='Sea ice volume (Thousand km3)'),
             }
-            warnings_per_sea = dict()  # sea -> [ 'model_label (diagnostics): message', ...]
+            warnings_per_sea = dict()
+            # sea -> [ (model_label, variable, 'model_label (diagnostics): message', is_missing_values), ...]
             # Warning messages about missing data are reorganized to be gathered per sea
             # instead of per variable and experiment/observation (initially in a text file
-            # next to each cache_file
-            for variable, expe in seaindex_files.items():
+            # next to each cache_file). model_label and variable are kept to show, for each
+            # season, only the warnings of the simulations/observations and variable plotted
+            # in that season.
+            # is_missing_values is True for the messages of comp_seaiceindex.py about missing
+            # values; we need that information because those messages and only those are
+            # completed by the period over which the number of missing values was counted
+            # is_missing_values is False for the messages about repeated dates in input files
+            dataset_periods = dict()
+            # (model_label, variable) -> 'first year-last year' of its cache file: the missing
+            # values reported by comp_seaiceindex.py are counted over all the months of this period
+            for variable, cache_file_per_dataset in seaindex_files.items():
                 # variable : sic/sit
-                # expe : {simulation/observation label: its cache file} for this variable
-                for model_label, cache_file in expe.items():
+                # cache_file_per_dataset : {simulation/observation label: its cache file} for this variable
+                for model_label, cache_file in cache_file_per_dataset.items():
                     for warned_sea, message in read_sea_warnings(cache_file).items():
                         if not covers_sea(obs_seas, model_label, warned_sea):
                             continue
@@ -1072,7 +1082,12 @@ if do_ArcticSeas_timeseries:
                         warnings_per_sea.setdefault(warned_sea, []).append(
                             # if there was no previous message, set default creates an empty entry
                             # for warned_sea in the warning_per_sea dictionary
-                            '%s (%s): %s' % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'], message))
+                            # warnings_per_sea is a dictionary which looks like :
+                            # 'sea' : [ (model_label, variable, message, True),
+                            #           (model_label, variable, message, False) ...]
+                            (model_label, variable,
+                             '%s (%s): %s' % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'], message),
+                             True))
                             # (variable missing from variable_plot_specs -> 'unknown diagnostics')
                             # The final message to be printed below the sea title will be :
                             # model_label (Sea ice extent) : warning message about missing values
@@ -1085,6 +1100,14 @@ if do_ArcticSeas_timeseries:
                         # if the cachefile is not there, we go to next model or observation for this variable
                         continue
                     with xr.open_dataset(cache_file) as cached:
+                        first_var = list(cached.data_vars)[0]
+                        # first sea of the cache file (one netcdf variable per sea, all on the same time axis)
+                        cached_years = cached[cached[first_var].dims[0]].dt.year
+                        # dims[0] should be the time dimension
+                        # cached_years should be years in the cache file (repeated as we have monthly data)
+                        dataset_periods[(model_label, variable)] = '%d-%d' % (int(cached_years.min()),
+                                                                              int(cached_years.max()))
+                        # we store that information to print it with a message about missing values
                         for sea in cached.data_vars:
                             da, n_removed, identical = without_duplicate_dates(cached[sea].load())
                             # The without_duplicate_dates applied on the cache file checks for this sea
@@ -1094,9 +1117,11 @@ if do_ArcticSeas_timeseries:
                             if n_removed and not identical and covers_sea(obs_seas, model_label, sea):
                                 # We found two different values for one or more dates
                                 warnings_per_sea.setdefault(sea, []).append(
-                                    '%s (%s): %d repeated dates with different values, first value kept'
-                                    % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'],
-                                       n_removed))
+                                    (model_label, variable,
+                                     '%s (%s): %d repeated dates with different values, first value kept'
+                                     % (model_label, variable_plot_specs.get(variable, dict(title='unknown diagnostics'))['title'],
+                                        n_removed),
+                                     False))
             # -- comp_seaiceindex.py stores, as an attribute of each sea in its output file
             # -- (SEA_AREA_ATTRIBUTE), the total area of the sea on the grid of that
             # -- simulation/observation.
@@ -1111,7 +1136,7 @@ if do_ArcticSeas_timeseries:
                 # -- of the seas; season_label and season_month_list are used below by the plots
                 season_title = 'Monthly' if season_month_list is None else season_label
                 index += '<a id="season_%s"></a>\n' % sanitize(season_label)
-                index += section(season_title, level=5)
+                index += '<h3 style="text-align:center">%s</h3>\n' % season_title
                 index += open_table()
                 for sea in seas:
                     sea_name = sea_display_names.get(sea, sea)
@@ -1121,10 +1146,16 @@ if do_ArcticSeas_timeseries:
                         sea_areas_text(sea, area_label_groups, seaindex_files) + '</span>'
                         # sea_areas_text is a function defined earlier which returns a line with
                         # group of model_labels : area_of_the_sea; group of model_labels area_of_the_sea, etc ...
-                    if sea in warnings_per_sea:
-                        title += '<br><span style="font-size:70%; color:red">Warning - ' + \
-                                 '<br>Warning - '.join(warnings_per_sea[sea]) + '</span>'
-                    index += start_line(title)
+                    row_cells = ''
+                    # row_cells is the html code containing the cells (figures) of this sea which are added to
+                    # the page after the title, once we know which datasets are plotted in this season
+                    plotted = set()
+                    # plotted : set of (model_label, variable) actually plotted for this sea and season,
+                    # to show only their warnings below the title and not the warnings about datasets
+                    # and variables which are not plotted (e.g. no warning about CryoSat-2,
+                    # observed in winter only, in the ANM or MJJASO sections where it is not plotted)
+                    # we use a set instead of a list because membership tests are quicker and
+                    # duplicates are automatically dropped in sets
                     for variable, plot_specs in variable_plot_specs.items():
                         # variable : sic/sit
                         # plot_specs : dictionary holding the plot title and ylabel for this variable
@@ -1260,6 +1291,15 @@ if do_ArcticSeas_timeseries:
                         # if m is in obs_labels, we do not include it in missing_labels even if
                         # there is no data for this observation
 
+                        # -- Datasets with at least one value in this season (a simulation without any
+                        # -- complete season gives an empty series; an observation without any value
+                        # -- within obs_period is already left out of obs_curves)
+                        for model_label, time_values, data_values in curves:
+                            if len(time_values) > 0:
+                                plotted.add((model_label, variable))
+                        for obs_label, legend_label, time_values, data_values in obs_curves:
+                            plotted.add((obs_label, variable))
+
                         fig, ax = plt.subplots(figsize=(6, 4))
                         # New figure created for each sea, each variable and associated diagnostics
                         if not curves and not obs_curves:
@@ -1302,7 +1342,26 @@ if do_ArcticSeas_timeseries:
                         fig.savefig(png_path, dpi=100)
                         plt.close(fig)
 
-                        index += cell(plot_specs['title'], png_path, thumbnail=thumbN_size, hover=hover, **alternative_dir)
+                        row_cells += cell(plot_specs['title'], png_path, thumbnail=thumbN_size, hover=hover,
+                                          **alternative_dir)
+                    # -- Warnings below the sea title: only those of the datasets plotted in this season
+                    sea_warnings = []
+                    for model_label, variable, text, is_missing_values in warnings_per_sea.get(sea, []):
+                        if (model_label, variable) not in plotted:
+                            continue
+                        if is_missing_values and (model_label, variable) in dataset_periods:
+                            # The missing values are counted by comp_seaiceindex.py over all the months
+                            # of the files, not only those of the season shown in this section
+                            text += ', i.e. all the months of the %s period of %s' \
+                                    % (dataset_periods[(model_label, variable)], model_label)
+                            if season_month_list is not None and len(season_month_list) < 12:
+                                # a season shorter than the year (not 'ANM', not 'monthly')
+                                text += ', within and outside %s' % season_label
+                        sea_warnings.append(text)
+                    if sea_warnings:
+                        title += '<br><span style="font-size:70%; color:red">Warning - ' + \
+                                 '<br>Warning - '.join(sea_warnings) + '</span>'
+                    index += start_line(title) + row_cells
                     index += close_line()
                 index += close_table()
 
