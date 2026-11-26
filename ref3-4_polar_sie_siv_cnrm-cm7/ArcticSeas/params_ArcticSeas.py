@@ -1,0 +1,262 @@
+# ------------------------------------------------------------------------------------------ \
+# --                                                                                        - \
+# --                                                                                         - \
+# --      User Interface for:                                                                 - \
+# --          CliMAF Earth System Model Evaluation Platform                                    - \
+# --             - component: ArcticSeas                                                       - |
+# --                                                                                           - |
+# --      Contact : virginie.guemas@meteo.fr                                                   - |
+# --      History : Created September 2026   -    virginie.guemas@meteo.fr                    - |
+# --                                                                                           - /
+# --------------------------------------------------------------------------------------------- /
+
+# -- Preliminary settings: import module, set the verbosity and the CliMAF cache cleaning
+# -- (read by main_C-ESM-EP.py)
+# ---------------------------------------------------------------------------- >
+from os import getcwd
+
+# -- Set the verbosity of CliMAF (minimum is 'critical', maximum is 'debug', intermediate -> 'warning')
+verbose = 'debug'
+# -- Set to True to clean the CliMAF cache
+clean_cache = False
+# -- Patterns to clean the cache at the end of the execution of the atlas
+routine_cache_cleaning = [dict(age='+20')]
+
+# -- Head title of the atlas
+# ---------------------------------------------------------------------------- >
+atlas_head_title = "Arctic Seas - Sea Ice Extent and Volume"
+
+# ---------------------------------------------------------------------------- >
+# -- Arctic Seas : per-sea sea ice extent / volume time series
+# -- Relies on the external script comp_seaiceindex.py from the sea_ice_diag_tools
+# -- repository, which computes the area-weighted sum (area-integral) of a variable over
+# -- each region described in a mask netcdf file (one region = one data variable in the
+# -- mask file), weighting by the grid cell area (dxvar*dyvar) taken from a grid file.
+# --   -> applied to 'sic' >= ArcticSeas_extent_threshold => sea ice extent per sea
+# --   -> applied to 'sit'                                => sea ice volume per sea
+#
+# -- The sea mask file can be computed by create_mask_regions.py from the same
+# -- sea_ice_diag_tools repository, given the a grid description file holding
+# -- the latitudes and longitudes for each grid point and a land-sea mask to know
+# -- where the coastline is for a particular grid
+# ---------------------------------------------------------------------------- >
+do_ArcticSeas_timeseries = True
+# WARNING : put there to do as other examples do, but why is that useful ?
+
+# -- Path to the sea_ice_diag_tools clone holding :
+# -- comp_seaiceindex.py, create_mask_regions.py and check_masks.py
+# -- https://github.com/virginieguemas/sea_ice_diag_tools.git
+# -- git@github.com:virginieguemas/sea_ice_diag_tools.git
+ArcticSeas_tools_dir = '/cnrm/ioga/Users/guemas/diag_tools/sea_ice_diag_tools'
+
+# -- Observational references, declared here rather than in datasets_setup.py
+# -- to avoid interactions with other diagnostics.
+# -- Same syntax as an entry of models in datasets_setup.py:
+# -- a CliMAF dataset description (the project is declared in my_projects.py),
+# -- with 'frequency' and 'ts_period' ('full' = every available date).
+# -- Each observation is then looked up by its 'customname' (or by its 'project' if it
+# -- has no 'customname') in ArcticSeas_gridfile, ArcticSeas_maskfile and
+# -- ArcticSeas_variable_names exactly like a simulation; only the available
+# -- variables need to be specified in ArcticSeas_variable_names (e.g. no 'sit'
+# -- for a sea ice concentration product).
+# -- Observations are plotted in black/grey with distinct line styles, and
+# -- a missing observation is simply left out of the figure: it never triggers
+# -- the removal of the figure through ArcticSeas_on_missing_simulations = 'error'
+# -- (see ArcticSeas_on_missing_simulations).
+# -- Optional key 'seas': list of the seas (netcdf variable names of the mask file) where
+# -- the observation is plotted, for a product which does not cover all the seas; in the
+# -- other seas, it is neither plotted nor warned about. Without 'seas': all the seas.
+ArcticSeas_obs = [
+    dict(project='NSIDC_CDR_V6', customname='nsidc_cdr_v6', frequency='monthly', ts_period='full'),
+    dict(project='CRYOSAT2_RDEFT4', customname='cryosat2_rdeft4', frequency='monthly', ts_period='full',
+         seas=['eastsibe', 'laptevse', 'karaseax', 'barentse', 'lincolns', 'beaufort', 'chukchis',
+               'centrarc', 'wcentarc', 'ecentarc']),
+# -- CryoSat-2 RDEFT4 gives no thickness in the Atlantic seas and in the Canadian
+# -- Archipelago, Hudson and Baffin bays, hence its list of seas (arcticoc and margseas,
+# -- only partly covered, are left out).
+# -- North of 88N (not seen by CryoSat-2), the thickness provided by RDEFT4 is much smoother
+# -- than elsewhere (about 2.8 m, probably interpolated by the producer) and the concentration
+# -- is set to 100%: these values are kept (a few % of the winter volume of the central Arctic).
+]
+
+# -- Choose the season(s) over which the time series are averaged: a single season, or a list
+# -- of seasons, e.g. ['ANM', 'NDJFMA', 'monthly']. The figures are then gathered season by
+# -- season in the atlas page, with links to each season below the maps of the seas.
+# ---------------------------------------------------------------------------- >
+# -> 'ANM' for annual means (January to December), or the initials of consecutive months,
+#    possibly across the end of the year: 'DJF' (December to February), 'JJA' (June to
+#    August), 'NDJFMA', 'MJJASO', 'JASONDJFMAMJ' (July to June)... The initials must match
+#    one single run of months ('J', 'M' or 'A' alone are ambiguous).
+#    A season across the end of the year is assigned to the year of its last month
+#    (DJF 1980 = December 1979 to February 1980).
+# -> 'monthly' to plot the native monthly values.
+#
+# -- comp_seaiceindex.py always works on the monthly fields; seasonal means are computed
+# -- when plotting, from complete seasons only (all their months available): a season with
+# -- missing months is left out rather than giving a mean skewed towards the months present.
+# -- No recomputation is needed when the season is changed.
+# -- When using CryoSat-2, include a season within November-April (e.g. 'NDJFMA') otherwise
+# -- you'll end up with missing observations (because the ice thickness is not observed in summer)
+ArcticSeas_seasons = ['ANM', 'NDJFMA', 'MJJASO']
+# -- Minimum latitude for stereographic projection: southernmost latitude shown on the
+# -- polar maps of the Arctic seas at the top of the page (check_masks.py --latcutoff)
+ArcticSeas_latcutoff =  50.
+
+# -- How the observations are plotted, since their dates sometimes do not match those of
+# -- the simulations like in PICTL:
+# --   'climato' -> climatology of the observations over ArcticSeas_obs_period,
+# --                repeated every year along the dates of the simulations (a single mean
+# --                value -- mean of the seasonal means of the complete seasons -- for a
+# --                season such as 'ANM' or 'DJF', otherwise, with 'monthly' in ArcticSeas_seasons,
+# --                the mean of each calendar month)
+# --   'real'    -> observations plotted at their actual dates, over ArcticSeas_obs_period
+ArcticSeas_obs_display = 'climato'
+# -- ArcticSeas_obs_period :
+# --      used with 'climato' (period of the climatology) and with 'real' (period plotted)
+# --             -> 'full' (every available year)
+# --             -> 'sim' (from the first to the last year of the simulations of each figure;
+# --                'full' if a figure has no simulation)
+# --             -> 'YYYY-YYYY' (years of the period, included)
+# -- Both can be set for one observation only with the keys 'obs_display' and 'obs_period'
+# -- in its ArcticSeas_obs entry, e.g. dict(..., obs_display='real') or
+# -- dict(..., obs_period='1991-2020').
+ArcticSeas_obs_period = 'full'
+
+
+# -- Grid description file (NEMO mesh_mask-like: land-sea mask, lon/lat, cell sizes
+# -- e1t/e2t) and matching Arctic-seas mask file (one data variable (2D) per sea/region,
+# -- with a 'long_name' attribute giving the sea name ; built on demand by
+# -- ArcticSeas_tools_dir/masks/create_mask_regions.py if missing), one entry for each
+# -- simulation in `models` (see datasets_setup.py), keyed by its 'customname'.
+# -- One entry for each observation.
+# -- Simulations/observations that share the same grid should simply repeat the same
+# -- paths: the mask is then only built once and reused.
+# -- A simulation without a 'customname' is instead keyed by its 'experiment', an
+# -- observation without a 'customname' by its 'project'.
+# -- A simulation/observation missing from these dictionaries is skipped, with a message
+# -- in the log.
+ArcticSeas_gridfile = {
+    'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm6.nc',
+    'REF1': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
+    'REF3': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.cnrmcm7.nc',
+    # -- NSIDC polar stereographic 25 km grid (psn25, shared with CryoSat-2 RDEFT4),
+    'nsidc_cdr_v6': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.psn25.nc',
+    'cryosat2_rdeft4': '/cnrm/ioga/Users/guemas/gridfiles/meshmask/mesh_mask.psn25.nc',
+}
+
+ArcticSeas_maskfile = {
+    'CNRM-CM6.2 (runoffs corr)': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm6.nc',
+    'REF1': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
+    'REF3': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.cnrmcm7.nc',
+    'nsidc_cdr_v6': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.psn25.nc',
+    'cryosat2_rdeft4': '/cnrm/ioga/Users/guemas/gridfiles/seas/mask.ArcticSeas.psn25.nc',
+}
+ArcticSeas_dxvar = 'e1t'
+ArcticSeas_dyvar = 'e2t'
+
+# -- Where the per-sea sea ice extent/volume time series computed by comp_seaiceindex.py
+# -- are cached, one sub-directory per simulation/observation (based on its key, e.g. its
+# -- customname), one netcdf file per variable. Reused across atlas runs: a
+# -- simulation is only (re-)processed by comp_seaiceindex.py if no cache exists yet,
+# -- or if the simulation now extends further in time than what is cached (i.e. it was
+# -- lengthened since the cache was last built).
+ArcticSeas_cache_dir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_cache'
+
+# -- Working directory for the files produced at each atlas run: figures (time series,
+# -- polar maps of the Arctic seas).
+# -- Created if it does not exist. None (default) : ArcticSeas_workfiles under the
+# -- directory where the atlas is run.
+ArcticSeas_workdir = '/cnrm/ioga/Users/guemas/NO_SAVE/ArcticSeas_workdir'
+
+# -- Variable names to find the sea ice concentration (sic) and the sea ice thickness (sit)
+# -- in the output files, one entry per simulation/observation (keyed by its 'customname',
+# -- or, if it has none, its 'experiment' for a simulation or its 'project' for an
+# -- observation -- same key as ArcticSeas_gridfile/ArcticSeas_maskfile).
+# -- A simulation/observation missing from this dictionary is skipped, with a message in the log.
+# -- A concentration under 'sic' in % is always detected and turned into a fraction.
+# -- WARNING : 'sit' must be the sea ice volume per grid cell area, so that its area-weighted
+# -- sum is the sea ice volume, given either:
+# --   - as a single name, e.g. NEMO/SI3 'sivolu' ("Sea-ice volume per area"),
+# --   - or as a list of names whose product is used, e.g. ['sithic', 'siconc']: the thickness
+# --     of the ice-covered part only ('sithic', "Sea-ice thickness") multiplied by the sea ice
+# --     concentration ('siconc', "Sea-ice concentration"); 'sithic' alone would count every
+# --     grid cell as fully ice-covered and overestimate the volume. The variables of a product
+# --     must have exactly the same dates. A concentration in % is turned into a fraction only
+# --     if it also appears under the 'sic' entry of the same simulation.
+# --     Where the concentration is 0, the product is 0 even if the thickness is not defined
+# --     (NaN) there.
+ArcticSeas_variable_names = {
+    'CNRM-CM6.2 (runoffs corr)': {'sic': 'siconc', 'sit': 'sivolu'},
+    'REF1': {'sic': 'siconc', 'sit': 'sivolu'},
+    'REF3': {'sic': 'siconc', 'sit': 'sivolu'},
+    'nsidc_cdr_v6': {'sic': 'cdr_seaice_conc_monthly'},
+    'cryosat2_rdeft4': {'sit': ['sea_ice_thickness', 'ice_con']},
+    # -- ice_con is already a fraction in the regrouped files: no 'sic' entry needed
+}
+
+# -- Sea ice extent : area of the grid cells where the sea ice concentration (as a fraction)
+# -- is above or equal to this threshold (0.15 by default, i.e. 15%)
+ArcticSeas_extent_threshold = 0.15
+
+# -- Number of time steps read at once when processing the data (in comp_seaiceindex.py and
+# -- when checking whether sic is in %), to avoid filling the memory with long model series:
+# -- e.g. 120 = 10 years of monthly data at a time. Requires dask; set to None to read
+# -- each field entirely at once.
+ArcticSeas_chunk_time = 120
+
+# -- Restrict to a subset of seas (list of the netcdf variable names found in
+# -- ArcticSeas_maskfile); set to None (or an empty list) to use every region found
+# -- in the mask file.
+ArcticSeas_seas_list = [
+    'arcticoc',  # Arctic Ocean (overall basin)
+    'eastsibe',  # East Siberian Sea
+    'laptevse',  # Laptev Sea
+    'karaseax',  # Kara Sea
+    'barentse',  # Barents Sea
+    'whitesea',  # White Sea
+    'greenlds',  # Greenland Sea
+    'norwegia',  # Norwegian Sea
+    'icelands',  # Iceland Sea
+    'davisstr',  # Davis Strait
+    'hudsonst',  # Hudson Strait
+    'hudsonba',  # Hudson Bay
+    'baffinba',  # Baffin Bay
+    'lincolns',  # Lincoln Sea
+    'nwpassag',  # Northwestern Passages
+    'beaufort',  # Beaufort Sea
+    'chukchis',  # Chukchi Sea
+    'margseas',  # Arctic Marginal Seas (union of the 16 seas above)
+    'centrarc',  # Central Arctic
+    'wcentarc',  # Western Central Arctic
+    'ecentarc',  # Eastern Central Arctic
+]
+
+# -- What to do, for a given sea/variable plot, when data is available for only
+# -- some of the simulations (the others failed: no file found, missing grid file,
+# -- comp_seaiceindex.py error...):
+# --   'error'   -> replace the whole figure by an error message listing the
+# --                simulations that are missing
+# --   'partial' -> plot the simulations that do have data anyway, silently
+# --                leaving out the missing ones
+# -- Regardless of this setting, if NO simulation has data at all for a given
+# -- sea/variable, an error message is always shown instead of an (empty) figure.
+# -- Observations (ArcticSeas_obs) are not concerned: a missing observation is simply
+# -- not plotted.
+ArcticSeas_on_missing_simulations = 'error'
+
+# -- Thumbnail size for the plots of this component, i.e. size of the individual plots
+# -- inserted in the html page (by default C-ESM-EP setting)
+thumbnail_size = '450*300'
+
+# -- Some settings -- customization
+# ---------------------------------------------------------------------------- >
+# -- Name of the html file
+# -- if index_name is set to None, it will be build as user_comparisonname_season
+# -- with comparisonname being the name of the parameter file without 'params_'
+# -- (and '.py' of course)
+# ---------------------------------------------------------------------------- >
+index_name = None
+
+# ---------------------------------------------------------------------------------------- #
+# -- END                                                                                -- #
+# ---------------------------------------------------------------------------------------- #
